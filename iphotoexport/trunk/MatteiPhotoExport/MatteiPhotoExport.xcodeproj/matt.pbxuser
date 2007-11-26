@@ -1,0 +1,395 @@
+// !$*UTF8*$!
+{
+	089C1669FE841209C02AAC07 /* Project object */ = {
+		activeArchitecture = ppc;
+		activeBuildConfigurationName = Debug;
+		activeExecutable = C9A72B660CF9491C0019950D /* iPhoto */;
+		activeTarget = 8D5B49AC048680CD000E48DA /* MatteiPhotoExport */;
+		addToTargets = (
+			8D5B49AC048680CD000E48DA /* MatteiPhotoExport */,
+		);
+		breakpoints = (
+			C9E97EB20CFAB9AC00224CB8 /* MatteExportController.m:337 */,
+		);
+		codeSenseManager = C9A72B300CF8D7EB0019950D /* Code sense */;
+		executables = (
+			C9A72B660CF9491C0019950D /* iPhoto */,
+		);
+		perUserDictionary = {
+			PBXConfiguration.PBXFileTableDataSource3.PBXExecutablesDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXExecutablesDataSource_NameID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					22,
+					300,
+					178,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXExecutablesDataSource_ActiveFlagID,
+					PBXExecutablesDataSource_NameID,
+					PBXExecutablesDataSource_CommentsID,
+				);
+			};
+			PBXConfiguration.PBXFileTableDataSource3.PBXFileTableDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					315,
+					20,
+					48,
+					43,
+					43,
+					20,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXFileDataSource_FiletypeID,
+					PBXFileDataSource_Filename_ColumnID,
+					PBXFileDataSource_Built_ColumnID,
+					PBXFileDataSource_ObjectSize_ColumnID,
+					PBXFileDataSource_Errors_ColumnID,
+					PBXFileDataSource_Warnings_ColumnID,
+					PBXFileDataSource_Target_ColumnID,
+				);
+			};
+			PBXConfiguration.PBXTargetDataSource.PBXTargetDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					250,
+					60,
+					20,
+					48.16259765625,
+					43,
+					43,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXFileDataSource_FiletypeID,
+					PBXFileDataSource_Filename_ColumnID,
+					PBXTargetDataSource_PrimaryAttribute,
+					PBXFileDataSource_Built_ColumnID,
+					PBXFileDataSource_ObjectSize_ColumnID,
+					PBXFileDataSource_Errors_ColumnID,
+					PBXFileDataSource_Warnings_ColumnID,
+				);
+			};
+			PBXPerProjectTemplateStateSaveDate = 217760678;
+			PBXWorkspaceStateSaveDate = 217760678;
+		};
+		perUserProjectItems = {
+			C90040AB0CFAC3AA00B4D89F /* PBXTextBookmark */ = C90040AB0CFAC3AA00B4D89F /* PBXTextBookmark */;
+			C90040AC0CFAC3AA00B4D89F /* PBXTextBookmark */ = C90040AC0CFAC3AA00B4D89F /* PBXTextBookmark */;
+			C90040AD0CFAC3AA00B4D89F /* PBXTextBookmark */ = C90040AD0CFAC3AA00B4D89F /* PBXTextBookmark */;
+			C90040AE0CFAC3AA00B4D89F /* PBXTextBookmark */ = C90040AE0CFAC3AA00B4D89F /* PBXTextBookmark */;
+			C9E97EB90CFAB9B100224CB8 = C9E97EB90CFAB9B100224CB8 /* PBXTextBookmark */;
+			C9E97ECE0CFABCA200224CB8 = C9E97ECE0CFABCA200224CB8 /* PBXTextBookmark */;
+			C9E97ED30CFABCA200224CB8 = C9E97ED30CFABCA200224CB8 /* PBXTextBookmark */;
+			C9E97EDA0CFABF2700224CB8 = C9E97EDA0CFABF2700224CB8 /* PBXTextBookmark */;
+			C9E97EDF0CFABF2700224CB8 = C9E97EDF0CFABF2700224CB8 /* PBXTextBookmark */;
+			C9E97EFA0CFAC36300224CB8 = C9E97EFA0CFAC36300224CB8 /* PBXTextBookmark */;
+			C9E97EFB0CFAC36300224CB8 = C9E97EFB0CFAC36300224CB8 /* PBXTextBookmark */;
+			C9E97EFC0CFAC36300224CB8 = C9E97EFC0CFAC36300224CB8 /* PBXTextBookmark */;
+			C9E97EFD0CFAC36300224CB8 = C9E97EFD0CFAC36300224CB8 /* PBXTextBookmark */;
+			C9E97EFF0CFAC36300224CB8 = C9E97EFF0CFAC36300224CB8 /* PBXTextBookmark */;
+		};
+		sourceControlManager = C9A72B2F0CF8D7EB0019950D /* Source Control */;
+		userBuildSettings = {
+		};
+	};
+	089C167EFE841241C02AAC07 /* InfoPlist.strings */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {727, 752}}";
+			sepNavSelRange = "{97, 0}";
+			sepNavVisRange = "{0, 106}";
+			sepNavWindowFrame = "{{153, 167}, {786, 880}}";
+		};
+	};
+	8D5B49AC048680CD000E48DA /* MatteiPhotoExport */ = {
+		activeExec = 0;
+	};
+	8D5B49B7048680CD000E48DA /* Info.plist */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {727, 752}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 851}";
+			sepNavWindowFrame = "{{176, 146}, {786, 880}}";
+		};
+	};
+	C90040AB0CFAC3AA00B4D89F /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = C9A72B350CF8D86A0019950D /* MatteExportController.m */;
+		name = "MatteExportController.m: 157";
+		rLen = 0;
+		rLoc = 2306;
+		rType = 0;
+		vrLen = 837;
+		vrLoc = 1842;
+	};
+	C90040AC0CFAC3AA00B4D89F /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = C9A72B3C0CF8D8E00019950D /* ExportImageProtocol.h */;
+		name = "ExportImageProtocol.h: 74";
+		rLen = 30;
+		rLoc = 1912;
+		rType = 0;
+		vrLen = 2338;
+		vrLoc = 2149;
+	};
+	C90040AD0CFAC3AA00B4D89F /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = C9A72B340CF8D86A0019950D /* MatteExportController.h */;
+		name = "MatteExportController.h: 65";
+		rLen = 0;
+		rLoc = 1555;
+		rType = 0;
+		vrLen = 1336;
+		vrLoc = 220;
+	};
+	C90040AE0CFAC3AA00B4D89F /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = C9E97ED40CFABCA200224CB8 /* iPhotoToGallery.m */;
+		name = "iPhotoToGallery.m: 321";
+		rLen = 10;
+		rLoc = 11011;
+		rType = 0;
+		vrLen = 2098;
+		vrLoc = 10041;
+	};
+	C9A72B2F0CF8D7EB0019950D /* Source Control */ = {
+		isa = PBXSourceControlManager;
+		fallbackIsa = XCSourceControlManager;
+		isSCMEnabled = 0;
+		scmConfiguration = {
+		};
+	};
+	C9A72B300CF8D7EB0019950D /* Code sense */ = {
+		isa = PBXCodeSenseManager;
+		indexTemplatePath = "";
+	};
+	C9A72B310CF8D8490019950D /* MatteExportPluginBox.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {727, 752}}";
+			sepNavSelRange = "{255, 0}";
+			sepNavVisRange = "{0, 357}";
+			sepNavWindowFrame = "{{894, 22}, {786, 880}}";
+		};
+	};
+	C9A72B320CF8D8490019950D /* MatteExportPluginBox.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {727, 752}}";
+			sepNavSelRange = "{593, 0}";
+			sepNavVisRange = "{0, 599}";
+			sepNavWindowFrame = "{{931, 85}, {786, 880}}";
+		};
+	};
+	C9A72B340CF8D86A0019950D /* MatteExportController.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {727, 924}}";
+			sepNavSelRange = "{1555, 0}";
+			sepNavVisRange = "{220, 1336}";
+			sepNavWindowFrame = "{{92, 57}, {786, 880}}";
+		};
+	};
+	C9A72B350CF8D86A0019950D /* MatteExportController.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {727, 6510}}";
+			sepNavSelRange = "{2306, 0}";
+			sepNavVisRange = "{1842, 837}";
+			sepNavWindowFrame = "{{977, 20}, {786, 880}}";
+		};
+	};
+	C9A72B3C0CF8D8E00019950D /* ExportImageProtocol.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {727, 1876}}";
+			sepNavSelRange = "{1912, 30}";
+			sepNavVisRange = "{2149, 2338}";
+			sepNavWindowFrame = "{{61, 251}, {786, 880}}";
+		};
+	};
+	C9A72B3E0CF8D8E00019950D /* ExportPluginProtocol.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {727, 1498}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{1656, 1863}";
+			sepNavWindowFrame = "{{130, 188}, {786, 880}}";
+		};
+	};
+	C9A72B660CF9491C0019950D /* iPhoto */ = {
+		isa = PBXExecutable;
+		activeArgIndices = (
+		);
+		argumentStrings = (
+		);
+		autoAttachOnCrash = 1;
+		breakpointsEnabled = 0;
+		configStateDict = {
+		};
+		customDataFormattersEnabled = 1;
+		debuggerPlugin = GDBDebugging;
+		disassemblyDisplayState = 0;
+		dylibVariantSuffix = "";
+		enableDebugStr = 1;
+		environmentEntries = (
+		);
+		executableSystemSymbolLevel = 0;
+		executableUserSymbolLevel = 0;
+		launchableReference = C9A72B670CF9491C0019950D /* iPhoto.app */;
+		libgmallocEnabled = 0;
+		name = iPhoto;
+		savedGlobals = {
+		};
+		sourceDirectories = (
+		);
+		variableFormatDictionary = {
+		};
+	};
+	C9A72B670CF9491C0019950D /* iPhoto.app */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = wrapper.application;
+		name = iPhoto.app;
+		path = /Applications/iPhoto.app;
+		sourceTree = "<absolute>";
+	};
+	C9E97EB20CFAB9AC00224CB8 /* MatteExportController.m:337 */ = {
+		isa = PBXFileBreakpoint;
+		actions = (
+		);
+		breakpointStyle = 0;
+		continueAfterActions = 0;
+		countType = 0;
+		delayBeforeContinue = 0;
+		fileReference = C9A72B350CF8D86A0019950D /* MatteExportController.m */;
+		functionName = "-performExport:";
+		hitCount = 2;
+		ignoreCount = 0;
+		lineNumber = 337;
+		location = MatteiPhotoExport;
+		modificationTime = 217758291.48183;
+		state = 2;
+	};
+	C9E97EB90CFAB9B100224CB8 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = C9A72B3C0CF8D8E00019950D /* ExportImageProtocol.h */;
+		name = "ExportImageProtocol.h: 74";
+		rLen = 30;
+		rLoc = 1912;
+		rType = 0;
+		vrLen = 1212;
+		vrLoc = 0;
+	};
+	C9E97ECE0CFABCA200224CB8 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = C9A72B350CF8D86A0019950D /* MatteExportController.m */;
+		rLen = 0;
+		rLoc = 336;
+		rType = 1;
+	};
+	C9E97ED30CFABCA200224CB8 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = C9E97ED40CFABCA200224CB8 /* iPhotoToGallery.m */;
+		rLen = 0;
+		rLoc = 2147483647;
+		rType = 0;
+	};
+	C9E97ED40CFABCA200224CB8 /* iPhotoToGallery.m */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.c.objc;
+		name = iPhotoToGallery.m;
+		path = "/Volumes/Chunka/matt/Projects/iPhotoToGallery-0.67/Source/iPhotoToGallery.m";
+		sourceTree = "<absolute>";
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1088, 18424}}";
+			sepNavSelRange = "{11011, 10}";
+			sepNavVisRange = "{10041, 2098}";
+		};
+	};
+	C9E97EDA0CFABF2700224CB8 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = C9A72B340CF8D86A0019950D /* MatteExportController.h */;
+		name = "MatteExportController.h: 12";
+		rLen = 19;
+		rLoc = 225;
+		rType = 0;
+		vrLen = 1157;
+		vrLoc = 0;
+	};
+	C9E97EDF0CFABF2700224CB8 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = C9E97EE00CFABF2700224CB8 /* SFExportController.h */;
+		rLen = 0;
+		rLoc = 2147483647;
+		rType = 0;
+	};
+	C9E97EE00CFABF2700224CB8 /* SFExportController.h */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.c.h;
+		name = SFExportController.h;
+		path = /Volumes/iPhoto_08_Plugin_SDK/Samplecode/SFExportController.h;
+		sourceTree = "<absolute>";
+	};
+	C9E97EFA0CFAC36300224CB8 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = C9A72B350CF8D86A0019950D /* MatteExportController.m */;
+		name = "MatteExportController.m: 157";
+		rLen = 0;
+		rLoc = 2306;
+		rType = 0;
+		vrLen = 839;
+		vrLoc = 1842;
+	};
+	C9E97EFB0CFAC36300224CB8 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = C9A72B3C0CF8D8E00019950D /* ExportImageProtocol.h */;
+		name = "ExportImageProtocol.h: 74";
+		rLen = 30;
+		rLoc = 1912;
+		rType = 0;
+		vrLen = 2294;
+		vrLoc = 2193;
+	};
+	C9E97EFC0CFAC36300224CB8 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = C9A72B340CF8D86A0019950D /* MatteExportController.h */;
+		name = "MatteExportController.h: 65";
+		rLen = 0;
+		rLoc = 1555;
+		rType = 0;
+		vrLen = 1298;
+		vrLoc = 258;
+	};
+	C9E97EFD0CFAC36300224CB8 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = C9E97EFE0CFAC36300224CB8 /* iPhotoToGallery.m */;
+		name = "iPhotoToGallery.m: 321";
+		rLen = 10;
+		rLoc = 11011;
+		rType = 0;
+		vrLen = 2103;
+		vrLoc = 10041;
+	};
+	C9E97EFE0CFAC36300224CB8 /* iPhotoToGallery.m */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.c.objc;
+		name = iPhotoToGallery.m;
+		path = "/Volumes/Chunka/matt/Projects/iPhotoToGallery-0.67/Source/iPhotoToGallery.m";
+		sourceTree = "<absolute>";
+	};
+	C9E97EFF0CFAC36300224CB8 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = C9E97F000CFAC36300224CB8 /* SFExportController.h */;
+		name = "SFExportController.h: 60";
+		rLen = 36;
+		rLoc = 2712;
+		rType = 0;
+		vrLen = 1428;
+		vrLoc = 1754;
+	};
+	C9E97F000CFAC36300224CB8 /* SFExportController.h */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = file;
+		name = SFExportController.h;
+		path = /Volumes/iPhoto_08_Plugin_SDK/Samplecode/SFExportController.h;
+		sourceTree = "<absolute>";
+	};
+}
