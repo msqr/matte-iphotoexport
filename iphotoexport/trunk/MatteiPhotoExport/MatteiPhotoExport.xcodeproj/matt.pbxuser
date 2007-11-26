@@ -16,6 +16,20 @@
 			C9A72B660CF9491C0019950D /* iPhoto */,
 		);
 		perUserDictionary = {
+			PBXConfiguration.PBXFileTableDataSource3.PBXErrorsWarningsDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXErrorsWarningsDataSource_LocationID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					300,
+					265,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXErrorsWarningsDataSource_TypeID,
+					PBXErrorsWarningsDataSource_MessageID,
+					PBXErrorsWarningsDataSource_LocationID,
+				);
+			};
 			PBXConfiguration.PBXFileTableDataSource3.PBXExecutablesDataSource = {
 				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
 				PBXFileTableDataSourceColumnSortingKey = PBXExecutablesDataSource_NameID;
@@ -35,7 +49,7 @@
 				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
 				PBXFileTableDataSourceColumnWidthsKey = (
 					20,
-					315,
+					375,
 					20,
 					48,
 					43,
@@ -43,6 +57,30 @@
 					20,
 				);
 				PBXFileTableDataSourceColumnsKey = (
+					PBXFileDataSource_FiletypeID,
+					PBXFileDataSource_Filename_ColumnID,
+					PBXFileDataSource_Built_ColumnID,
+					PBXFileDataSource_ObjectSize_ColumnID,
+					PBXFileDataSource_Errors_ColumnID,
+					PBXFileDataSource_Warnings_ColumnID,
+					PBXFileDataSource_Target_ColumnID,
+				);
+			};
+			PBXConfiguration.PBXFileTableDataSource3.XCSCMDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					20,
+					351,
+					20,
+					48.16259765625,
+					43,
+					43,
+					20,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXFileDataSource_SCM_ColumnID,
 					PBXFileDataSource_FiletypeID,
 					PBXFileDataSource_Filename_ColumnID,
 					PBXFileDataSource_Built_ColumnID,
@@ -74,14 +112,14 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 217760678;
-			PBXWorkspaceStateSaveDate = 217760678;
+			PBXPerProjectTemplateStateSaveDate = 217761578;
+			PBXWorkspaceStateSaveDate = 217761578;
 		};
 		perUserProjectItems = {
-			C90040AB0CFAC3AA00B4D89F /* PBXTextBookmark */ = C90040AB0CFAC3AA00B4D89F /* PBXTextBookmark */;
-			C90040AC0CFAC3AA00B4D89F /* PBXTextBookmark */ = C90040AC0CFAC3AA00B4D89F /* PBXTextBookmark */;
-			C90040AD0CFAC3AA00B4D89F /* PBXTextBookmark */ = C90040AD0CFAC3AA00B4D89F /* PBXTextBookmark */;
-			C90040AE0CFAC3AA00B4D89F /* PBXTextBookmark */ = C90040AE0CFAC3AA00B4D89F /* PBXTextBookmark */;
+			C90040AB0CFAC3AA00B4D89F = C90040AB0CFAC3AA00B4D89F /* PBXTextBookmark */;
+			C90040AC0CFAC3AA00B4D89F = C90040AC0CFAC3AA00B4D89F /* PBXTextBookmark */;
+			C90040AD0CFAC3AA00B4D89F = C90040AD0CFAC3AA00B4D89F /* PBXTextBookmark */;
+			C90040AE0CFAC3AA00B4D89F = C90040AE0CFAC3AA00B4D89F /* PBXTextBookmark */;
 			C9E97EB90CFAB9B100224CB8 = C9E97EB90CFAB9B100224CB8 /* PBXTextBookmark */;
 			C9E97ECE0CFABCA200224CB8 = C9E97ECE0CFABCA200224CB8 /* PBXTextBookmark */;
 			C9E97ED30CFABCA200224CB8 = C9E97ED30CFABCA200224CB8 /* PBXTextBookmark */;
@@ -161,6 +199,7 @@
 		fallbackIsa = XCSourceControlManager;
 		isSCMEnabled = 0;
 		scmConfiguration = {
+			repositoryName = Matte;
 		};
 	};
 	C9A72B300CF8D7EB0019950D /* Code sense */ = {
@@ -193,7 +232,7 @@
 	};
 	C9A72B350CF8D86A0019950D /* MatteExportController.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {727, 6510}}";
+			sepNavIntBoundsRect = "{{0, 0}, {727, 6272}}";
 			sepNavSelRange = "{2306, 0}";
 			sepNavVisRange = "{1842, 837}";
 			sepNavWindowFrame = "{{977, 20}, {786, 880}}";
@@ -298,11 +337,6 @@
 		name = iPhotoToGallery.m;
 		path = "/Volumes/Chunka/matt/Projects/iPhotoToGallery-0.67/Source/iPhotoToGallery.m";
 		sourceTree = "<absolute>";
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1088, 18424}}";
-			sepNavSelRange = "{11011, 10}";
-			sepNavVisRange = "{10041, 2098}";
-		};
 	};
 	C9E97EDA0CFABF2700224CB8 /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
@@ -374,6 +408,12 @@
 		name = iPhotoToGallery.m;
 		path = "/Volumes/Chunka/matt/Projects/iPhotoToGallery-0.67/Source/iPhotoToGallery.m";
 		sourceTree = "<absolute>";
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1094, 18452}}";
+			sepNavSelRange = "{11011, 10}";
+			sepNavVisRange = "{10041, 2098}";
+			sepNavWindowFrame = "{{171, 80}, {786, 880}}";
+		};
 	};
 	C9E97EFF0CFAC36300224CB8 /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
