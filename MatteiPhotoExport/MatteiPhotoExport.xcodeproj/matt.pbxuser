@@ -49,7 +49,7 @@
 				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
 				PBXFileTableDataSourceColumnWidthsKey = (
 					20,
-					375,
+					616,
 					20,
 					48,
 					43,
@@ -66,15 +66,31 @@
 					PBXFileDataSource_Target_ColumnID,
 				);
 			};
+			PBXConfiguration.PBXFileTableDataSource3.PBXSymbolsDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXSymbolsDataSource_SymbolNameID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					16,
+					200,
+					50,
+					594.20849609375,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXSymbolsDataSource_SymbolTypeIconID,
+					PBXSymbolsDataSource_SymbolNameID,
+					PBXSymbolsDataSource_SymbolTypeID,
+					PBXSymbolsDataSource_ReferenceNameID,
+				);
+			};
 			PBXConfiguration.PBXFileTableDataSource3.XCSCMDataSource = {
 				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
 				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
 				PBXFileTableDataSourceColumnWidthsKey = (
 					20,
 					20,
-					351,
+					412,
 					20,
-					48.16259765625,
+					48,
 					43,
 					43,
 					20,
@@ -95,10 +111,10 @@
 				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
 				PBXFileTableDataSourceColumnWidthsKey = (
 					20,
-					250,
+					576,
 					60,
 					20,
-					48.16259765625,
+					48,
 					43,
 					43,
 				);
@@ -112,24 +128,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 217761578;
-			PBXWorkspaceStateSaveDate = 217761578;
-		};
-		perUserProjectItems = {
-			C90040AB0CFAC3AA00B4D89F = C90040AB0CFAC3AA00B4D89F /* PBXTextBookmark */;
-			C90040AC0CFAC3AA00B4D89F = C90040AC0CFAC3AA00B4D89F /* PBXTextBookmark */;
-			C90040AD0CFAC3AA00B4D89F = C90040AD0CFAC3AA00B4D89F /* PBXTextBookmark */;
-			C90040AE0CFAC3AA00B4D89F = C90040AE0CFAC3AA00B4D89F /* PBXTextBookmark */;
-			C9E97EB90CFAB9B100224CB8 = C9E97EB90CFAB9B100224CB8 /* PBXTextBookmark */;
-			C9E97ECE0CFABCA200224CB8 = C9E97ECE0CFABCA200224CB8 /* PBXTextBookmark */;
-			C9E97ED30CFABCA200224CB8 = C9E97ED30CFABCA200224CB8 /* PBXTextBookmark */;
-			C9E97EDA0CFABF2700224CB8 = C9E97EDA0CFABF2700224CB8 /* PBXTextBookmark */;
-			C9E97EDF0CFABF2700224CB8 = C9E97EDF0CFABF2700224CB8 /* PBXTextBookmark */;
-			C9E97EFA0CFAC36300224CB8 = C9E97EFA0CFAC36300224CB8 /* PBXTextBookmark */;
-			C9E97EFB0CFAC36300224CB8 = C9E97EFB0CFAC36300224CB8 /* PBXTextBookmark */;
-			C9E97EFC0CFAC36300224CB8 = C9E97EFC0CFAC36300224CB8 /* PBXTextBookmark */;
-			C9E97EFD0CFAC36300224CB8 = C9E97EFD0CFAC36300224CB8 /* PBXTextBookmark */;
-			C9E97EFF0CFAC36300224CB8 = C9E97EFF0CFAC36300224CB8 /* PBXTextBookmark */;
+			PBXPerProjectTemplateStateSaveDate = 219377744;
+			PBXWorkspaceStateSaveDate = 219377744;
 		};
 		sourceControlManager = C9A72B2F0CF8D7EB0019950D /* Source Control */;
 		userBuildSettings = {
@@ -154,45 +154,37 @@
 			sepNavWindowFrame = "{{176, 146}, {786, 880}}";
 		};
 	};
-	C90040AB0CFAC3AA00B4D89F /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = C9A72B350CF8D86A0019950D /* MatteExportController.m */;
-		name = "MatteExportController.m: 157";
-		rLen = 0;
-		rLoc = 2306;
-		rType = 0;
-		vrLen = 837;
-		vrLoc = 1842;
+	C99974650D135A900086DF84 /* MatteService.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {727, 6160}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 2748}";
+			sepNavWindowFrame = "{{776, 137}, {786, 880}}";
+		};
 	};
-	C90040AC0CFAC3AA00B4D89F /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = C9A72B3C0CF8D8E00019950D /* ExportImageProtocol.h */;
-		name = "ExportImageProtocol.h: 74";
-		rLen = 30;
-		rLoc = 1912;
-		rType = 0;
-		vrLen = 2338;
-		vrLoc = 2149;
+	C99974710D135CD30086DF84 /* dom.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {884, 14910}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{2121, 2952}";
+			sepNavWindowFrame = "{{84, 230}, {786, 880}}";
+		};
 	};
-	C90040AD0CFAC3AA00B4D89F /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = C9A72B340CF8D86A0019950D /* MatteExportController.h */;
-		name = "MatteExportController.h: 65";
-		rLen = 0;
-		rLoc = 1555;
-		rType = 0;
-		vrLen = 1336;
-		vrLoc = 220;
+	C99974740D135CD30086DF84 /* dom.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {727, 8624}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 2375}";
+			sepNavWindowFrame = "{{15, 293}, {786, 880}}";
+		};
 	};
-	C90040AE0CFAC3AA00B4D89F /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = C9E97ED40CFABCA200224CB8 /* iPhotoToGallery.m */;
-		name = "iPhotoToGallery.m: 321";
-		rLen = 10;
-		rLoc = 11011;
-		rType = 0;
-		vrLen = 2098;
-		vrLoc = 10041;
+	C99974870D135CD30086DF84 /* wsse.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {950, 2898}}";
+			sepNavSelRange = "{226, 0}";
+			sepNavVisRange = "{0, 2882}";
+			sepNavWindowFrame = "{{38, 272}, {786, 880}}";
+		};
 	};
 	C9A72B2F0CF8D7EB0019950D /* Source Control */ = {
 		isa = PBXSourceControlManager;
@@ -306,130 +298,5 @@
 		location = MatteiPhotoExport;
 		modificationTime = 217758291.48183;
 		state = 2;
-	};
-	C9E97EB90CFAB9B100224CB8 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = C9A72B3C0CF8D8E00019950D /* ExportImageProtocol.h */;
-		name = "ExportImageProtocol.h: 74";
-		rLen = 30;
-		rLoc = 1912;
-		rType = 0;
-		vrLen = 1212;
-		vrLoc = 0;
-	};
-	C9E97ECE0CFABCA200224CB8 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = C9A72B350CF8D86A0019950D /* MatteExportController.m */;
-		rLen = 0;
-		rLoc = 336;
-		rType = 1;
-	};
-	C9E97ED30CFABCA200224CB8 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = C9E97ED40CFABCA200224CB8 /* iPhotoToGallery.m */;
-		rLen = 0;
-		rLoc = 2147483647;
-		rType = 0;
-	};
-	C9E97ED40CFABCA200224CB8 /* iPhotoToGallery.m */ = {
-		isa = PBXFileReference;
-		lastKnownFileType = sourcecode.c.objc;
-		name = iPhotoToGallery.m;
-		path = "/Volumes/Chunka/matt/Projects/iPhotoToGallery-0.67/Source/iPhotoToGallery.m";
-		sourceTree = "<absolute>";
-	};
-	C9E97EDA0CFABF2700224CB8 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = C9A72B340CF8D86A0019950D /* MatteExportController.h */;
-		name = "MatteExportController.h: 12";
-		rLen = 19;
-		rLoc = 225;
-		rType = 0;
-		vrLen = 1157;
-		vrLoc = 0;
-	};
-	C9E97EDF0CFABF2700224CB8 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = C9E97EE00CFABF2700224CB8 /* SFExportController.h */;
-		rLen = 0;
-		rLoc = 2147483647;
-		rType = 0;
-	};
-	C9E97EE00CFABF2700224CB8 /* SFExportController.h */ = {
-		isa = PBXFileReference;
-		lastKnownFileType = sourcecode.c.h;
-		name = SFExportController.h;
-		path = /Volumes/iPhoto_08_Plugin_SDK/Samplecode/SFExportController.h;
-		sourceTree = "<absolute>";
-	};
-	C9E97EFA0CFAC36300224CB8 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = C9A72B350CF8D86A0019950D /* MatteExportController.m */;
-		name = "MatteExportController.m: 157";
-		rLen = 0;
-		rLoc = 2306;
-		rType = 0;
-		vrLen = 839;
-		vrLoc = 1842;
-	};
-	C9E97EFB0CFAC36300224CB8 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = C9A72B3C0CF8D8E00019950D /* ExportImageProtocol.h */;
-		name = "ExportImageProtocol.h: 74";
-		rLen = 30;
-		rLoc = 1912;
-		rType = 0;
-		vrLen = 2294;
-		vrLoc = 2193;
-	};
-	C9E97EFC0CFAC36300224CB8 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = C9A72B340CF8D86A0019950D /* MatteExportController.h */;
-		name = "MatteExportController.h: 65";
-		rLen = 0;
-		rLoc = 1555;
-		rType = 0;
-		vrLen = 1298;
-		vrLoc = 258;
-	};
-	C9E97EFD0CFAC36300224CB8 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = C9E97EFE0CFAC36300224CB8 /* iPhotoToGallery.m */;
-		name = "iPhotoToGallery.m: 321";
-		rLen = 10;
-		rLoc = 11011;
-		rType = 0;
-		vrLen = 2103;
-		vrLoc = 10041;
-	};
-	C9E97EFE0CFAC36300224CB8 /* iPhotoToGallery.m */ = {
-		isa = PBXFileReference;
-		lastKnownFileType = sourcecode.c.objc;
-		name = iPhotoToGallery.m;
-		path = "/Volumes/Chunka/matt/Projects/iPhotoToGallery-0.67/Source/iPhotoToGallery.m";
-		sourceTree = "<absolute>";
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1094, 18452}}";
-			sepNavSelRange = "{11011, 10}";
-			sepNavVisRange = "{10041, 2098}";
-			sepNavWindowFrame = "{{171, 80}, {786, 880}}";
-		};
-	};
-	C9E97EFF0CFAC36300224CB8 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = C9E97F000CFAC36300224CB8 /* SFExportController.h */;
-		name = "SFExportController.h: 60";
-		rLen = 36;
-		rLoc = 2712;
-		rType = 0;
-		vrLen = 1428;
-		vrLoc = 1754;
-	};
-	C9E97F000CFAC36300224CB8 /* SFExportController.h */ = {
-		isa = PBXFileReference;
-		lastKnownFileType = file;
-		name = SFExportController.h;
-		path = /Volumes/iPhoto_08_Plugin_SDK/Samplecode/SFExportController.h;
-		sourceTree = "<absolute>";
 	};
 }
