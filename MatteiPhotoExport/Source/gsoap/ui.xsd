@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+  Copyright (c) 2006 Matt Magoffin
+  
+  This program is free software; you can redistribute it and/or 
+  modify it under the terms of the GNU General Public License as 
+  published by the Free Software Foundation; either version 2 of 
+  the License, or (at your option) any later version.
+  
+  This program is distributed in the hope that it will be useful, 
+  but WITHOUT ANY WARRANTY; without even the implied warranty of 
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+  General Public License for more details.
+  
+  You should have received a copy of the GNU General Public License 
+  along with this program; if not, write to the Free Software 
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 
+  02111-1307 USA
+
+  $Id: ui.xsd,v 1.16 2007/09/02 08:53:21 matt Exp $   
+-->
+<xs:schema
+	xml:lang="EN"
+	targetNamespace="http://msqr.us/xsd/matte"
+	jaxb:version="1.0"
+	xmlns:m="http://msqr.us/xsd/matte"
+	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+	xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+	jaxb:extensionBindingPrefixes="xjc"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified"
+	attributeFormDefault="unqualified">
+	
+	<xs:annotation>
+		<xs:documentation>
+			This is the XML Schema for the Media Album 2 application UI elements.
+		</xs:documentation>
+	</xs:annotation>
+	
+	<xs:include schemaLocation="core.xsd"/>
+	<xs:include schemaLocation="domain.xsd"/>
+	
+	<xs:element name="edit" type="m:ui-edit"/>
+	<xs:element name="model" type="m:ui-model"/>
+	<xs:element name="session" type="m:ui-session"/>
+	
+	<xs:complexType name="ui-session">
+		<xs:sequence>
+			<xs:element name="acting-user" type="m:user" minOccurs="0"/>
+			<xs:element name="thumbnail-setting" type="m:media-spec" minOccurs="0"/>
+			<xs:element name="view-setting" type="m:media-spec" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="admin" type="xs:boolean"/>
+	</xs:complexType>
+	
+	<xs:complexType name="ui-base" abstract="true">
+		<xs:sequence>
+			<xs:element name="ui-metadata" type="m:metadata"
+				minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="mode" type="xs:string" use="optional"/>
+	</xs:complexType>
+	
+	<xs:complexType name="ui-edit">
+		<xs:annotation><xs:documentation>The main model object for editing actions.</xs:documentation></xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="m:ui-base">
+				<xs:sequence>
+					<xs:element name="album" type="m:album" minOccurs="0"/>
+					<xs:element name="collection" type="m:collection" minOccurs="0"/>
+					<xs:element name="user" type="m:user" minOccurs="0"/>
+					<xs:element name="theme" type="m:theme" minOccurs="0"/>
+				</xs:sequence>
+				<xs:attribute name="ignoreWarnings" type="xs:boolean" use="optional" default="false"/>
+				<xs:attribute name="refresh" type="xs:boolean" use="optional" default="false"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="ui-model">
+		<xs:annotation><xs:documentation>The main model object for read-only actions.</xs:documentation></xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="m:ui-base">
+				<xs:sequence>
+					<xs:element name="search-results" type="m:search-results" minOccurs="0"/>
+					<xs:element name="album-sort" type="m:key-name-type" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="media-size" type="m:media-size-definition" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="album" type="m:album" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="collection" type="m:collection" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="item" type="m:media-item" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="time-zone" type="m:time-zone" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="theme" type="m:theme" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="user" type="m:user" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="locale" type="m:locale" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+</xs:schema>
