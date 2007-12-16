@@ -9,24 +9,20 @@
 /* Begin PBXBuildFile section */
 		8D5B49B0048680CD000E48DA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C167DFE841241C02AAC07 /* InfoPlist.strings */; };
 		8D5B49B4048680CD000E48DA /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */; };
+		C90CA1B50D149DD100224FBC /* threads.c in Sources */ = {isa = PBXBuildFile; fileRef = C90CA1B30D149DD100224FBC /* threads.c */; };
+		C90CA1F80D14A95500224FBC /* soapClient.c in Sources */ = {isa = PBXBuildFile; fileRef = C90CA17A0D1496E300224FBC /* soapClient.c */; };
+		C90CA1FA0D14A95F00224FBC /* soapC.c in Sources */ = {isa = PBXBuildFile; fileRef = C90CA1790D1496E300224FBC /* soapC.c */; };
+		C90CA2050D14AA5100224FBC /* md5evp.c in Sources */ = {isa = PBXBuildFile; fileRef = C99974A70D135CD30086DF84 /* md5evp.c */; };
 		C99974B80D135CD30086DF84 /* dom.c in Sources */ = {isa = PBXBuildFile; fileRef = C99974710D135CD30086DF84 /* dom.c */; };
-		C99974BA0D135CD30086DF84 /* WS-example.c in Sources */ = {isa = PBXBuildFile; fileRef = C999747E0D135CD30086DF84 /* WS-example.c */; };
 		C99974BB0D135CD30086DF84 /* cacerts.c in Sources */ = {isa = PBXBuildFile; fileRef = C99974930D135CD30086DF84 /* cacerts.c */; };
 		C99974BC0D135CD30086DF84 /* httpda.c in Sources */ = {isa = PBXBuildFile; fileRef = C99974950D135CD30086DF84 /* httpda.c */; };
-		C99974BD0D135CD30086DF84 /* httpdatest.c in Sources */ = {isa = PBXBuildFile; fileRef = C99974970D135CD30086DF84 /* httpdatest.c */; };
 		C99974BE0D135CD30086DF84 /* httpform.c in Sources */ = {isa = PBXBuildFile; fileRef = C99974990D135CD30086DF84 /* httpform.c */; };
 		C99974BF0D135CD30086DF84 /* httpget.c in Sources */ = {isa = PBXBuildFile; fileRef = C999749B0D135CD30086DF84 /* httpget.c */; };
 		C99974C00D135CD30086DF84 /* httpgettest.c in Sources */ = {isa = PBXBuildFile; fileRef = C999749D0D135CD30086DF84 /* httpgettest.c */; };
 		C99974C10D135CD30086DF84 /* httpmd5.c in Sources */ = {isa = PBXBuildFile; fileRef = C999749F0D135CD30086DF84 /* httpmd5.c */; };
-		C99974C20D135CD30086DF84 /* httpmd5test.c in Sources */ = {isa = PBXBuildFile; fileRef = C99974A10D135CD30086DF84 /* httpmd5test.c */; };
 		C99974C30D135CD30086DF84 /* httppost.c in Sources */ = {isa = PBXBuildFile; fileRef = C99974A30D135CD30086DF84 /* httppost.c */; };
 		C99974C40D135CD30086DF84 /* logging.c in Sources */ = {isa = PBXBuildFile; fileRef = C99974A50D135CD30086DF84 /* logging.c */; };
-		C99974C50D135CD30086DF84 /* md5evp.c in Sources */ = {isa = PBXBuildFile; fileRef = C99974A70D135CD30086DF84 /* md5evp.c */; };
-		C99974C60D135CD30086DF84 /* plugin.c in Sources */ = {isa = PBXBuildFile; fileRef = C99974A90D135CD30086DF84 /* plugin.c */; };
 		C99974C80D135CD30086DF84 /* smdevp.c in Sources */ = {isa = PBXBuildFile; fileRef = C99974AC0D135CD30086DF84 /* smdevp.c */; };
-		C99974C90D135CD30086DF84 /* threads.c in Sources */ = {isa = PBXBuildFile; fileRef = C99974AE0D135CD30086DF84 /* threads.c */; };
-		C99974CA0D135CD30086DF84 /* wsaapi.c in Sources */ = {isa = PBXBuildFile; fileRef = C99974B00D135CD30086DF84 /* wsaapi.c */; };
-		C99974CB0D135CD30086DF84 /* wsse2api.c in Sources */ = {isa = PBXBuildFile; fileRef = C99974B20D135CD30086DF84 /* wsse2api.c */; };
 		C99974CC0D135CD30086DF84 /* wsseapi.c in Sources */ = {isa = PBXBuildFile; fileRef = C99974B40D135CD30086DF84 /* wsseapi.c */; };
 		C99974CD0D135CD30086DF84 /* stdsoap2.c in Sources */ = {isa = PBXBuildFile; fileRef = C99974B60D135CD30086DF84 /* stdsoap2.c */; };
 		C9A72B330CF8D8490019950D /* MatteExportPluginBox.m in Sources */ = {isa = PBXBuildFile; fileRef = C9A72B320CF8D8490019950D /* MatteExportPluginBox.m */; };
@@ -42,6 +38,11 @@
 		32DBCF630370AF2F00C91783 /* MatteiPhotoExport_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MatteiPhotoExport_Prefix.pch; sourceTree = "<group>"; };
 		8D5B49B6048680CD000E48DA /* MatteiPhotoExport.iPhotoExporter */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MatteiPhotoExport.iPhotoExporter; sourceTree = BUILT_PRODUCTS_DIR; };
 		8D5B49B7048680CD000E48DA /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C90CA1790D1496E300224FBC /* soapC.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = soapC.c; path = Source/gsoap/soapC.c; sourceTree = "<group>"; };
+		C90CA17A0D1496E300224FBC /* soapClient.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = soapClient.c; path = Source/gsoap/soapClient.c; sourceTree = "<group>"; };
+		C90CA17C0D1496E300224FBC /* soapH.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = soapH.h; path = Source/gsoap/soapH.h; sourceTree = "<group>"; };
+		C90CA1B30D149DD100224FBC /* threads.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = threads.c; sourceTree = "<group>"; };
+		C90CA1B40D149DD100224FBC /* threads.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = threads.h; sourceTree = "<group>"; };
 		C99974650D135A900086DF84 /* MatteService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MatteService.h; path = Source/gsoap/MatteService.h; sourceTree = "<group>"; };
 		C99974710D135CD30086DF84 /* dom.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = dom.c; sourceTree = "<group>"; };
 		C99974730D135CD30086DF84 /* c14n.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = c14n.h; sourceTree = "<group>"; };
@@ -55,8 +56,6 @@
 		C999747B0D135CD30086DF84 /* stllist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stllist.h; sourceTree = "<group>"; };
 		C999747C0D135CD30086DF84 /* stlset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stlset.h; sourceTree = "<group>"; };
 		C999747D0D135CD30086DF84 /* stlvector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stlvector.h; sourceTree = "<group>"; };
-		C999747E0D135CD30086DF84 /* WS-example.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "WS-example.c"; sourceTree = "<group>"; };
-		C999747F0D135CD30086DF84 /* WS-example.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "WS-example.h"; sourceTree = "<group>"; };
 		C99974800D135CD30086DF84 /* WS-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "WS-Header.h"; sourceTree = "<group>"; };
 		C99974810D135CD30086DF84 /* wsa.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = wsa.h; sourceTree = "<group>"; };
 		C99974820D135CD30086DF84 /* wsa3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = wsa3.h; sourceTree = "<group>"; };
@@ -79,8 +78,6 @@
 		C99974940D135CD30086DF84 /* cacerts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cacerts.h; sourceTree = "<group>"; };
 		C99974950D135CD30086DF84 /* httpda.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = httpda.c; sourceTree = "<group>"; };
 		C99974960D135CD30086DF84 /* httpda.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = httpda.h; sourceTree = "<group>"; };
-		C99974970D135CD30086DF84 /* httpdatest.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = httpdatest.c; sourceTree = "<group>"; };
-		C99974980D135CD30086DF84 /* httpdatest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = httpdatest.h; sourceTree = "<group>"; };
 		C99974990D135CD30086DF84 /* httpform.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = httpform.c; sourceTree = "<group>"; };
 		C999749A0D135CD30086DF84 /* httpform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = httpform.h; sourceTree = "<group>"; };
 		C999749B0D135CD30086DF84 /* httpget.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = httpget.c; sourceTree = "<group>"; };
@@ -89,25 +86,15 @@
 		C999749E0D135CD30086DF84 /* httpgettest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = httpgettest.h; sourceTree = "<group>"; };
 		C999749F0D135CD30086DF84 /* httpmd5.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = httpmd5.c; sourceTree = "<group>"; };
 		C99974A00D135CD30086DF84 /* httpmd5.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = httpmd5.h; sourceTree = "<group>"; };
-		C99974A10D135CD30086DF84 /* httpmd5test.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = httpmd5test.c; sourceTree = "<group>"; };
-		C99974A20D135CD30086DF84 /* httpmd5test.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = httpmd5test.h; sourceTree = "<group>"; };
 		C99974A30D135CD30086DF84 /* httppost.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = httppost.c; sourceTree = "<group>"; };
 		C99974A40D135CD30086DF84 /* httppost.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = httppost.h; sourceTree = "<group>"; };
 		C99974A50D135CD30086DF84 /* logging.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = logging.c; sourceTree = "<group>"; };
 		C99974A60D135CD30086DF84 /* logging.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = logging.h; sourceTree = "<group>"; };
 		C99974A70D135CD30086DF84 /* md5evp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = md5evp.c; sourceTree = "<group>"; };
 		C99974A80D135CD30086DF84 /* md5evp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = md5evp.h; sourceTree = "<group>"; };
-		C99974A90D135CD30086DF84 /* plugin.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = plugin.c; sourceTree = "<group>"; };
-		C99974AA0D135CD30086DF84 /* plugin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = plugin.h; sourceTree = "<group>"; };
 		C99974AB0D135CD30086DF84 /* README.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.txt; sourceTree = "<group>"; };
 		C99974AC0D135CD30086DF84 /* smdevp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = smdevp.c; sourceTree = "<group>"; };
 		C99974AD0D135CD30086DF84 /* smdevp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = smdevp.h; sourceTree = "<group>"; };
-		C99974AE0D135CD30086DF84 /* threads.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = threads.c; sourceTree = "<group>"; };
-		C99974AF0D135CD30086DF84 /* threads.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = threads.h; sourceTree = "<group>"; };
-		C99974B00D135CD30086DF84 /* wsaapi.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = wsaapi.c; sourceTree = "<group>"; };
-		C99974B10D135CD30086DF84 /* wsaapi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = wsaapi.h; sourceTree = "<group>"; };
-		C99974B20D135CD30086DF84 /* wsse2api.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = wsse2api.c; sourceTree = "<group>"; };
-		C99974B30D135CD30086DF84 /* wsse2api.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = wsse2api.h; sourceTree = "<group>"; };
 		C99974B40D135CD30086DF84 /* wsseapi.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = wsseapi.c; sourceTree = "<group>"; };
 		C99974B50D135CD30086DF84 /* wsseapi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = wsseapi.h; sourceTree = "<group>"; };
 		C99974B60D135CD30086DF84 /* stdsoap2.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = stdsoap2.c; sourceTree = "<group>"; };
@@ -219,6 +206,9 @@
 		32C88E010371C26100C91783 /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
+				C90CA1790D1496E300224FBC /* soapC.c */,
+				C90CA17A0D1496E300224FBC /* soapClient.c */,
+				C90CA17C0D1496E300224FBC /* soapH.h */,
 				C99974CF0D135D280086DF84 /* core.xsd */,
 				C99974D00D135D280086DF84 /* domain.xsd */,
 				C99974D10D135D280086DF84 /* import.xsd */,
@@ -262,8 +252,6 @@
 				C999747B0D135CD30086DF84 /* stllist.h */,
 				C999747C0D135CD30086DF84 /* stlset.h */,
 				C999747D0D135CD30086DF84 /* stlvector.h */,
-				C999747E0D135CD30086DF84 /* WS-example.c */,
-				C999747F0D135CD30086DF84 /* WS-example.h */,
 				C99974800D135CD30086DF84 /* WS-Header.h */,
 				C99974810D135CD30086DF84 /* wsa.h */,
 				C99974820D135CD30086DF84 /* wsa3.h */,
@@ -289,12 +277,12 @@
 		C99974920D135CD30086DF84 /* plugin */ = {
 			isa = PBXGroup;
 			children = (
+				C90CA1B30D149DD100224FBC /* threads.c */,
+				C90CA1B40D149DD100224FBC /* threads.h */,
 				C99974930D135CD30086DF84 /* cacerts.c */,
 				C99974940D135CD30086DF84 /* cacerts.h */,
 				C99974950D135CD30086DF84 /* httpda.c */,
 				C99974960D135CD30086DF84 /* httpda.h */,
-				C99974970D135CD30086DF84 /* httpdatest.c */,
-				C99974980D135CD30086DF84 /* httpdatest.h */,
 				C99974990D135CD30086DF84 /* httpform.c */,
 				C999749A0D135CD30086DF84 /* httpform.h */,
 				C999749B0D135CD30086DF84 /* httpget.c */,
@@ -303,25 +291,15 @@
 				C999749E0D135CD30086DF84 /* httpgettest.h */,
 				C999749F0D135CD30086DF84 /* httpmd5.c */,
 				C99974A00D135CD30086DF84 /* httpmd5.h */,
-				C99974A10D135CD30086DF84 /* httpmd5test.c */,
-				C99974A20D135CD30086DF84 /* httpmd5test.h */,
 				C99974A30D135CD30086DF84 /* httppost.c */,
 				C99974A40D135CD30086DF84 /* httppost.h */,
 				C99974A50D135CD30086DF84 /* logging.c */,
 				C99974A60D135CD30086DF84 /* logging.h */,
 				C99974A70D135CD30086DF84 /* md5evp.c */,
 				C99974A80D135CD30086DF84 /* md5evp.h */,
-				C99974A90D135CD30086DF84 /* plugin.c */,
-				C99974AA0D135CD30086DF84 /* plugin.h */,
 				C99974AB0D135CD30086DF84 /* README.txt */,
 				C99974AC0D135CD30086DF84 /* smdevp.c */,
 				C99974AD0D135CD30086DF84 /* smdevp.h */,
-				C99974AE0D135CD30086DF84 /* threads.c */,
-				C99974AF0D135CD30086DF84 /* threads.h */,
-				C99974B00D135CD30086DF84 /* wsaapi.c */,
-				C99974B10D135CD30086DF84 /* wsaapi.h */,
-				C99974B20D135CD30086DF84 /* wsse2api.c */,
-				C99974B30D135CD30086DF84 /* wsse2api.h */,
 				C99974B40D135CD30086DF84 /* wsseapi.c */,
 				C99974B50D135CD30086DF84 /* wsseapi.h */,
 			);
@@ -396,25 +374,21 @@
 				C9A72B330CF8D8490019950D /* MatteExportPluginBox.m in Sources */,
 				C9A72B360CF8D86A0019950D /* MatteExportController.m in Sources */,
 				C99974B80D135CD30086DF84 /* dom.c in Sources */,
-				C99974BA0D135CD30086DF84 /* WS-example.c in Sources */,
 				C99974BB0D135CD30086DF84 /* cacerts.c in Sources */,
 				C99974BC0D135CD30086DF84 /* httpda.c in Sources */,
-				C99974BD0D135CD30086DF84 /* httpdatest.c in Sources */,
 				C99974BE0D135CD30086DF84 /* httpform.c in Sources */,
 				C99974BF0D135CD30086DF84 /* httpget.c in Sources */,
 				C99974C00D135CD30086DF84 /* httpgettest.c in Sources */,
 				C99974C10D135CD30086DF84 /* httpmd5.c in Sources */,
-				C99974C20D135CD30086DF84 /* httpmd5test.c in Sources */,
 				C99974C30D135CD30086DF84 /* httppost.c in Sources */,
 				C99974C40D135CD30086DF84 /* logging.c in Sources */,
-				C99974C50D135CD30086DF84 /* md5evp.c in Sources */,
-				C99974C60D135CD30086DF84 /* plugin.c in Sources */,
 				C99974C80D135CD30086DF84 /* smdevp.c in Sources */,
-				C99974C90D135CD30086DF84 /* threads.c in Sources */,
-				C99974CA0D135CD30086DF84 /* wsaapi.c in Sources */,
-				C99974CB0D135CD30086DF84 /* wsse2api.c in Sources */,
 				C99974CC0D135CD30086DF84 /* wsseapi.c in Sources */,
 				C99974CD0D135CD30086DF84 /* stdsoap2.c in Sources */,
+				C90CA1B50D149DD100224FBC /* threads.c in Sources */,
+				C90CA1F80D14A95500224FBC /* soapClient.c in Sources */,
+				C90CA1FA0D14A95F00224FBC /* soapC.c in Sources */,
+				C90CA2050D14AA5100224FBC /* md5evp.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -453,8 +427,19 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = MatteiPhotoExport_Prefix.pch;
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/gsoap/**";
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Library/Application Support/iPhoto/Plugins/";
+				OTHER_CFLAGS = (
+					"-DWITH_DOM",
+					"-DWITH_OPENSSL",
+					"-lcrypto",
+					"-lssl",
+				);
+				OTHER_LDFLAGS = (
+					"-lcrypto",
+					"-lssl",
+				);
 				PRODUCT_NAME = MatteiPhotoExport;
 				WRAPPER_EXTENSION = iPhotoExporter;
 				ZERO_LINK = YES;
@@ -470,8 +455,19 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = MatteiPhotoExport_Prefix.pch;
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/gsoap/**";
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Library/Application Support/iPhoto/Plugins/";
+				OTHER_CFLAGS = (
+					"-DWITH_DOM",
+					"-DWITH_OPENSSL",
+					"-lcrypto",
+					"-lssl",
+				);
+				OTHER_LDFLAGS = (
+					"-lcrypto",
+					"-lssl",
+				);
 				PRODUCT_NAME = MatteiPhotoExport;
 				WRAPPER_EXTENSION = iPhotoExporter;
 			};
