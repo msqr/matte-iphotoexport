@@ -18,7 +18,6 @@
 		C99974BC0D135CD30086DF84 /* httpda.c in Sources */ = {isa = PBXBuildFile; fileRef = C99974950D135CD30086DF84 /* httpda.c */; };
 		C99974BE0D135CD30086DF84 /* httpform.c in Sources */ = {isa = PBXBuildFile; fileRef = C99974990D135CD30086DF84 /* httpform.c */; };
 		C99974BF0D135CD30086DF84 /* httpget.c in Sources */ = {isa = PBXBuildFile; fileRef = C999749B0D135CD30086DF84 /* httpget.c */; };
-		C99974C00D135CD30086DF84 /* httpgettest.c in Sources */ = {isa = PBXBuildFile; fileRef = C999749D0D135CD30086DF84 /* httpgettest.c */; };
 		C99974C10D135CD30086DF84 /* httpmd5.c in Sources */ = {isa = PBXBuildFile; fileRef = C999749F0D135CD30086DF84 /* httpmd5.c */; };
 		C99974C30D135CD30086DF84 /* httppost.c in Sources */ = {isa = PBXBuildFile; fileRef = C99974A30D135CD30086DF84 /* httppost.c */; };
 		C99974C40D135CD30086DF84 /* logging.c in Sources */ = {isa = PBXBuildFile; fileRef = C99974A50D135CD30086DF84 /* logging.c */; };
@@ -28,6 +27,7 @@
 		C9A72B330CF8D8490019950D /* MatteExportPluginBox.m in Sources */ = {isa = PBXBuildFile; fileRef = C9A72B320CF8D8490019950D /* MatteExportPluginBox.m */; };
 		C9A72B360CF8D86A0019950D /* MatteExportController.m in Sources */ = {isa = PBXBuildFile; fileRef = C9A72B350CF8D86A0019950D /* MatteExportController.m */; };
 		C9A72B5A0CF8DD060019950D /* Panel.nib in Resources */ = {isa = PBXBuildFile; fileRef = C9A72B580CF8DD060019950D /* Panel.nib */; };
+		C9FD417E0D8CB785002CB43D /* MatteSoapBinding.nsmap in Resources */ = {isa = PBXBuildFile; fileRef = C99974D50D135D280086DF84 /* MatteSoapBinding.nsmap */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -361,6 +361,7 @@
 			files = (
 				8D5B49B0048680CD000E48DA /* InfoPlist.strings in Resources */,
 				C9A72B5A0CF8DD060019950D /* Panel.nib in Resources */,
+				C9FD417E0D8CB785002CB43D /* MatteSoapBinding.nsmap in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -378,7 +379,6 @@
 				C99974BC0D135CD30086DF84 /* httpda.c in Sources */,
 				C99974BE0D135CD30086DF84 /* httpform.c in Sources */,
 				C99974BF0D135CD30086DF84 /* httpget.c in Sources */,
-				C99974C00D135CD30086DF84 /* httpgettest.c in Sources */,
 				C99974C10D135CD30086DF84 /* httpmd5.c in Sources */,
 				C99974C30D135CD30086DF84 /* httppost.c in Sources */,
 				C99974C40D135CD30086DF84 /* logging.c in Sources */,

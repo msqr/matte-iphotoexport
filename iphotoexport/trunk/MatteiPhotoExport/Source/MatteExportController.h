@@ -14,6 +14,7 @@
 	IBOutlet NSBox <ExportPluginBoxProtocol> *mSettingsBox;
 	IBOutlet NSControl *mFirstView;
 	
+	IBOutlet NSPopUpButton		*mCollectionPopUp;
 	IBOutlet NSPopUpButton		*mSizePopUp;
 	IBOutlet NSPopUpButton		*mQualityPopUp;
 	IBOutlet NSTextField		*mUrlText;
@@ -24,6 +25,7 @@
 	IBOutlet NSTextField		*mAlbumCommentsText;
 	
 	NSString *mExportDir;
+	int mCollectionId;
 	int mSize;
 	int mQuality;
 	NSString *mUrl;
@@ -42,9 +44,13 @@
 - (void)awakeFromNib;
 - (void)dealloc;
 
+- (IBAction)populateCollections:(id)sender;
+
 // getters/setters
 - (NSString *)exportDir;
 - (void)setExportDir:(NSString *)dir;
+- (int)collectionId;
+- (void)setCollectionId:(int)collectionId;
 - (int)size;
 - (void)setSize:(int)size;
 - (int)quality;

@@ -3,10 +3,13 @@
 //  MatteiPhotoExport
 //
 //  Created by Matt on 11/25/07.
-//  Copyright 2007 __MyCompanyName__. All rights reserved.
+//  Copyright 2007 Matt Magoffin.
 //
 
 #import "MatteExportController.h"
+#import "smdevp.h"
+#import "wsseapi.h"
+#import "gsoap/MatteSoapBinding.nsmap"
 #import <QuickTime/QuickTime.h>
 
 @implementation MatteExportController
@@ -43,6 +46,69 @@
 	[super dealloc];
 }
 
+- (void)populateCollectionPopUp
+{
+	struct soap *soap;
+	const char *user;
+	const char *pass;
+	const char *endpoint;
+	int i;
+	struct m__get_collection_list_request_type request;
+	struct m__get_collection_list_response_type response;
+	
+	NSLog(@"Populating collection pop up...");
+	
+	soap = soap_new();
+	soap_register_plugin(soap, soap_wsse);
+	endpoint = [[[self url] stringByAppendingString:@"/ws/Matte"] UTF8String];
+	user = [[self username] UTF8String];
+	pass = [[self password] UTF8String];
+	
+	NSLog(@"Calling WS %s, user: %s, pass: %s", endpoint, user, pass);
+
+	soap_wsse_add_UsernameTokenText(soap, NULL, user, pass);
+	
+	// call the service
+	if ( soap_call___mws__GetCollectionList(soap, endpoint, NULL, &request, &response) ) {
+		NSLog(@"Error calling WS %s: %d", endpoint, soap->error);
+		soap_print_fault(soap, stderr);
+		soap_end(soap);
+		soap_done(soap);
+		// TODO handle error with dialog warning
+		return;
+	}
+	NSLog(@"Called WS %s OK, # collections: %d", endpoint, response.__sizecollection);
+	
+	// populate the collections menu
+	[mCollectionPopUp removeAllItems];
+	for ( i = 0; i < response.__sizecollection; i++ ) {
+		NSString *title = [NSString stringWithCString:response.collection[i].name];
+		NSString *format = [NSString stringWithFormat:@"%d", i];
+		NSMenuItem *item = [[mCollectionPopUp menu] 
+							addItemWithTitle:title
+							action:nil
+							keyEquivalent:format];
+		[item setTag:response.collection[i].collection_id];
+	}
+	soap_end(soap);
+	soap_done(soap);
+}
+
+- (IBAction)populateCollections:(id)sender 
+{
+	[self setUsername:[mUsernameText stringValue]];
+	[self setPassword:[mPasswordText stringValue]];
+	[self setUrl:[mUrlText stringValue]];
+	
+	NSLog(@"populateCollections action called by %@, user = %@, pass = %@", 
+		sender, [self username], [self password]);
+	
+	if ( [self username] != NULL && [[self username] length] > 0 
+		&& [self password] != NULL && [[self password] length] > 0 ) {
+		[self populateCollectionPopUp];
+	}	
+}
+
 #pragma mark getters/setters
 
 // getters/setters
@@ -55,6 +121,16 @@
 {
 	[mExportDir release];
 	mExportDir = [dir retain];
+}
+
+- (int)collectionId
+{
+	return mCollectionId;
+}
+
+- (void)setCollectionId:(int)collectionId
+{
+	mCollectionId = collectionId;
 }
 
 - (int)size
@@ -156,7 +232,11 @@
 	if ( [mExportMgr albumCount] > 0 ) {
 		[mAlbumNameText setStringValue:[mExportMgr albumNameAtIndex:0]];
 		[mAlbumCommentsText setStringValue:[mExportMgr albumCommentsAtIndex:0]];
-	}	
+	}
+	
+	// get list of available collections
+	// TODO only do if haven't already done yet
+	
 }
 
 - (void)viewWillBeDeactivated
@@ -221,6 +301,8 @@
 	
 	[self setSize:[mSizePopUp selectedTag]];
 	[self setQuality:[mQualityPopUp selectedTag]];
+	
+	NSLog(@"url = %@, user = %@, pass = %@", [self url], [self username], [self password]);
 	
 	int count = [mExportMgr imageCount];
 	
