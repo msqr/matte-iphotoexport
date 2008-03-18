@@ -7,6 +7,7 @@
 //
 
 #import "MatteExportController.h"
+#import "CollectionExport.h"
 #import "smdevp.h"
 #import "wsseapi.h"
 #import "gsoap/MatteSoapBinding.nsmap"
@@ -335,16 +336,19 @@
 {
 	NSLog(@"performExport path: %@", path);
 	
+	int count = [mExportMgr imageCount];
+	BOOL succeeded = YES;
+	mCancelExport = NO;
+	CollectionExport *colExport = [[CollectionExport alloc] init];
+	
+	// TODO remove
 	unsigned albumCount =  [mExportMgr albumCount];
 	NSLog(@"albumCount: %d", albumCount);
 	unsigned albumIdx;
 	for ( albumIdx = 0; albumIdx < albumCount; albumIdx++ ) {
 		NSLog(@"Album %d: %@", albumCount, [mExportMgr albumNameAtIndex:albumIdx]);
 	}
-	
-	int count = [mExportMgr imageCount];
-	BOOL succeeded = YES;
-	mCancelExport = NO;
+	// END remove
 	
 	[self setExportDir:path];
 	
@@ -413,11 +417,24 @@
 			
 			NSLog(@"Exporting image from path: %@", [mExportMgr imagePathAtIndex:i]);
 			NSLog(@"Exporting image from source path: %@", [mExportMgr sourcePathAtIndex:i]);
-			NSArray *albums = [mExportMgr albumsOfImageAtIndex:i];
+			id albums = [mExportMgr albumsOfImageAtIndex:i];
 			NSEnumerator *albumEnum = [albums objectEnumerator];
-			id album;
-			while ( album = [albumEnum nextObject] ) {
-				NSLog(@"Exporting image from album: %@", [album description]);
+			NSNumber *albumIndex;
+			while ( albumIndex = [albumEnum nextObject] ) {
+				NSLog(@"Exporting image from album index: %@", [albumIndex description]);
+				
+				AlbumExport *album = [colExport findAlbumNamed:
+									  [mExportMgr albumNameAtIndex:[albumIndex intValue]]];
+				if ( album == nil ) {
+					album = [colExport addAlbum:[mExportMgr albumNameAtIndex:[albumIndex intValue]]
+									   comments:[mExportMgr albumCommentsAtIndex:[albumIndex intValue]]
+									   sortMode:@"date"]; // TODO add as option to export UI?
+				}
+				
+				PhotoExport *photo = [album addPhoto:[mExportMgr imageTitleAtIndex:i]
+										   comments:[mExportMgr imageCommentsAtIndex:i]];
+				
+				[photo addKeywords:[mExportMgr imageKeywordsAtIndex:i]];
 			}
 			succeeded = [mExportMgr exportImageAtIndex:i dest:dest options:&imageOptions];
 		}
@@ -433,6 +450,11 @@
 		dest = [self exportDir];
 		succeeded = [mExportMgr exportImageAtIndex:0 dest:dest options:&imageOptions];
 	}
+	
+	// free CollectionExport
+	[colExport release];
+	NSLog(@"released colExport");
+
 	
 	// Handle failure
 	if (!succeeded) {

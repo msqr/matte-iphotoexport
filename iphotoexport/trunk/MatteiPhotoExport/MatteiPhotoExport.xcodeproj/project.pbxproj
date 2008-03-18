@@ -24,6 +24,7 @@
 		C99974C80D135CD30086DF84 /* smdevp.c in Sources */ = {isa = PBXBuildFile; fileRef = C99974AC0D135CD30086DF84 /* smdevp.c */; };
 		C99974CC0D135CD30086DF84 /* wsseapi.c in Sources */ = {isa = PBXBuildFile; fileRef = C99974B40D135CD30086DF84 /* wsseapi.c */; };
 		C99974CD0D135CD30086DF84 /* stdsoap2.c in Sources */ = {isa = PBXBuildFile; fileRef = C99974B60D135CD30086DF84 /* stdsoap2.c */; };
+		C9A624C40D8EF04500418EEB /* CollectionExport.m in Sources */ = {isa = PBXBuildFile; fileRef = C9A624C30D8EF04500418EEB /* CollectionExport.m */; };
 		C9A72B330CF8D8490019950D /* MatteExportPluginBox.m in Sources */ = {isa = PBXBuildFile; fileRef = C9A72B320CF8D8490019950D /* MatteExportPluginBox.m */; };
 		C9A72B360CF8D86A0019950D /* MatteExportController.m in Sources */ = {isa = PBXBuildFile; fileRef = C9A72B350CF8D86A0019950D /* MatteExportController.m */; };
 		C9A72B5A0CF8DD060019950D /* Panel.nib in Resources */ = {isa = PBXBuildFile; fileRef = C9A72B580CF8DD060019950D /* Panel.nib */; };
@@ -110,6 +111,8 @@
 		C99974D70D135D280086DF84 /* typemap.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = typemap.dat; path = Source/gsoap/typemap.dat; sourceTree = "<group>"; };
 		C99974D80D135D280086DF84 /* ui.xsd */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = ui.xsd; path = Source/gsoap/ui.xsd; sourceTree = "<group>"; };
 		C99974D90D135D280086DF84 /* ws.xsd */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = ws.xsd; path = Source/gsoap/ws.xsd; sourceTree = "<group>"; };
+		C9A624C20D8EF04500418EEB /* CollectionExport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CollectionExport.h; path = Source/CollectionExport.h; sourceTree = "<group>"; };
+		C9A624C30D8EF04500418EEB /* CollectionExport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CollectionExport.m; path = Source/CollectionExport.m; sourceTree = "<group>"; };
 		C9A72B310CF8D8490019950D /* MatteExportPluginBox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MatteExportPluginBox.h; path = Source/MatteExportPluginBox.h; sourceTree = "<group>"; };
 		C9A72B320CF8D8490019950D /* MatteExportPluginBox.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MatteExportPluginBox.m; path = Source/MatteExportPluginBox.m; sourceTree = "<group>"; };
 		C9A72B340CF8D86A0019950D /* MatteExportController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MatteExportController.h; path = Source/MatteExportController.h; sourceTree = "<group>"; };
@@ -173,6 +176,8 @@
 				C9A72B320CF8D8490019950D /* MatteExportPluginBox.m */,
 				C9A72B340CF8D86A0019950D /* MatteExportController.h */,
 				C9A72B350CF8D86A0019950D /* MatteExportController.m */,
+				C9A624C20D8EF04500418EEB /* CollectionExport.h */,
+				C9A624C30D8EF04500418EEB /* CollectionExport.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -389,6 +394,7 @@
 				C90CA1F80D14A95500224FBC /* soapClient.c in Sources */,
 				C90CA1FA0D14A95F00224FBC /* soapC.c in Sources */,
 				C90CA2050D14AA5100224FBC /* md5evp.c in Sources */,
+				C9A624C40D8EF04500418EEB /* CollectionExport.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
