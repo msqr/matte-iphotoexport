@@ -17,6 +17,8 @@
 
 - (void)awakeFromNib
 {
+	[mExportOriginalsButton setState:NSOffState];
+	[mAutoAlbumButton setState:NSOnState];
 	[mSizePopUp selectItemWithTag:2];
 	[mQualityPopUp selectItemWithTag:2];
 
@@ -108,6 +110,17 @@
 		&& [self password] != NULL && [[self password] length] > 0 ) {
 		[self populateCollectionPopUp];
 	}	
+}
+
+- (IBAction)changeExportOriginals:(id)sender 
+{
+	[self setExportOriginals:([mExportOriginalsButton state] == NSOnState)];
+	
+	NSLog(@"changeExportOriginals action called by %@, exportOriginals = %@", 
+		  sender, ([self exportOriginals] ? @"TRUE" : @"FALSE"));
+	
+	[mSizePopUp setEnabled:(![self exportOriginals])];
+	[mQualityPopUp setEnabled:(![self exportOriginals])];
 }
 
 #pragma mark getters/setters
@@ -214,6 +227,16 @@
 	mAutoAlbum = autoAlbum;
 }
 
+- (BOOL)exportOriginals
+{
+	return mExportOriginals;
+}
+
+- (void)setExportOriginals:(BOOL)exportOriginals
+{
+	mExportOriginals = exportOriginals;
+}
+
 #pragma mark ExportPluginBoxProtocol
 
 // protocol implementation
@@ -235,9 +258,13 @@
 		[mAlbumCommentsText setStringValue:[mExportMgr albumCommentsAtIndex:0]];
 	}
 	
-	// get list of available collections
-	// TODO only do if haven't already done yet
-	
+	/* TODO enable this logic
+	 if ( [mCollectionPopUp numberOfItems] < 1 ) {
+		[mExportMgr disableControls];
+	} else {
+		[mExportMgr enableControls];
+	}
+	 */
 }
 
 - (void)viewWillBeDeactivated
@@ -332,6 +359,41 @@
 	}
 }
 
+- (void)setupImageExportOptions:(ImageExportOptions *)imageOptions {
+	imageOptions->format = kQTFileTypeJPEG;
+	switch ([self quality]) {
+		case 0: imageOptions->quality = EQualityLow; break;
+		case 1: imageOptions->quality = EQualityMed; break;
+		case 2: imageOptions->quality = EQualityHigh; break;
+		case 3: imageOptions->quality = EQualityMax; break;
+		default: imageOptions->quality = EQualityHigh; break;
+	}
+	imageOptions->rotation = 0.0;
+	switch ([self size]) {
+		case 0:
+			imageOptions->width = 320;
+			imageOptions->height = 320;
+			break;
+		case 1:
+			imageOptions->width = 640;
+			imageOptions->height = 640;
+			break;
+		case 2:
+			imageOptions->width = 1280;
+			imageOptions->height = 1280;
+			break;
+		case 3:
+			imageOptions->width = 99999;
+			imageOptions->height = 99999;
+			break;
+		default:
+			imageOptions->width = 1280;
+			imageOptions->height = 1280;
+			break;
+	}	
+	imageOptions->metadata = EMBoth;
+}
+
 - (void)performExport:(NSString *)path
 {
 	NSLog(@"performExport path: %@", path);
@@ -352,43 +414,15 @@
 	
 	[self setExportDir:path];
 	
-	// set export options
 	ImageExportOptions imageOptions;
-	imageOptions.format = kQTFileTypeJPEG;
-	switch([self quality])
-	{
-		case 0: imageOptions.quality = EQualityLow; break;
-		case 1: imageOptions.quality = EQualityMed; break;
-		case 2: imageOptions.quality = EQualityHigh; break;
-		case 3: imageOptions.quality = EQualityMax; break;
-		default: imageOptions.quality = EQualityHigh; break;
-	}
-	imageOptions.rotation = 0.0;
-	switch([self size])
-	{
-		case 0:
-			imageOptions.width = 320;
-			imageOptions.height = 320;
-			break;
-		case 1:
-			imageOptions.width = 640;
-			imageOptions.height = 640;
-			break;
-		case 2:
-			imageOptions.width = 1280;
-			imageOptions.height = 1280;
-			break;
-		case 3:
-			imageOptions.width = 99999;
-			imageOptions.height = 99999;
-			break;
-		default:
-			imageOptions.width = 1280;
-			imageOptions.height = 1280;
-			break;
-	}
+	NSFileManager *fileManager;
 	
-	imageOptions.metadata = EMBoth;
+	if ( ![self exportOriginals] ) {
+		// set export options when not exporting originals
+		[self setupImageExportOptions:&imageOptions];
+	} else {
+		fileManager = [NSFileManager defaultManager];
+	}
 	
 	// Do the export
 	[self lockProgress];
@@ -412,11 +446,15 @@
 								  i + 1, count] retain];
 			[self unlockProgress];
 			
-			dest = [[self exportDir] stringByAppendingPathComponent:
+			if ( ![self exportOriginals] ) {
+				dest = [[self exportDir] stringByAppendingPathComponent:
 					[NSString stringWithFormat:@"sfe-%d.jpg", i]];
+			} else {
+				dest = [[self exportDir] stringByAppendingPathComponent:
+						[mExportMgr imageFileNameAtIndex:i]];
+			}
 			
 			NSLog(@"Exporting image from path: %@", [mExportMgr imagePathAtIndex:i]);
-			NSLog(@"Exporting image from source path: %@", [mExportMgr sourcePathAtIndex:i]);
 			id albums = [mExportMgr albumsOfImageAtIndex:i];
 			NSEnumerator *albumEnum = [albums objectEnumerator];
 			NSNumber *albumIndex;
@@ -426,6 +464,7 @@
 				AlbumExport *album = [colExport findAlbumNamed:
 									  [mExportMgr albumNameAtIndex:[albumIndex intValue]]];
 				if ( album == nil ) {
+					NSLog(@"Creating new album export %@", [mExportMgr albumNameAtIndex:[albumIndex intValue]]);
 					album = [colExport addAlbum:[mExportMgr albumNameAtIndex:[albumIndex intValue]]
 									   comments:[mExportMgr albumCommentsAtIndex:[albumIndex intValue]]
 									   sortMode:@"date"]; // TODO add as option to export UI?
@@ -435,8 +474,15 @@
 										   comments:[mExportMgr imageCommentsAtIndex:i]];
 				
 				[photo addKeywords:[mExportMgr imageKeywordsAtIndex:i]];
+				[photo setRating:[mExportMgr imageRatingAtIndex:i]];
 			}
-			succeeded = [mExportMgr exportImageAtIndex:i dest:dest options:&imageOptions];
+			if ( ![self exportOriginals] ) {
+				succeeded = [mExportMgr exportImageAtIndex:i dest:dest options:&imageOptions];
+			} else {
+				succeeded = [fileManager copyPath:[mExportMgr imagePathAtIndex:i]
+										   toPath:dest
+										  handler:nil];
+			}
 		}
 	}
 	else
@@ -452,6 +498,11 @@
 	}
 	
 	// free CollectionExport
+	if ( succeeded ) {
+		dest = [[self exportDir] stringByAppendingPathComponent:@"metadata.xml"];
+		NSLog(@"Writing colExport as XML to %@", dest);
+		[colExport saveAsXml:dest];
+	}
 	[colExport release];
 	NSLog(@"released colExport");
 
