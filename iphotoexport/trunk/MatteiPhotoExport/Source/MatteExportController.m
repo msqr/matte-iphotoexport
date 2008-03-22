@@ -470,8 +470,12 @@
 									   sortMode:@"date"]; // TODO add as option to export UI?
 				}
 				
+				NSString *albumPath = [NSString stringWithFormat:@"%@/%@", 
+					[album name], [mExportMgr imageFileNameAtIndex:i]];
+				
 				PhotoExport *photo = [album addPhoto:[mExportMgr imageTitleAtIndex:i]
-										   comments:[mExportMgr imageCommentsAtIndex:i]];
+										    comments:[mExportMgr imageCommentsAtIndex:i]
+												path:albumPath];
 				
 				[photo addKeywords:[mExportMgr imageKeywordsAtIndex:i]];
 				[photo setRating:[mExportMgr imageRatingAtIndex:i]];

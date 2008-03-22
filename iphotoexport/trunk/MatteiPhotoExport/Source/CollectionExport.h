@@ -40,6 +40,8 @@
 
 - (NSDictionary *)metadata;
 
+- (void)toXml:(NSXMLElement *)parent;
+
 @end
 
 @interface AlbumExport : ExportObject {
@@ -49,7 +51,7 @@
 }
 
 - (NSArray *)photos;
-- (PhotoExport *)addPhoto:(NSString *)theName comments:(NSString *)theComments;
+- (PhotoExport *)addPhoto:(NSString *)theName comments:(NSString *)theComments path:(NSString *)thePath;
 
 - (NSString *)sortMode;
 - (void)setSortMode:(NSString *)theSortMode;
