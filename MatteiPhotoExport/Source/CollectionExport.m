@@ -69,6 +69,26 @@
 	[keywords addObjectsFromArray:theKeywords];
 }
 
+- (void)toXml:(NSXMLElement *)parent {
+	NSXMLElement *item = [[NSXMLElement alloc] initWithName:@"item"];
+	[item addAttribute:[NSXMLNode attributeWithName:@"name" stringValue:[self name]]];
+	if ( [self rating] > 0 ) {
+		[item addAttribute:[NSXMLNode attributeWithName:@"rating" 
+			stringValue:[NSString stringWithFormat:@"%d", [self rating]]]];
+	}
+	if ( [self path] != nil ) {
+		[item addAttribute:[NSXMLNode attributeWithName:@"archive-path" stringValue:[self path]]];
+	}
+	
+	if ( [self keywords] != nil && [[self keywords] count] > 0 ) {
+		[item addChild:[NSXMLElement elementWithName:@"keywords" 
+			stringValue:[[self keywords] componentsJoinedByString:@","]]];
+	}
+	 
+	[parent addChild:item];
+	[item release];
+}
+
 - (NSString *)path {
 	return path;
 }
@@ -108,9 +128,10 @@
 	return self;
 }
 
-- (PhotoExport *)addPhoto:(NSString *)theName comments:(NSString *)theComments {
+- (PhotoExport *)addPhoto:(NSString *)theName comments:(NSString *)theComments path:(NSString *)thePath {
 	PhotoExport *photo = [[PhotoExport alloc] init];
 	[photo setName:theName];
+	[photo setPath:thePath];
 	[photo setComments:theComments];
 	[photos addObject:photo];
 	[photo autorelease];
@@ -126,7 +147,14 @@
 	if ( [self comments] != nil ) {
 		[album addChild:[NSXMLElement elementWithName:@"comments" stringValue:[self comments]]];
 	}
-	 
+	
+	// export child photos...
+	NSEnumerator *photoEnum = [photos objectEnumerator];
+	PhotoExport *photo;
+	while ( photo = [photoEnum nextObject] ) {
+		[photo toXml:album];
+	}
+	
 	[parent addChild:album];
 	[album release];
 }
