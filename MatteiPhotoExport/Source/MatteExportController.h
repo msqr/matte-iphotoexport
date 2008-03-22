@@ -20,6 +20,7 @@
 	IBOutlet NSTextField		*mUrlText;
 	IBOutlet NSTextField		*mUsernameText;
 	IBOutlet NSSecureTextField	*mPasswordText;
+	IBOutlet NSButton			*mExportOriginalsButton;
 	IBOutlet NSButton			*mAutoAlbumButton;
 	IBOutlet NSTextField		*mAlbumNameText;
 	IBOutlet NSTextField		*mAlbumCommentsText;
@@ -31,6 +32,7 @@
 	NSString *mUrl;
 	NSString *mUsername;
 	NSString *mPassword;
+	BOOL mExportOriginals;
 	BOOL mAutoAlbum;
 	NSString *mAlbumName;
 	NSString *mAlbumComments;
@@ -44,7 +46,10 @@
 - (void)awakeFromNib;
 - (void)dealloc;
 
+// internal
 - (IBAction)populateCollections:(id)sender;
+- (IBAction)changeExportOriginals:(id)sender;
+- (void)setupImageExportOptions:(ImageExportOptions *)imageOptions;
 
 // getters/setters
 - (NSString *)exportDir;
@@ -67,5 +72,7 @@
 - (void)setAlbumComments:(NSString *)albumComments;
 - (BOOL)autoAlbum;
 - (void)setAutoAlbum:(BOOL)autoAlbum;
+- (BOOL)exportOriginals;
+- (void)setExportOriginals:(BOOL)exportOriginals;
 
 @end

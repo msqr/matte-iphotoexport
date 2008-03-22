@@ -24,8 +24,9 @@
 @interface PhotoExport : ExportObject {
 @private
 	NSString *path;
-	NSArray *keywords;
+	NSMutableArray *keywords;
 	NSDictionary *metadata;
+	int rating;
 }
 
 - (NSString *)path;
@@ -33,6 +34,9 @@
 
 - (NSArray *)keywords;
 - (void)addKeywords:(NSArray *)theKeywords;
+
+- (int)rating;
+- (void)setRating:(int)theRating;
 
 - (NSDictionary *)metadata;
 
@@ -50,6 +54,8 @@
 - (NSString *)sortMode;
 - (void)setSortMode:(NSString *)theSortMode;
 
+- (void)toXml:(NSXMLElement *)parent;
+
 @end
 
 @interface CollectionExport : ExportObject {
@@ -63,6 +69,8 @@
 - (AlbumExport *)addAlbum:(NSString *)theName comments:(NSString *)theComments sortMode:(NSString *)theSortMode;
 
 - (AlbumExport *)findAlbumNamed:(NSString *)theName;
+
+- (BOOL)saveAsXml:(NSString *)dest;
 
 @end
 
