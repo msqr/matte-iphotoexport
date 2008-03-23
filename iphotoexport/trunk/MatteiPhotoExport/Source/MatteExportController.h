@@ -36,6 +36,7 @@
 	BOOL mAutoAlbum;
 	NSString *mAlbumName;
 	NSString *mAlbumComments;
+	NSTask *zipTask;
 	
 	ExportPluginProgress mProgress;
 	NSLock *mProgressLock;

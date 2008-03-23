@@ -36,6 +36,11 @@
 		mExportMgr = obj;
 		mProgress.message = nil;
 		mProgressLock = [[NSLock alloc] init];
+
+		[[NSNotificationCenter defaultCenter] addObserver:self 
+				selector:@selector(finishedZip:) 
+				name:NSTaskDidTerminateNotification 
+				object:nil];
 	}
 	return self;
 }
@@ -489,15 +494,6 @@
 	[colExport release];
 	NSLog(@"released colExport");
 
-	// create zip archive
-	unsigned albumCount =  [mExportMgr albumCount];
-	NSLog(@"albumCount: %d", albumCount);
-	unsigned albumIdx;
-	for ( albumIdx = 0; albumIdx < albumCount; albumIdx++ ) {
-		NSLog(@"Album %d: %@", albumCount, [mExportMgr albumNameAtIndex:albumIdx]);
-	}
-
-	
 	// Handle failure
 	if (!succeeded) {
 		[self lockProgress];
@@ -509,18 +505,55 @@
 		return;
 	}
 	
-	// close the progress panel when done
+	// create zip archive
+	zipTask = [[NSTask alloc] init];
+	[zipTask setCurrentDirectoryPath:[self exportDir]];
+	[zipTask setLaunchPath:@"/usr/bin/zip"]; // TODO make sure this exists, or find it?
+	
+	// consstruct arguments array
+	NSMutableArray *args = [NSMutableArray array];
+	[args addObject:@"-r"];
+	unsigned albumCount =  [mExportMgr albumCount];
+	unsigned albumIdx;
+	for ( albumIdx = 0; albumIdx < albumCount; albumIdx++ ) {
+		if ( albumIdx == 0 ) {
+			// add zip name as first album name
+			[args addObject:[[mExportMgr albumNameAtIndex:albumIdx] stringByAppendingString:@".zip"]];
+		}
+		[args addObject:[mExportMgr albumNameAtIndex:albumIdx]];
+	}
+	[args addObject:@"metadata.xml"];
+	[zipTask setArguments:args];
+	
 	[self lockProgress];
 	[mProgress.message autorelease];
-	mProgress.message = nil;
-	mProgress.shouldStop = YES;
+	mProgress.message = @"Creating zip archive";
 	[self unlockProgress];
+	
+	[zipTask launch];	
 }
 
 - (void)fileManager:(NSFileManager *)manager willProcessPath:(NSString *)path {
 	if ( [manager fileExistsAtPath:path] ) {
 		[manager removeFileAtPath:path handler:nil];
 	}
+}
+
+- (void)finishedZip:(NSNotification *)aNotification {
+    int status = [[aNotification object] terminationStatus];
+    if (status) {
+        NSLog(@"Zip task failed with status %d", status);
+    } else {
+        NSLog(@"Zip task succeeded.");
+	}
+	// close the progress panel when done
+	[self lockProgress];
+	[mProgress.message autorelease];
+	mProgress.message = nil;
+	mProgress.shouldStop = YES;
+	[zipTask release];
+	zipTask = nil;
+	[self unlockProgress];
 }
 
 - (ExportPluginProgress *)progress
