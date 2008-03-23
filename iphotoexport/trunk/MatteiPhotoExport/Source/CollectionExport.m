@@ -145,7 +145,7 @@
 		[album addAttribute:[NSXMLNode attributeWithName:@"sort" stringValue:[self sortMode]]];
 	}
 	if ( [self comments] != nil ) {
-		[album addChild:[NSXMLElement elementWithName:@"comments" stringValue:[self comments]]];
+		[album addChild:[NSXMLElement elementWithName:@"comment" stringValue:[self comments]]];
 	}
 	
 	// export child photos...
