@@ -433,6 +433,7 @@
 	[self unlockProgress];
 	
 	NSString *dest;
+	NSFileManager *fileMgr = [NSFileManager defaultManager];
 	
 	if(count > 1)
 	{
@@ -446,20 +447,22 @@
 								  i + 1, count] retain];
 			[self unlockProgress];
 			
-			if ( ![self exportOriginals] ) {
-				dest = [[self exportDir] stringByAppendingPathComponent:
-					[NSString stringWithFormat:@"sfe-%d.jpg", i]];
-			} else {
-				dest = [[self exportDir] stringByAppendingPathComponent:
-						[mExportMgr imageFileNameAtIndex:i]];
-			}
-			
 			NSLog(@"Exporting image from path: %@", [mExportMgr imagePathAtIndex:i]);
 			id albums = [mExportMgr albumsOfImageAtIndex:i];
 			NSEnumerator *albumEnum = [albums objectEnumerator];
 			NSNumber *albumIndex;
 			while ( albumIndex = [albumEnum nextObject] ) {
 				NSLog(@"Exporting image from album index: %@", [albumIndex description]);
+				
+				dest = [[self exportDir] 
+						 stringByAppendingPathComponent:[mExportMgr albumNameAtIndex:[albumIndex intValue]]];
+				
+				// TODO only create if doesn't already exist
+				[fileMgr createDirectoryAtPath:dest attributes:nil];
+						
+				dest = [dest stringByAppendingPathComponent:[mExportMgr imageFileNameAtIndex:i]];
+				
+				NSLog(@"Exporting image to %@", dest);
 				
 				AlbumExport *album = [colExport findAlbumNamed:
 									  [mExportMgr albumNameAtIndex:[albumIndex intValue]]];
