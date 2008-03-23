@@ -8,6 +8,9 @@
 #import <Cocoa/Cocoa.h>
 #import "ExportPluginProtocol.h"
 
+#define ZIP_TASK_RUNNING 1
+#define ZIP_TASK_NOT_RUNNING 0
+
 @interface MatteExportController : NSObject <ExportPluginProtocol> {
 	id <ExportImageProtocol> mExportMgr;
 	
@@ -36,7 +39,9 @@
 	BOOL mAutoAlbum;
 	NSString *mAlbumName;
 	NSString *mAlbumComments;
-	NSTask *zipTask;
+	NSTask *mZipTask;
+	NSConditionLock *mZipTaskLock;
+	//NSNumber *mZipTaskRunningCondition; 
 	
 	ExportPluginProgress mProgress;
 	NSLock *mProgressLock;

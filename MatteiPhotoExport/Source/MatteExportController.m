@@ -36,11 +36,11 @@
 		mExportMgr = obj;
 		mProgress.message = nil;
 		mProgressLock = [[NSLock alloc] init];
-
+		mZipTaskLock = [[NSConditionLock alloc] initWithCondition:ZIP_TASK_NOT_RUNNING];
 		[[NSNotificationCenter defaultCenter] addObserver:self 
-				selector:@selector(finishedZip:) 
-				name:NSTaskDidTerminateNotification 
-				object:nil];
+												 selector:@selector(finishedZip:)
+													 name:NSTaskDidTerminateNotification 
+												   object:nil];
 	}
 	return self;
 }
@@ -50,6 +50,7 @@
 	[mExportDir release];
 	[mProgressLock release];
 	[mProgress.message release];
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	
 	[super dealloc];
 }
@@ -126,6 +127,26 @@
 	
 	[mSizePopUp setEnabled:(![self exportOriginals])];
 	[mQualityPopUp setEnabled:(![self exportOriginals])];
+}
+
+- (void)finishedZip:(NSNotification *)aNotification {
+	NSLog(@"Got notification %@", aNotification);
+	[mZipTaskLock lockWhenCondition:ZIP_TASK_RUNNING];
+    int status = [[aNotification object] terminationStatus];
+    if (status) {
+        NSLog(@"Zip task failed with status %d", status);
+    } else {
+        NSLog(@"Zip task succeeded.");
+	}
+	// close the progress panel when done
+	[self lockProgress];
+	[mProgress.message autorelease];
+	mProgress.message = nil;
+	mProgress.shouldStop = YES;
+	[mZipTask release];
+	mZipTask = nil;
+	[mZipTaskLock unlockWithCondition:ZIP_TASK_NOT_RUNNING];
+	[self unlockProgress];
 }
 
 #pragma mark getters/setters
@@ -506,9 +527,9 @@
 	}
 	
 	// create zip archive
-	zipTask = [[NSTask alloc] init];
-	[zipTask setCurrentDirectoryPath:[self exportDir]];
-	[zipTask setLaunchPath:@"/usr/bin/zip"]; // TODO make sure this exists, or find it?
+	mZipTask = [[NSTask alloc] init];
+	[mZipTask setCurrentDirectoryPath:[self exportDir]];
+	[mZipTask setLaunchPath:@"/usr/bin/zip"]; // TODO make sure this exists, or find it?
 	
 	// consstruct arguments array
 	NSMutableArray *args = [NSMutableArray array];
@@ -523,37 +544,31 @@
 		[args addObject:[mExportMgr albumNameAtIndex:albumIdx]];
 	}
 	[args addObject:@"metadata.xml"];
-	[zipTask setArguments:args];
+	[mZipTask setArguments:args];
 	
 	[self lockProgress];
 	[mProgress.message autorelease];
 	mProgress.message = @"Creating zip archive";
+	mProgress.indeterminateProgress = YES;
 	[self unlockProgress];
 	
-	[zipTask launch];	
+	// iPhoto runs export in own thread, so for notificaiton of task complete to reach us,
+	// run the task from the main thread which is the thread that created us in the first place
+	[mZipTaskLock lock];
+	[self performSelectorOnMainThread:@selector(createZipArchive) withObject:nil waitUntilDone:YES];
+	[mZipTaskLock lockWhenCondition:ZIP_TASK_NOT_RUNNING];
+	[mZipTaskLock unlock];
+}
+
+- (void)createZipArchive {
+	[mZipTask launch];
+	[mZipTaskLock unlockWithCondition:ZIP_TASK_RUNNING];
 }
 
 - (void)fileManager:(NSFileManager *)manager willProcessPath:(NSString *)path {
 	if ( [manager fileExistsAtPath:path] ) {
 		[manager removeFileAtPath:path handler:nil];
 	}
-}
-
-- (void)finishedZip:(NSNotification *)aNotification {
-    int status = [[aNotification object] terminationStatus];
-    if (status) {
-        NSLog(@"Zip task failed with status %d", status);
-    } else {
-        NSLog(@"Zip task succeeded.");
-	}
-	// close the progress panel when done
-	[self lockProgress];
-	[mProgress.message autorelease];
-	mProgress.message = nil;
-	mProgress.shouldStop = YES;
-	[zipTask release];
-	zipTask = nil;
-	[self unlockProgress];
 }
 
 - (ExportPluginProgress *)progress
