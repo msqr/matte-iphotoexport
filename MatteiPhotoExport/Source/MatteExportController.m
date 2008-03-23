@@ -325,7 +325,7 @@
 
 - (void)startExport:(NSString *)path
 {
-	NSFileManager *fileMgr = [NSFileManager defaultManager];
+	NSFileManager *fileManager = [NSFileManager defaultManager];
 	
 	[self setSize:[mSizePopUp selectedTag]];
 	[self setQuality:[mQualityPopUp selectedTag]];
@@ -334,6 +334,7 @@
 	
 	int count = [mExportMgr imageCount];
 	
+	// TODO check for actual Matte file names
 	// check for conflicting file names
 	if(count == 1)
 		[mExportMgr startExport];
@@ -343,7 +344,7 @@
 		for(i=0; i<count; i++)
 		{
 			NSString *fileName = [NSString stringWithFormat:@"sfe-%d.jpg",i];
-			if([fileMgr fileExistsAtPath:[path stringByAppendingPathComponent:fileName]])
+			if([fileManager fileExistsAtPath:[path stringByAppendingPathComponent:fileName]])
 				break;
 		}
 		if(i != count)
@@ -403,25 +404,14 @@
 	mCancelExport = NO;
 	CollectionExport *colExport = [[CollectionExport alloc] init];
 	
-	// TODO remove
-	unsigned albumCount =  [mExportMgr albumCount];
-	NSLog(@"albumCount: %d", albumCount);
-	unsigned albumIdx;
-	for ( albumIdx = 0; albumIdx < albumCount; albumIdx++ ) {
-		NSLog(@"Album %d: %@", albumCount, [mExportMgr albumNameAtIndex:albumIdx]);
-	}
-	// END remove
-	
 	[self setExportDir:path];
 	
 	ImageExportOptions imageOptions;
-	NSFileManager *fileManager;
+	NSFileManager *fileManager = [NSFileManager defaultManager];
 	
 	if ( ![self exportOriginals] ) {
 		// set export options when not exporting originals
 		[self setupImageExportOptions:&imageOptions];
-	} else {
-		fileManager = [NSFileManager defaultManager];
 	}
 	
 	// Do the export
@@ -433,78 +423,64 @@
 	[self unlockProgress];
 	
 	NSString *dest;
-	NSFileManager *fileMgr = [NSFileManager defaultManager];
 	
-	if(count > 1)
-	{
-		int i;
-		for(i = 0; mCancelExport == NO && succeeded == YES && i < count; i++)
-		{
-			[self lockProgress];
-			mProgress.currentItem = i;
-			[mProgress.message autorelease];
-			mProgress.message = [[NSString stringWithFormat:@"Image %d of %d",
-								  i + 1, count] retain];
-			[self unlockProgress];
-			
-			NSLog(@"Exporting image from path: %@", [mExportMgr imagePathAtIndex:i]);
-			id albums = [mExportMgr albumsOfImageAtIndex:i];
-			NSEnumerator *albumEnum = [albums objectEnumerator];
-			NSNumber *albumIndex;
-			while ( albumIndex = [albumEnum nextObject] ) {
-				NSLog(@"Exporting image from album index: %@", [albumIndex description]);
-				
-				dest = [[self exportDir] 
-						 stringByAppendingPathComponent:[mExportMgr albumNameAtIndex:[albumIndex intValue]]];
-				
-				// TODO only create if doesn't already exist
-				[fileMgr createDirectoryAtPath:dest attributes:nil];
-						
-				dest = [dest stringByAppendingPathComponent:[mExportMgr imageFileNameAtIndex:i]];
-				
-				NSLog(@"Exporting image to %@", dest);
-				
-				AlbumExport *album = [colExport findAlbumNamed:
-									  [mExportMgr albumNameAtIndex:[albumIndex intValue]]];
-				if ( album == nil ) {
-					NSLog(@"Creating new album export %@", [mExportMgr albumNameAtIndex:[albumIndex intValue]]);
-					album = [colExport addAlbum:[mExportMgr albumNameAtIndex:[albumIndex intValue]]
-									   comments:[mExportMgr albumCommentsAtIndex:[albumIndex intValue]]
-									   sortMode:@"date"]; // TODO add as option to export UI?
-				}
-				
-				NSString *albumPath = [NSString stringWithFormat:@"%@/%@", 
-					[album name], [mExportMgr imageFileNameAtIndex:i]];
-				
-				PhotoExport *photo = [album addPhoto:[mExportMgr imageTitleAtIndex:i]
-										    comments:[mExportMgr imageCommentsAtIndex:i]
-												path:albumPath];
-				
-				[photo addKeywords:[mExportMgr imageKeywordsAtIndex:i]];
-				[photo setRating:[mExportMgr imageRatingAtIndex:i]];
-			}
-			if ( ![self exportOriginals] ) {
-				succeeded = [mExportMgr exportImageAtIndex:i dest:dest options:&imageOptions];
-			} else {
-				succeeded = [fileManager copyPath:[mExportMgr imagePathAtIndex:i]
-										   toPath:dest
-										  handler:nil];
-			}
-		}
-	}
-	else
+	int i;
+	for(i = 0; mCancelExport == NO && succeeded == YES && i < count; i++)
 	{
 		[self lockProgress];
-		mProgress.currentItem = 0;
+		mProgress.currentItem = i;
 		[mProgress.message autorelease];
-		mProgress.message = @"Image 1 of 1";
+		mProgress.message = [[NSString stringWithFormat:@"Image %d of %d",
+							  i + 1, count] retain];
 		[self unlockProgress];
 		
-		dest = [self exportDir];
-		succeeded = [mExportMgr exportImageAtIndex:0 dest:dest options:&imageOptions];
+		NSLog(@"Exporting image from path: %@", [mExportMgr imagePathAtIndex:i]);
+		id albums = [mExportMgr albumsOfImageAtIndex:i];
+		NSEnumerator *albumEnum = [albums objectEnumerator];
+		NSNumber *albumIndex;
+		while ( albumIndex = [albumEnum nextObject] ) {
+			NSLog(@"Exporting image from album index: %@", [albumIndex description]);
+			
+			dest = [[self exportDir] 
+					 stringByAppendingPathComponent:[mExportMgr albumNameAtIndex:[albumIndex intValue]]];
+			
+			if ( ![fileManager fileExistsAtPath:dest] ) {
+				[fileManager createDirectoryAtPath:dest attributes:nil];
+			}
+					
+			dest = [dest stringByAppendingPathComponent:[mExportMgr imageFileNameAtIndex:i]];
+			
+			NSLog(@"Exporting image to %@", dest);
+			
+			AlbumExport *album = [colExport findAlbumNamed:
+								  [mExportMgr albumNameAtIndex:[albumIndex intValue]]];
+			if ( album == nil ) {
+				NSLog(@"Creating new album export %@", [mExportMgr albumNameAtIndex:[albumIndex intValue]]);
+				album = [colExport addAlbum:[mExportMgr albumNameAtIndex:[albumIndex intValue]]
+								   comments:[mExportMgr albumCommentsAtIndex:[albumIndex intValue]]
+								   sortMode:@"date"]; // TODO add as option to export UI?
+			}
+			
+			NSString *albumPath = [NSString stringWithFormat:@"%@/%@", 
+				[album name], [mExportMgr imageFileNameAtIndex:i]];
+			
+			PhotoExport *photo = [album addPhoto:[mExportMgr imageTitleAtIndex:i]
+										comments:[mExportMgr imageCommentsAtIndex:i]
+											path:albumPath];
+			
+			[photo addKeywords:[mExportMgr imageKeywordsAtIndex:i]];
+			[photo setRating:[mExportMgr imageRatingAtIndex:i]];
+		}
+		if ( ![self exportOriginals] ) {
+			succeeded = [mExportMgr exportImageAtIndex:i dest:dest options:&imageOptions];
+		} else {
+			succeeded = [fileManager copyPath:[mExportMgr imagePathAtIndex:i]
+									   toPath:dest
+									  handler:self];
+		}
 	}
 	
-	// free CollectionExport
+	// write CollectionExport as metadata.xml
 	if ( succeeded ) {
 		dest = [[self exportDir] stringByAppendingPathComponent:@"metadata.xml"];
 		NSLog(@"Writing colExport as XML to %@", dest);
@@ -512,6 +488,14 @@
 	}
 	[colExport release];
 	NSLog(@"released colExport");
+
+	// create zip archive
+	unsigned albumCount =  [mExportMgr albumCount];
+	NSLog(@"albumCount: %d", albumCount);
+	unsigned albumIdx;
+	for ( albumIdx = 0; albumIdx < albumCount; albumIdx++ ) {
+		NSLog(@"Album %d: %@", albumCount, [mExportMgr albumNameAtIndex:albumIdx]);
+	}
 
 	
 	// Handle failure
@@ -531,6 +515,12 @@
 	mProgress.message = nil;
 	mProgress.shouldStop = YES;
 	[self unlockProgress];
+}
+
+- (void)fileManager:(NSFileManager *)manager willProcessPath:(NSString *)path {
+	if ( [manager fileExistsAtPath:path] ) {
+		[manager removeFileAtPath:path handler:nil];
+	}
 }
 
 - (ExportPluginProgress *)progress
