@@ -121,6 +121,7 @@
 		C9A72B3D0CF8D8E00019950D /* ExportPluginBoxProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ExportPluginBoxProtocol.h; path = Interface/ExportPluginBoxProtocol.h; sourceTree = "<group>"; };
 		C9A72B3E0CF8D8E00019950D /* ExportPluginProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ExportPluginProtocol.h; path = Interface/ExportPluginProtocol.h; sourceTree = "<group>"; };
 		C9A72B590CF8DD060019950D /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Resources/English.lproj/Panel.nib; sourceTree = "<group>"; };
+		C9E677A80D97416C00B4A76D /* README.rtfd */ = {isa = PBXFileReference; lastKnownFileType = wrapper.rtfd; name = README.rtfd; path = Docs/README.rtfd; sourceTree = "<group>"; };
 		D2F7E65807B2D6F200F64583 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
@@ -139,6 +140,7 @@
 		089C166AFE841209C02AAC07 /* MatteiPhotoExport */ = {
 			isa = PBXGroup;
 			children = (
+				C9E677A70D97413300B4A76D /* Docs */,
 				C99974700D135CD30086DF84 /* gsoap */,
 				C9A72B380CF8D87E0019950D /* SDK Interface */,
 				08FB77AFFE84173DC02AAC07 /* Classes */,
@@ -319,6 +321,14 @@
 				C9A72B3E0CF8D8E00019950D /* ExportPluginProtocol.h */,
 			);
 			name = "SDK Interface";
+			sourceTree = "<group>";
+		};
+		C9E677A70D97413300B4A76D /* Docs */ = {
+			isa = PBXGroup;
+			children = (
+				C9E677A80D97416C00B4A76D /* README.rtfd */,
+			);
+			name = Docs;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
