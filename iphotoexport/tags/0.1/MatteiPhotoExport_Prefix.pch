@@ -1,0 +1,7 @@
+//
+// Prefix header for all source files of the 'MatteiPhotoExport' target in the 'MatteiPhotoExporter' project
+//
+
+#ifdef __OBJC__
+    #import <Cocoa/Cocoa.h>
+#endif

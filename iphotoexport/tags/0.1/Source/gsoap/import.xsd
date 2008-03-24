@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+	Copyright (c) 2007 Matt Magoffin
+	
+	This program is free software; you can redistribute it and/or 
+	modify it under the terms of the GNU General Public License as 
+	published by the Free Software Foundation; either version 2 of 
+	the License, or (at your option) any later version.
+	
+	This program is distributed in the hope that it will be useful, 
+	but WITHOUT ANY WARRANTY; without even the implied warranty of 
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+	General Public License for more details.
+	
+	You should have received a copy of the GNU General Public License 
+	along with this program; if not, write to the Free Software 
+	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 
+	02111-1307 USA
+	
+	$Id: import.xsd 70 2007-12-01 08:31:03Z msqr $ 
+-->
+<xs:schema xml:lang="EN" targetNamespace="http://msqr.us/xsd/matte"
+	xmlns:m="http://msqr.us/xsd/matte" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+	<xs:annotation>
+		<xs:documentation>
+			XML Schema for the importing media into the Matte application.
+		</xs:documentation>
+	</xs:annotation>
+	
+	<xs:element name="collection-import" type="m:collection-import-type"/>
+
+	<xs:complexType name="collection-import-type">
+		<xs:annotation><xs:documentation>
+			Top-level import structure. Imports items into a single Matte 
+			collection. May also define albums, or import items directly 
+			into collection without associating with albums.
+		</xs:documentation></xs:annotation>
+		<xs:sequence>
+			<xs:element name="album" type="m:album-import-type" minOccurs="0" 
+				maxOccurs="unbounded">
+				<xs:annotation><xs:documentation>
+					An album to import, which has items nested inside of it.
+				</xs:documentation></xs:annotation>
+			</xs:element>
+			<xs:element name="item" type="m:item-import-type" minOccurs="0"
+				maxOccurs="unbounded">
+				<xs:annotation><xs:documentation>
+					A media item to import, outside of any album.
+				</xs:documentation></xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="optional"/>
+	</xs:complexType>
+
+	<xs:complexType name="base-import-type" abstract="true">
+		<xs:annotation><xs:documentation>
+			A base type for both albums and items.
+		</xs:documentation></xs:annotation>
+		<xs:sequence>
+			<xs:element name="comment" type="xs:string" minOccurs="0">
+				<xs:annotation><xs:documentation>
+					A comment or description of the item. This is generally a verbose
+					description of the item.
+				</xs:documentation></xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="optional">
+			<xs:annotation><xs:documentation>
+				The name of the item. This is generally a short description.
+			</xs:documentation></xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+
+	<xs:complexType name="album-import-type">
+		<xs:annotation><xs:documentation>
+			An import album. The album can specify various attributes like name, 
+			comments, a date, and a sort mode. In addition any number of import
+			media items can be specified, so they are added to the album after
+			being imported.
+		</xs:documentation></xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="m:base-import-type">
+				<xs:sequence>
+					<xs:element name="item" type="m:item-import-type" minOccurs="0"
+						maxOccurs="unbounded"/>
+					<xs:element name="album" type="m:album-import-type" minOccurs="0"
+						maxOccurs="unbounded"/>
+				</xs:sequence>
+				<xs:attribute name="sort" type="m:album-import-sort-type" use="optional" 
+					default="date"/>
+				<xs:attribute name="album-date" type="xs:date" use="optional"/>
+				<xs:attribute name="creation-date" type="xs:dateTime" use="optional"/>
+				<xs:attribute name="modify-date" type="xs:dateTime" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:simpleType name = "album-import-sort-type">
+		<xs:restriction base = "xs:string">
+			<xs:enumeration value="date">
+				<xs:annotation><xs:documentation>
+					Sort by date, ascending.
+				</xs:documentation></xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>			
+
+	<xs:complexType name="item-import-type">
+		<xs:annotation><xs:documentation>
+			An import media item. The item can specify various attributes like name, 
+			comments, keywords, and a rating. The archive-path element refers to 
+			the zip archive path of this item as located in the associated zip 
+			archive used for this import.
+		</xs:documentation></xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="m:base-import-type">
+				<xs:sequence>
+					<xs:element name="keywords" type="xs:string" minOccurs="0">
+						<xs:annotation><xs:documentation>
+							Any number of keywords can be specified by delimiting them
+							with commas.
+						</xs:documentation></xs:annotation>
+					</xs:element>
+					<xs:element name="meta" type="m:metadata-import-type" 
+						minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+				<xs:attribute name="archive-path" type="xs:string" use="required">
+					<xs:annotation><xs:documentation>
+						The full path of this media item within the associated zip archive
+						of this import.
+					</xs:documentation></xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="rating" type="xs:float" use="optional">
+					<xs:annotation><xs:documentation>
+						A numeric rating to assign to this item.
+					</xs:documentation></xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="metadata-import-type">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="name" type="xs:string"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+
+</xs:schema>

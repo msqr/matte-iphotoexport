@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+	Copyright (c) 2007 Matt Magoffin
+	
+	This program is free software; you can redistribute it and/or 
+	modify it under the terms of the GNU General Public License as 
+	published by the Free Software Foundation; either version 2 of 
+	the License, or (at your option) any later version.
+	
+	This program is distributed in the hope that it will be useful, 
+	but WITHOUT ANY WARRANTY; without even the implied warranty of 
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+	General Public License for more details.
+	
+	You should have received a copy of the GNU General Public License 
+	along with this program; if not, write to the Free Software 
+	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 
+	02111-1307 USA
+	
+	$Id$   
+-->
+<xs:schema xml:lang="EN" targetNamespace="http://msqr.us/xsd/matte"
+	xmlns:m="http://msqr.us/xsd/matte"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:xmime="http://www.w3.org/2005/05/xmlmime"
+	elementFormDefault="qualified" attributeFormDefault="unqualified">
+	
+	<xs:include schemaLocation="import.xsd"/>
+	
+	<xs:import namespace="http://www.w3.org/2005/05/xmlmime"
+		schemaLocation="http://www.w3.org/2005/05/xmlmime"/>
+	
+	<xs:element name="GetCollectionListRequest" type="m:get-collection-list-request-type"/>
+	<xs:element name="GetCollectionListResponse" type="m:get-collection-list-response-type"/>
+	
+	<xs:element name="AddMediaRequest" type="m:add-media-request-type"/>
+	<xs:element name="AddMediaResponse" type="m:add-media-response-type"/>
+	
+	<xs:complexType name="get-collection-list-request-type">
+		<xs:annotation><xs:documentation>
+			Request a list of collections for the authenticated user. This action
+			requires no parameters because a user is only allowed to view their
+			own list of collections. This request can be used to get the list of
+			available collections for a user to import media into.
+		</xs:documentation></xs:annotation>
+	</xs:complexType>
+	
+	<xs:complexType name="get-collection-list-response-type">
+		<xs:annotation><xs:documentation>
+			The collection list response: a list of collection names and IDs.
+		</xs:documentation></xs:annotation>
+		<xs:sequence>
+			<xs:element name="collection" type="m:collection-list-item-type"
+				minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="collection-list-item-type">
+		<xs:attribute name="collection-id" type="xs:long" use="required"/>
+		<xs:attribute name="name" type="xs:string" use="required"/>
+	</xs:complexType>
+	
+	<xs:complexType name="add-media-request-type">
+		<xs:sequence>
+			<xs:element name="collection-import" type="m:collection-import-type"/>
+			<xs:element name="media-data" type="m:media-data-type" 
+				xmime:expectedContentTypes="application/zip, application/octet-stream"
+				minOccurs="0" maxOccurs="1">
+				<xs:annotation><xs:documentation>
+					The media to import. This should be a Zip archive of all media files
+					referenced by album items in the associated collection-import element.
+				</xs:documentation></xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="collection-id" type="xs:long" use="required"/>
+		<xs:attribute name="local-tz" type="xs:string" use="optional"/>
+		<xs:attribute name="media-tz" type="xs:string" use="optional"/>
+	</xs:complexType>
+	
+	<xs:complexType name="add-media-response-type">
+		<xs:sequence>
+			<xs:element name="message" type="xs:string"/>
+		</xs:sequence>
+		<xs:attribute name="success" type="xs:boolean" use="required"/>
+		<xs:attribute name="ticket" type="xs:long" use="optional"/>
+	</xs:complexType>
+	
+	<xs:complexType name="media-data-type">
+		<xs:simpleContent>
+			<xs:extension base="xs:base64Binary">
+				<xs:attribute ref="xmime:contentType" use="optional" default="application/zip"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	
+</xs:schema>

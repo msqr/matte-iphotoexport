@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+  Copyright (c) 2002-2006 Matt Magoffin
+  
+  This program is free software; you can redistribute it and/or 
+  modify it under the terms of the GNU General Public License as 
+  published by the Free Software Foundation; either version 2 of 
+  the License, or (at your option) any later version.
+  
+  This program is distributed in the hope that it will be useful, 
+  but WITHOUT ANY WARRANTY; without even the implied warranty of 
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+  General Public License for more details.
+  
+  You should have received a copy of the GNU General Public License 
+  along with this program; if not, write to the Free Software 
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 
+  02111-1307 USA
+
+  $Id: core.xsd,v 1.17 2007/09/02 08:53:21 matt Exp $   
+-->
+<xs:schema
+	xml:lang="EN"
+	targetNamespace="http://msqr.us/xsd/matte"
+	jaxb:version="1.0"
+	xmlns:m="http://msqr.us/xsd/matte"
+	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+	xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+	jaxb:extensionBindingPrefixes="xjc"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified"
+	attributeFormDefault="unqualified">
+
+	<xs:annotation>
+		<xs:documentation>
+			This is the XML Schema for the Matte core objects.
+		</xs:documentation>
+		<xs:appinfo>
+			<jaxb:schemaBindings>
+				<jaxb:package name="magoffin.matt.ma2.domain"/>
+			</jaxb:schemaBindings>
+		</xs:appinfo>
+	</xs:annotation>
+	
+	<xs:include schemaLocation="domain.xsd"/>
+	
+	<xs:element name="job-info" type="m:work-info"/>
+	
+	<xs:complexType name="key-name-type">
+		<xs:sequence>
+			<xs:element name="comment" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="key" type="xs:int" use="required"/>
+		<xs:attribute name="name" type="xs:string" use="required"/>
+	</xs:complexType>
+
+	<xs:complexType name="media-spec">
+		<xs:attribute name="quality" type="m:media-quality-type" use="optional" default="GOOD"/>
+		<xs:attribute name="size" type="m:media-size-type" use="optional" default="NORMAL"/>
+	</xs:complexType>
+	
+	<xs:complexType name="media-size-definition">
+		<xs:attribute name="size" type="m:media-size-type" use="required"/>
+		<xs:attribute name="width" type="xs:int" use="required"/>
+		<xs:attribute name="height" type="xs:int" use="required"/>
+	</xs:complexType>
+	
+	<xs:complexType name="work-info">
+		<xs:sequence>
+			<xs:element name="message" type="xs:string" minOccurs="0"/>
+			<xs:element name="error" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="displayName" type="xs:string" use="required"/>
+		<xs:attribute name="ticket" type="xs:long" use="required"/>
+		<xs:attribute name="amount-completed" type="xs:float" use="required"/>
+		<xs:attribute name="time-submitted" type="xs:string" use="required"/>
+		<xs:attribute name="priority" type="xs:int" use="optional"/>
+		<xs:attribute name="time-completed" type="xs:string" use="optional"/>
+		<xs:attribute name="time-started" type="xs:string" use="optional"/>
+	</xs:complexType>
+	
+	<xs:complexType name="time-zone">
+		<xs:attribute name="code" type="xs:string" use="required"/>
+		<xs:attribute name="ordering" type="xs:int" use="required"/>
+		<xs:attribute name="name" type="xs:string" use="optional"/>
+		<xs:attribute name="offset" type="xs:int" use="optional"/>
+	</xs:complexType>
+	
+	<xs:complexType name="locale">
+		<xs:attribute name="code" type="xs:string" use="required"/>
+		<xs:attribute name="ordering" type="xs:int" use="required"/>
+		<xs:attribute name="name" type="xs:string" use="optional"/>
+	</xs:complexType>
+	
+	<xs:simpleType name = "media-quality-type">
+		<xs:restriction base = "xs:string">
+			<xs:enumeration value = "HIGHEST"/>
+			<xs:enumeration value = "HIGH"/>
+			<xs:enumeration value = "GOOD"/>
+			<xs:enumeration value = "AVERAGE"/>
+			<xs:enumeration value = "LOW"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name = "media-size-type">
+		<xs:restriction base = "xs:string">
+			<xs:enumeration value = "BIGGEST">
+				<xs:annotation><xs:documentation>1600x1200</xs:documentation></xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value = "BIGGER">
+				<xs:annotation><xs:documentation>1024x768</xs:documentation></xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value = "BIG">
+				<xs:annotation><xs:documentation>800x600</xs:documentation></xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value = "NORMAL">
+				<xs:annotation><xs:documentation>640x480</xs:documentation></xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value = "SMALL">
+				<xs:annotation><xs:documentation>480x360</xs:documentation></xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value = "TINY">
+				<xs:annotation><xs:documentation>320x240</xs:documentation></xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value = "THUMB_BIGGER">
+				<xs:annotation><xs:documentation>240x180</xs:documentation></xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value = "THUMB_BIG">
+				<xs:annotation><xs:documentation>180x135</xs:documentation></xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value = "THUMB_NORMAL">
+				<xs:annotation><xs:documentation>120x90</xs:documentation></xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value = "THUMB_SMALL">
+				<xs:annotation><xs:documentation>64x48</xs:documentation></xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+		
+	<xs:complexType name="init-param-config">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="name" type="xs:string"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	
+	<xs:complexType name="pagination-index">
+		<xs:sequence>
+			<xs:element name="index-section" minOccurs="0" maxOccurs="unbounded" 
+				type="m:pagination-index-section"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="pagination-index-section">
+		<xs:attribute name="index-key" type="xs:string" use="required"/>
+		<xs:attribute name="count" type="xs:int" use="optional" default="0"/>
+		<xs:attribute name="selected" type="xs:boolean" use="optional" default="false"/>
+	</xs:complexType>
+	
+	<xs:complexType name="pagination-criteria">
+		<xs:attribute name="index-key" type="xs:string" use="optional"/>
+		<xs:attribute name="page-size" type="xs:nonNegativeInteger" use="optional"/>
+		<xs:attribute name="page-offset" type="xs:nonNegativeInteger" default="0"/>
+		<xs:attribute name="max-results" type="xs:nonNegativeInteger" use="optional"/>
+	</xs:complexType>
+	
+	<xs:complexType name="album-search-result">
+		<xs:complexContent>
+			<xs:extension base="m:album">
+				<xs:sequence>
+					<xs:element name="search-poster" type="m:poster-search-result" minOccurs="0"/>
+					<xs:element name="search-album" type="m:album-search-result"
+						minOccurs="0" maxOccurs="unbounded"/>
+					<!--xs:element name="search-item" type="m:media-item-search-result"
+						minOccurs="0" maxOccurs="unbounded"/-->
+				</xs:sequence>
+				<xs:attribute name="item-count" type="xs:nonNegativeInteger"
+					use="optional"/>
+				<xs:attribute name="item-min-date" type="xs:dateTime"
+					use="optional"/>
+				<xs:attribute name="item-max-date" type="xs:dateTime"
+					use="optional"/>
+			</xs:extension>			
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="poster-search-result">
+		<xs:attribute name="item-id" type="xs:long" use="required"/>
+		<xs:attribute name="name" type="xs:string" use="required"/>
+	</xs:complexType>
+	
+	<xs:complexType name="user-search-result">
+		<xs:complexContent>
+			<xs:extension base="m:user"/>			
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="media-item-search-result">
+		<xs:complexContent>
+			<xs:extension base="m:media-item">
+				<xs:sequence>
+					<xs:element name="shared-album" type="m:shared-album-search-result"
+						minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>			
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="shared-album-search-result">
+		<xs:attribute name="anonymous-key" type="xs:string" use="required"/>
+		<xs:attribute name="name" type="xs:string" use="required"/>
+	</xs:complexType>
+	
+	<xs:complexType name="search-results">
+		<xs:annotation>
+			<xs:documentation>
+				Search results object.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="pagination" type="m:pagination-criteria"/>
+			<xs:element name="index" type="m:pagination-index" minOccurs="0"/>
+			<xs:element name="album" type="m:album-search-result" 
+				minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="item" type="m:media-item-search-result" 
+				minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="user" type="m:user-search-result" 
+				minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="total-results" type="xs:nonNegativeInteger"/>
+		<xs:attribute name="returned-results" type="xs:nonNegativeInteger"/>
+		<xs:attribute name="search-time" type="xs:long"/>
+		<xs:attribute name="is-partial-result" type="xs:boolean" default="false"/>
+	</xs:complexType>
+		
+</xs:schema>

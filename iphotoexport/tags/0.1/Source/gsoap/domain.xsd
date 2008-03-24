@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+  Copyright (c) 2002-2005 Matt Magoffin
+  
+  This program is free software; you can redistribute it and/or 
+  modify it under the terms of the GNU General Public License as 
+  published by the Free Software Foundation; either version 2 of 
+  the License, or (at your option) any later version.
+  
+  This program is distributed in the hope that it will be useful, 
+  but WITHOUT ANY WARRANTY; without even the implied warranty of 
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+  General Public License for more details.
+  
+  You should have received a copy of the GNU General Public License 
+  along with this program; if not, write to the Free Software 
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 
+  02111-1307 USA
+
+  $Id: domain.xsd,v 1.13 2007/09/09 01:58:47 matt Exp $   
+-->
+<xs:schema
+	xml:lang="EN"
+	targetNamespace="http://msqr.us/xsd/matte"
+	jaxb:version="1.0"
+	xmlns:m="http://msqr.us/xsd/matte"
+	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+	xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+	xmlns:hj="http://hyperjaxb2.jvnet.org/customizations"
+	jaxb:extensionBindingPrefixes="xjc hj"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified"
+	attributeFormDefault="unqualified">
+
+	<xs:annotation>
+		<xs:documentation>
+			This is the XML Schema for the Media Album 2 application.
+		</xs:documentation>
+	</xs:annotation>
+	
+	<xs:include schemaLocation="core.xsd"/>
+
+	<xs:complexType name="album">
+		<xs:sequence>
+			<xs:element name="comment" type="xs:string" minOccurs="0"/>
+			<xs:element name="owner" type="m:user" minOccurs="0"/>
+			<xs:element name="theme" type="m:theme" minOccurs="0"/>
+			<xs:element name="poster" type="m:media-item" minOccurs="0"/>
+			<xs:element name="item" type="m:media-item" minOccurs="0" 
+				maxOccurs="unbounded"/>
+			<xs:element name="album" type="m:album" minOccurs="0" 
+				maxOccurs="unbounded"/>
+		</xs:sequence>
+		
+		<!-- Primay key -->
+		<xs:attribute name="album-id" type="xs:long" use="required"/>
+		
+		<!-- Required -->
+		<xs:attribute name="creation-date" type="xs:dateTime" use="required"/>
+		<xs:attribute name="name" type="xs:string" use="required"/>
+		
+		<!-- Optional with default -->
+		<xs:attribute name="allow-anonymous" type="xs:boolean" use="optional" default="false"/>
+		<xs:attribute name="allow-browse" type="xs:boolean" use="optional" default="false"/>
+		<xs:attribute name="allow-original" type="xs:boolean" use="optional" default="false"/>
+		<xs:attribute name="allow-feed" type="xs:boolean" use="optional" default="false"/>
+		
+		<!-- Optional -->
+		<xs:attribute name="album-date" type="xs:dateTime" use="optional"/>
+		<xs:attribute name="anonymous-key" type="xs:string" use="optional"/>
+		<xs:attribute name="modify-date" type="xs:dateTime" use="optional"/>
+		<xs:attribute name="sort-mode" type="xs:int" use="optional"/>
+		
+	</xs:complexType>
+	
+	<!--xs:complexType name="album-permissions">
+		<xs:attribute name="permissionId" type="xs:long" use="required"/>
+		<xs:attribute name="userId" type="xs:long" use="required" />
+		<xs:attribute name="view" type="xs:boolean" use="optional" default="false"/>
+		<xs:attribute name="update" type="xs:boolean" use="optional" default="false"/>
+		<xs:attribute name="comment" type="xs:boolean" use="optional" default="false"/>
+	</xs:complexType-->
+	
+	<xs:complexType name="collection">
+		<xs:sequence>
+			<xs:element name="owner" type="m:user"/>
+			<xs:element name="comment" type="xs:string" minOccurs="0"/>
+			<xs:element name="item" type="m:media-item" minOccurs="0" 
+				maxOccurs="unbounded"/>
+		</xs:sequence>
+
+		<!-- Primary key -->
+		<xs:attribute name="collection-id" type="xs:long" use="required"/>
+		
+		<!-- Required -->
+		<xs:attribute name="creation-date" type="xs:dateTime" use="required"/>
+		<xs:attribute name="name" type="xs:string" use="required"/>
+		<xs:attribute name="path" type="xs:string" use="required"/>
+		
+		<!-- Optional -->
+		<xs:attribute name="modify-date" type="xs:dateTime" use="optional"/>
+	</xs:complexType>
+	
+	<xs:complexType name="media-item">
+		<xs:sequence>
+			<xs:element name="tz" type="m:time-zone">
+				<xs:annotation>
+					<xs:documentation>The time zone of the creation 
+						date.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="tz-display" type="m:time-zone" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The time zone to display the 
+						creation date as.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<!--xs:element name="collection" type="m:collection" minOccurs="0"/-->
+			<xs:element name="description" type="xs:string" minOccurs="0"/>
+			<xs:element name="media-type" type="m:media-item-type"
+				minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>The type of media this item represents, 
+						e.g. photo, album, movie, book, etc.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+
+			<!-- Lists -->
+			<xs:element name="metadata" type="m:metadata" 
+				minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="user-rating" type="m:media-item-rating" 
+				minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="user-comment" type="m:user-comment" 
+				minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="user-tag" type="m:user-tag" 
+				minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+
+		<!-- Primary key -->
+		<xs:attribute name="item-id" type="xs:long" use="required"/>
+		
+		<!-- Required -->
+		<xs:attribute name="creation-date" type="xs:dateTime" use="required"/>
+		<xs:attribute name="file-size" type="xs:long" use="required"/>
+		<xs:attribute name="height" type="xs:int" use="required"/>
+		<xs:attribute name="mime" type="xs:string" use="required"/>
+		<xs:attribute name="name" type="xs:string" use="required"/>
+		<xs:attribute name="path" type="xs:string" use="required"/>
+		<xs:attribute name="width" type="xs:int" use="required"/>
+		
+		<!-- Optional with default -->
+		<xs:attribute name="display-order" type="xs:int" use="optional" default="0"/>
+		<xs:attribute name="hits" type="xs:int" use="optional" default="0"/>
+		<xs:attribute name="use-icon" type="xs:boolean" use="optional" default="false"/>
+		
+		<!-- Optional -->
+		<xs:attribute name="item-date" type="xs:dateTime" use="optional"/>
+		<xs:attribute name="modify-date" type="xs:dateTime" use="optional"/>
+	</xs:complexType>
+	
+	<xs:complexType name="media-item-rating">
+		<xs:sequence>
+			<xs:element name="rating-user" type="m:user" minOccurs="0"/>
+		</xs:sequence>
+
+		<!-- Primary key -->
+		<xs:attribute name="rating-id" type="xs:long" use="required"/>
+
+		<!-- Required -->
+		<xs:attribute name="creation-date" type="xs:dateTime" use="required"/>
+		<xs:attribute name="rating" type="xs:short" use="required"/>
+	</xs:complexType>
+	
+	<xs:complexType name="media-item-type">
+		<xs:sequence>
+			<xs:element name="field" minOccurs="0" maxOccurs="unbounded" 
+				type="m:metadata"/>
+		</xs:sequence>
+		<xs:attribute name="typeId" type="xs:long" use="required"/>
+		<xs:attribute name="name" type="xs:string" use="required"/>
+	</xs:complexType>
+	
+	<xs:complexType name="metadata">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="key" type="xs:string"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	
+	<xs:complexType name="theme">
+		<xs:sequence>
+			<xs:element name="owner" type="m:user" minOccurs="0"/>
+			<xs:element name="description" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+		
+		<!-- Primay key -->
+		<xs:attribute name="theme-id" type="xs:long" use="required"/>
+		
+		<!-- Required -->
+		<xs:attribute name="base-path" type="xs:string" use="required"/>
+		<xs:attribute name="creation-date" type="xs:dateTime" use="required"/>
+		<xs:attribute name="name" type="xs:string" use="required"/>
+		
+		<!-- Optional -->
+		<xs:attribute name="author" type="xs:string" use="optional"/>
+		<xs:attribute name="author-email" type="xs:string" use="optional"/>
+		<xs:attribute name="modify-date" type="xs:dateTime" use="optional"/>
+	</xs:complexType>
+	
+	<xs:complexType name="user">
+		<xs:sequence>
+			<xs:element name="tz" type="m:time-zone"/>
+			<xs:element name="thumbnail-setting" type="m:media-spec"/>
+			<xs:element name="view-setting" type="m:media-spec"/>
+			<xs:element name="default-theme" type="m:theme" minOccurs="0"/>
+			<xs:element name="browse-theme" type="m:theme" minOccurs="0"/>
+			<xs:element name="metadata" type="m:metadata" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		
+		<!-- Primary key -->
+		<xs:attribute name="user-id" type="xs:long" use="required"/>
+
+		<!-- Required -->
+		<xs:attribute name="creation-date" type="xs:dateTime" use="required"/>
+		<xs:attribute name="email" type="xs:string" use="required"/>
+		<xs:attribute name="login" type="xs:string" use="required"/>
+		<xs:attribute name="name" type="xs:string" use="required"/>
+		<xs:attribute name="password" type="xs:string" use="required"/>
+		
+		<!-- Optional with defaults -->
+		<xs:attribute name="country" type="xs:string" default="US"/>
+		<xs:attribute name="language" type="xs:string" default="en"/>
+		
+		<!-- Optional -->
+		<xs:attribute name="access-level" type="xs:int" use="optional"/>
+		<xs:attribute name="anonymous-key" type="xs:string" use="optional"/>
+		<xs:attribute name="disk-usage" type="xs:long" use="optional"/>
+		<xs:attribute name="modify-date" type="xs:dateTime" use="optional"/>
+		<xs:attribute name="quota" type="xs:int" use="optional"/>
+	</xs:complexType>
+	
+	<xs:complexType name="user-comment">
+		<xs:sequence>
+			<xs:element name="commenting-user" type="m:user" minOccurs="0"/>
+			<xs:element name="comment" type="xs:string"/>
+		</xs:sequence>
+		
+		<!-- Primary key -->
+		<xs:attribute name="comment-id" type="xs:long" use="required"/>
+		
+		<!-- Required attributes -->
+		<xs:attribute name="creation-date" type="xs:dateTime" use="required"/>
+		
+		<!-- Optional with defaults -->
+		<xs:attribute name="approved" type="xs:boolean" default="true"/>
+		
+		<!-- Optional attributes -->
+		<xs:attribute name="commenter" type="xs:string" use="optional"/>
+	</xs:complexType>	
+	
+	<xs:complexType name="user-tag">
+		<xs:sequence>
+			<xs:element name="tagging-user" type="m:user" minOccurs="0"/>
+			<xs:element name="tag" type="xs:string"/>
+		</xs:sequence>
+		
+		<!-- Primary key -->
+		<xs:attribute name="tag-id" type="xs:long" use="required"/>
+		
+		<!-- Required attributes -->
+		<xs:attribute name="creation-date" type="xs:dateTime" use="required"/>
+	</xs:complexType>	
+	
+</xs:schema>

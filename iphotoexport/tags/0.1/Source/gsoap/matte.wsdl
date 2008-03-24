@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+	Copyright (c) 2007 Matt Magoffin
+	
+	This program is free software; you can redistribute it and/or 
+	modify it under the terms of the GNU General Public License as 
+	published by the Free Software Foundation; either version 2 of 
+	the License, or (at your option) any later version.
+	
+	This program is distributed in the hope that it will be useful, 
+	but WITHOUT ANY WARRANTY; without even the implied warranty of 
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+	General Public License for more details.
+	
+	You should have received a copy of the GNU General Public License 
+	along with this program; if not, write to the Free Software 
+	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 
+	02111-1307 USA
+	
+	$Id$   
+-->
+<wsdl:definitions targetNamespace="http://msqr.us/matte/ws"
+	xmlns:tns="http://msqr.us/matte/ws"
+	xmlns:http="http://schemas.xmlsoap.org/wsdl/http/"
+	xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/"
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+	xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:ws="http://www.example.com/webservice"
+	xmlns:m="http://msqr.us/xsd/matte"
+	xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd">
+
+	<wsdl:types>
+		<xs:schema>
+			<xs:import namespace="http://msqr.us/xsd/matte"
+				schemaLocation="ws.xsd"/>
+		</xs:schema>
+	</wsdl:types>
+
+	<wsdl:message name="GetCollectionListInput">
+		<wsdl:part element="m:GetCollectionListRequest" name="body"/>
+	</wsdl:message>
+
+	<wsdl:message name="GetCollectionListOutput">
+		<wsdl:part element="m:GetCollectionListResponse" name="body"/>
+	</wsdl:message>
+
+	<wsdl:message name="AddMediaInput">
+		<wsdl:part element="m:AddMediaRequest" name="body"/>
+	</wsdl:message>
+
+	<wsdl:message name="AddMediaOutput">
+		<wsdl:part element="m:AddMediaResponse" name="body"/>
+	</wsdl:message>
+	
+	<wsdl:message name="Header">
+		<wsdl:part element="wsse:Security" name="Security"/>
+	</wsdl:message>
+
+	<wsdl:portType name="MattePortType">
+		<wsdl:operation name="GetCollectionList">
+			<wsdl:input message="tns:GetCollectionListInput"/>
+			<wsdl:output message="tns:GetCollectionListOutput"/>
+		</wsdl:operation>
+		<wsdl:operation name="AddMedia">
+			<wsdl:input message="tns:AddMediaInput"/>
+			<wsdl:output message="tns:AddMediaOutput"/>
+		</wsdl:operation>
+	</wsdl:portType>
+
+	<wsdl:binding name="MatteSoapBinding" type="tns:MattePortType">
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+		
+		<wsdl:operation name="GetCollectionList">
+			<soap:operation soapAction="http://msqr.us/matte/ws/GetCollectionList"/>
+			<wsdl:input>
+				<soap:body use="literal"/>
+				<soap:header use="literal" message="tns:Header" part="Security"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		
+		<wsdl:operation name="AddMedia">
+			<soap:operation soapAction="http://msqr.us/matte/ws/AddMedia"/>
+			<wsdl:input>
+				<soap:body use="literal"/>
+				<soap:header use="literal" message="tns:Header" part="Security"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:binding>
+	
+	<wsdl:service name="MatteService">
+		<wsdl:port binding="tns:MatteSoapBinding" name="MattePort">
+			<soap:address location="http://localhost:8080/matte/ws/Matte"/>
+		</wsdl:port>
+	</wsdl:service>
+	
+</wsdl:definitions>

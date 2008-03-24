@@ -1,0 +1,82 @@
+{\rtf1\ansi\ansicpg1252\cocoartf949\cocoasubrtf270
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\listtable{\list\listtemplateid1\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc2\leveljcn2\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}.}{\leveltext\leveltemplateid0\'02\'05.;}{\levelnumbers\'01;}}{\listname ;}\listid1}
+{\list\listtemplateid2\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc2\leveljcn2\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}.}{\leveltext\leveltemplateid0\'02\'05.;}{\levelnumbers\'01;}}{\listname ;}\listid2}}
+{\*\listoverridetable{\listoverride\listid1\listoverridecount0\ls1}{\listoverride\listid2\listoverridecount0\ls2}}
+\paperw11900\paperh16840\margl1440\margr1440\vieww12680\viewh10740\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
+
+\f0\b\fs28 \cf0 Matte iPhoto Export Plugin\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\b0 \cf0 \
+
+\fs24 This is a 
+\b very early release
+\b0  of the Matte iPhoto Export Plugin. At present direct export of albums into Matte is not supported. Instead this release will allow you to export an album as a zip archive that includes all your iPhoto metadata such as names, comments, keywords, and ratings. You can then import that zip archive into Matte using Matte's normal "Add" feature. The eventual goal for this plugin is to export albums directly from iPhoto into Matte.\
+\
+This plugin has not been thoroughly tested, and may not perform correctly for you. It has been tested only on OS 10.5 on a G5 and G4 PPC machine against iPhoto 7.\
+
+\fs28 \
+
+\b Installation\
+
+\b0 \
+
+\fs24 To install, copy the MatteiPhotoExport.iPhotoExporter folder included in this release into the 
+\b ~/Library/Application Support/iPhoto/Plugins
+\b0  folder (create these folders if they do not exist).\
+\
+
+\b\fs28 Using
+\b0\fs24 \
+\
+To use:\
+\
+\pard\tx220\tx720\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\li720\fi-720\ql\qnatural\pardirnatural
+\ls1\ilvl0\cf0 {\listtext	1.	}Select the album you want to export in iPhoto.\
+{\listtext	2.	}Choose the 
+\b File > Export
+\b0  menu.\
+{\listtext	3.	}Select the 
+\b Matte
+\b0  export tab.\
+{\listtext	4.	}Update the settings in the export window to your liking and then click the 
+\b Export
+\b0  button. 
+\i Please note not all fields are supported yet
+\i0 . In particular the 
+\i URL, Username, Password, Collection, 
+\i0 and
+\i  Auto Album
+\i0  options can be ignored. If you want to export your original photos, make sure the 
+\b Export originals
+\b0  button is checked.\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+\cf0 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\li720\ql\qnatural\pardirnatural
+\cf0 {{\NeXTGraphic export-dialog.png \width10360 \height10840
+}¬}\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+\cf0 Once the export is complete, you will see a zip archive named after the album you've exported, along with a folder (also named after the album you exported) and a file named metadata.xml.\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\fi680\ql\qnatural\pardirnatural
+\cf0 {{\NeXTGraphic export-result.png \width10720 \height3840
+}¬}\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+\cf0 \
+The folder and file are simply what was copied into the zip archive, and you can delete them if you like. The zip archive is what you should now upload into Matte, using the normal "Add" link.\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\fi660\ql\qnatural\pardirnatural
+\cf0 {{\NeXTGraphic add-export.png \width10560 \height7360
+}¬}\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+\cf0 \
+\
+\pard\tx220\tx720\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\li720\fi-720\ql\qnatural\pardirnatural
+\ls2\ilvl0\cf0 Don't forget to check the "
+\b Auto Album
+\b0 " button when you import into Matte.\
+}
