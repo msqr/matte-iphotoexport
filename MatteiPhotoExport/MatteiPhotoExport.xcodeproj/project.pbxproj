@@ -457,13 +457,13 @@
 			buildSettings = {
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEPLOYMENT_LOCATION = YES;
-				DSTROOT = /;
+				DSTROOT = "${PROJECT_DIR}";
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = MatteiPhotoExport_Prefix.pch;
 				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/gsoap/**";
 				INFOPLIST_FILE = Info.plist;
-				INSTALL_PATH = "$(HOME)/Library/Application Support/iPhoto/Plugins/";
+				INSTALL_PATH = /dist/;
 				OTHER_CFLAGS = (
 					"-DWITH_DOM",
 					"-DWITH_OPENSSL",
