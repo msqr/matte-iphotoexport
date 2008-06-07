@@ -80,6 +80,10 @@
 		[item addAttribute:[NSXMLNode attributeWithName:@"archive-path" stringValue:[self path]]];
 	}
 	
+	if ( [self comments] != nil ) {
+		[item addChild:[NSXMLElement elementWithName:@"comment" stringValue:[self comments]]];
+	}
+	
 	if ( [self keywords] != nil && [[self keywords] count] > 0 ) {
 		[item addChild:[NSXMLElement elementWithName:@"keywords" 
 			stringValue:[[self keywords] componentsJoinedByString:@","]]];
@@ -132,7 +136,9 @@
 	PhotoExport *photo = [[PhotoExport alloc] init];
 	[photo setName:theName];
 	[photo setPath:thePath];
-	[photo setComments:theComments];
+	if ( theComments != nil && [theComments length] > 0 ) {
+		[photo setComments:theComments];
+	}
 	[photos addObject:photo];
 	[photo autorelease];
 	return photo;
