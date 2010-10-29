@@ -6,10 +6,8 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import <QTKit/QTKit.h>
 #import "ExportPluginProtocol.h"
-
-#define ZIP_TASK_RUNNING 1
-#define ZIP_TASK_NOT_RUNNING 0
 
 @interface MatteExportController : NSObject <ExportPluginProtocol> {
 	id <ExportImageProtocol> mExportMgr;
@@ -37,14 +35,12 @@
 	NSString *mPassword;
 	BOOL mExportOriginals;
 	BOOL mAutoAlbum;
-	/*
-	NSString *mAlbumName;
-	NSString *mAlbumComments;
-	*/
+	QTMovie *mMovie;
 	
 	NSTask *mZipTask;
-	NSConditionLock *mZipTaskLock;
-	//NSNumber *mZipTaskRunningCondition; 
+	BOOL taskRunning;
+	
+	NSCondition *mTaskCondition;
 	
 	ExportPluginProgress mProgress;
 	NSLock *mProgressLock;

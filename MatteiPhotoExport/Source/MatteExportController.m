@@ -13,14 +13,22 @@
 #import "gsoap/MatteSoapBinding.nsmap"
 #import <QuickTime/QuickTime.h>
 
+@interface MatteExportController (MovieSupport)
+- (void)setupQTMovie:(NSDictionary *)attributes;
+- (void)exportMovie:(NSString *)dest;
+@end
+
+#pragma mark -
+
 @implementation MatteExportController
 
 - (void)awakeFromNib
 {
-	[mExportOriginalsButton setState:NSOffState];
+	[mExportOriginalsButton setState:NSOnState];
 	[mAutoAlbumButton setState:NSOnState];
 	[mSizePopUp selectItemWithTag:2];
 	[mQualityPopUp selectItemWithTag:2];
+	[self changeExportOriginals:nil];
 
 	if ( [mExportMgr albumCount] > 0 ) {
 		DLog(@"Hello, album %d: %@", 0, [mExportMgr albumNameAtIndex:0]);
@@ -36,7 +44,7 @@
 		mExportMgr = obj;
 		mProgress.message = nil;
 		mProgressLock = [[NSLock alloc] init];
-		mZipTaskLock = [[NSConditionLock alloc] initWithCondition:ZIP_TASK_NOT_RUNNING];
+		mTaskCondition = [[NSCondition alloc] init];
 		[[NSNotificationCenter defaultCenter] addObserver:self 
 												 selector:@selector(finishedZip:)
 													 name:NSTaskDidTerminateNotification 
@@ -50,8 +58,8 @@
 	[mExportDir release];
 	[mProgressLock release];
 	[mProgress.message release];
+	[mTaskCondition release];
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
-	
 	[super dealloc];
 }
 
@@ -129,28 +137,6 @@
 	[mQualityPopUp setEnabled:(![self exportOriginals])];
 }
 
-- (void)finishedZip:(NSNotification *)aNotification {
-	DLog(@"Got notification %@", aNotification);
-	[mZipTaskLock lockWhenCondition:ZIP_TASK_RUNNING];
-    int status = [[aNotification object] terminationStatus];
-#ifdef DEBUG
-    if (status) {
-        DLog(@"Zip task failed with status %d", status);
-    } else {
-        DLog(@"Zip task succeeded.");
-	}
-#endif
-	// close the progress panel when done
-	[self lockProgress];
-	[mProgress.message autorelease];
-	mProgress.message = nil;
-	mProgress.shouldStop = YES;
-	[mZipTask release];
-	mZipTask = nil;
-	[mZipTaskLock unlockWithCondition:ZIP_TASK_NOT_RUNNING];
-	[self unlockProgress];
-}
-
 #pragma mark getters/setters
 
 // getters/setters
@@ -224,27 +210,7 @@
 {
 	mPassword = password;
 }
-/*
-- (NSString *)albumName
-{
-	return mAlbumName;
-}
 
-- (void)setAlbumName:(NSString *)albumName
-{
-	mAlbumName = albumName;
-}
-
-- (NSString *)albumComments
-{
-	return mAlbumComments;
-}
-
-- (void)setAlbumComments:(NSString *)albumComments
-{
-	mAlbumComments = albumComments;
-}
-*/
 - (BOOL)autoAlbum
 {
 	return mAutoAlbum;
@@ -452,7 +418,8 @@
 	
 	NSDateFormatter *xsdDateTimeFormat = [[NSDateFormatter alloc] init];
 	[xsdDateTimeFormat setFormatterBehavior:NSDateFormatterBehavior10_4];
-	[xsdDateTimeFormat setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss"];
+	[xsdDateTimeFormat setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss'Z'"];
+	[xsdDateTimeFormat setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"UTC"]];
 	
 	NSString *dest;
 	
@@ -483,7 +450,14 @@
 			NSString *destFileName = nil;
 			
 			if ( [self exportOriginals] && [mExportMgr originalIsMovieAtIndex:i] ) {
-				destFileName = [[mExportMgr sourcePathAtIndex:i] lastPathComponent];
+				NSDictionary *qtAttr = [NSDictionary dictionaryWithObjectsAndKeys:
+										[mExportMgr sourcePathAtIndex:i], QTMovieFileNameAttribute,
+										[NSNumber numberWithBool:NO], QTMovieOpenAsyncOKAttribute, 
+										nil];
+				[self performSelectorOnMainThread:@selector(setupQTMovie:) withObject:qtAttr waitUntilDone:YES];
+				
+				destFileName = [[[[mExportMgr sourcePathAtIndex:i] lastPathComponent] stringByDeletingPathExtension]
+								stringByAppendingFormat:@".%@", @"m4v"];
 			} else {
 				destFileName = [mExportMgr imageFileNameAtIndex:i];
 			}
@@ -525,10 +499,21 @@
 			NSString *src = ([mExportMgr originalIsMovieAtIndex:i] 
 							 ? [mExportMgr sourcePathAtIndex:i] 
 							 : [mExportMgr imagePathAtIndex:i]);
-			DLog(@"Exporting original file %@", src);
-			succeeded = [fileManager copyPath:src
-									   toPath:dest
-									  handler:self];
+			
+			if ( mMovie != nil ) {
+				[mTaskCondition lock];
+				taskRunning = YES;
+				[NSThread detachNewThreadSelector:@selector(exportMovie:) toTarget:self withObject:dest];
+				while ( taskRunning ) {
+					[mTaskCondition wait];
+				}
+				[mTaskCondition unlock];
+			} else {
+				DLog(@"Exporting original file %@", src);
+				succeeded = [fileManager copyPath:src
+										   toPath:dest
+										  handler:self];
+			}
 		}
 	}
 	
@@ -581,16 +566,19 @@
 	
 	// iPhoto runs export in own thread, so for notificaiton of task complete to reach us,
 	// run the task from the main thread which is the thread that created us in the first place
-	[mZipTaskLock lock];
-	[self performSelectorOnMainThread:@selector(createZipArchive) withObject:nil waitUntilDone:YES];
-	[mZipTaskLock lockWhenCondition:ZIP_TASK_NOT_RUNNING];
-	[mZipTaskLock unlock];
+	[mTaskCondition lock];
+	taskRunning = YES;
+	[mZipTask performSelectorOnMainThread:@selector(launch) withObject:nil waitUntilDone:NO];
+	while ( taskRunning ) {
+		[mTaskCondition wait];
+	}
+	[mTaskCondition unlock];
 }
-
+/*
 - (void)createZipArchive {
 	[mZipTask launch];
 	[mZipTaskLock unlockWithCondition:ZIP_TASK_RUNNING];
-}
+}*/
 
 - (void)fileManager:(NSFileManager *)manager willProcessPath:(NSString *)path {
 	if ( [manager fileExistsAtPath:path] ) {
@@ -622,5 +610,100 @@
 {
 	return @"Matte Exporter";
 }
+
+#pragma mark Zip export support
+
+- (void)finishedZip:(NSNotification *)aNotification {
+	DLog(@"Got notification %@", aNotification);
+    int status = [[aNotification object] terminationStatus];
+#ifdef DEBUG
+    if (status) {
+        DLog(@"Zip task failed with status %d", status);
+    } else {
+        DLog(@"Zip task succeeded.");
+	}
+#endif
+	// close the progress panel when done
+	[self lockProgress];
+	[mProgress.message autorelease];
+	mProgress.message = nil;
+	mProgress.shouldStop = YES;
+	[mZipTask release];
+	mZipTask = nil;
+	
+	// signal that we've completed
+	[mTaskCondition lock];
+	taskRunning = NO;
+	[mTaskCondition signal];
+	[mTaskCondition unlock];
+	
+	[self unlockProgress];
+}
+
+#pragma mark Movie export support
+
+- (void)setupQTMovie:(NSDictionary *)attributes
+{
+	[mMovie release];
+	mMovie = [[QTMovie movieWithAttributes:attributes error:nil] retain];
+	[mMovie setDelegate:self];
+	[mMovie detachFromCurrentThread];
+}
+
+- (BOOL)movie:(QTMovie *)movie shouldContinueOperation:(NSString *)op 
+	withPhase:(QTMovieOperationPhase)phase 
+	atPercent:(NSNumber *)percent
+withAttributes:(NSDictionary *)attributes
+{
+	[self lockProgress];
+	if ( phase == QTMovieOperationBeginPhase ) {
+		[mProgress.message autorelease];
+		mProgress.message = [op retain];
+	} else if ( phase == QTMovieOperationUpdatePercentPhase ) {
+		unsigned long val = (unsigned long)roundf([percent floatValue] * 100);
+		mProgress.currentItem = val;
+	}
+	[self unlockProgress];
+	return YES;
+}
+
+- (void)exportMovie:(NSString *)dest
+{
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	
+	[self lockProgress];
+	unsigned long prevTotal = mProgress.totalItems;
+	unsigned long prevCurr = mProgress.currentItem;
+	mProgress.totalItems = 100;
+	mProgress.currentItem = 0;
+	[self unlockProgress];
+	
+	[QTMovie enterQTKitOnThreadDisablingThreadSafetyProtection];
+	[mMovie attachToCurrentThread];
+	NSDictionary *exportAttrs = [NSDictionary dictionaryWithObjectsAndKeys:
+								 [NSNumber numberWithBool:YES], QTMovieExport,
+								 [NSNumber numberWithLong:'M4V '], QTMovieExportType,
+								 nil];
+	[mMovie writeToFile:dest withAttributes:exportAttrs];
+	[mMovie detachFromCurrentThread];
+	[QTMovie exitQTKitOnThread];
+	[mMovie setDelegate:nil];
+	[mMovie release];
+	mMovie = nil;
+	
+	[self lockProgress];
+	mProgress.totalItems = prevTotal;
+	mProgress.currentItem = prevCurr;
+	[self unlockProgress];
+	
+	// unlock condition
+	[mTaskCondition lock];
+	taskRunning = NO;
+	[mTaskCondition signal];
+	[mTaskCondition unlock];
+	
+	[pool drain];
+}
+
 
 @end
