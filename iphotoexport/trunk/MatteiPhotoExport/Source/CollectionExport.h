@@ -27,6 +27,7 @@
 	NSMutableArray *keywords;
 	NSDictionary *metadata;
 	int rating;
+	NSString *date;
 }
 
 - (NSString *)path;
@@ -37,6 +38,9 @@
 
 - (int)rating;
 - (void)setRating:(int)theRating;
+
+- (NSString *)date;
+- (void)setDate:(NSString *)theDate;
 
 - (NSDictionary *)metadata;
 

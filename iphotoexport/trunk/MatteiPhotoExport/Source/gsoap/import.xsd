@@ -137,6 +137,12 @@
 						A numeric rating to assign to this item.
 					</xs:documentation></xs:annotation>
 				</xs:attribute>
+				<xs:attribute name="item-date" type="xs:date" use="optional">
+					<xs:annotation><xs:documentation>
+						An optional date to use for this media item, for example if the
+						media item iteself does not have a date in its metadata.
+					</xs:documentation></xs:annotation>
+				</xs:attribute>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
