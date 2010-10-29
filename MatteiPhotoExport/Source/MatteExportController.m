@@ -23,9 +23,9 @@
 	[mQualityPopUp selectItemWithTag:2];
 
 	if ( [mExportMgr albumCount] > 0 ) {
-		NSLog(@"Hello, album %d: %@", 0, [mExportMgr albumNameAtIndex:0]);
+		DLog(@"Hello, album %d: %@", 0, [mExportMgr albumNameAtIndex:0]);
 		[mAlbumNameText setStringValue:[mExportMgr albumNameAtIndex:0]];
-		[mAlbumCommentsText setStringValue:[mExportMgr albumCommentsAtIndex:0]];
+		[mAlbumCommentsTextView setString:[mExportMgr albumCommentsAtIndex:0]];
 	}
 }
 
@@ -65,7 +65,7 @@
 	struct m__get_collection_list_request_type request;
 	struct m__get_collection_list_response_type response;
 	
-	NSLog(@"Populating collection pop up...");
+	DLog(@"Populating collection pop up...");
 	
 	soap = soap_new();
 	soap_register_plugin(soap, soap_wsse);
@@ -73,7 +73,7 @@
 	user = [[self username] UTF8String];
 	pass = [[self password] UTF8String];
 	
-	NSLog(@"Calling WS %s, user: %s, pass: %s", endpoint, user, pass);
+	DLog(@"Calling WS %s, user: %s, pass: %s", endpoint, user, pass);
 
 	soap_wsse_add_UsernameTokenText(soap, NULL, user, pass);
 	
@@ -86,12 +86,12 @@
 		// TODO handle error with dialog warning
 		return;
 	}
-	NSLog(@"Called WS %s OK, # collections: %d", endpoint, response.__sizecollection);
+	DLog(@"Called WS %s OK, # collections: %d", endpoint, response.__sizecollection);
 	
 	// populate the collections menu
 	[mCollectionPopUp removeAllItems];
 	for ( i = 0; i < response.__sizecollection; i++ ) {
-		NSString *title = [NSString stringWithCString:response.collection[i].name];
+		NSString *title = [NSString stringWithCString:response.collection[i].name encoding:NSUTF8StringEncoding];
 		NSString *format = [NSString stringWithFormat:@"%d", i];
 		NSMenuItem *item = [[mCollectionPopUp menu] 
 							addItemWithTitle:title
@@ -109,7 +109,7 @@
 	[self setPassword:[mPasswordText stringValue]];
 	[self setUrl:[mUrlText stringValue]];
 	
-	NSLog(@"populateCollections action called by %@, user = %@, pass = %@", 
+	DLog(@"populateCollections action called by %@, user = %@, pass = %@", 
 		sender, [self username], [self password]);
 	
 	if ( [self username] != NULL && [[self username] length] > 0 
@@ -122,7 +122,7 @@
 {
 	[self setExportOriginals:([mExportOriginalsButton state] == NSOnState)];
 	
-	NSLog(@"changeExportOriginals action called by %@, exportOriginals = %@", 
+	DLog(@"changeExportOriginals action called by %@, exportOriginals = %@", 
 		  sender, ([self exportOriginals] ? @"TRUE" : @"FALSE"));
 	
 	[mSizePopUp setEnabled:(![self exportOriginals])];
@@ -130,14 +130,16 @@
 }
 
 - (void)finishedZip:(NSNotification *)aNotification {
-	NSLog(@"Got notification %@", aNotification);
+	DLog(@"Got notification %@", aNotification);
 	[mZipTaskLock lockWhenCondition:ZIP_TASK_RUNNING];
     int status = [[aNotification object] terminationStatus];
+#ifdef DEBUG
     if (status) {
-        NSLog(@"Zip task failed with status %d", status);
+        DLog(@"Zip task failed with status %d", status);
     } else {
-        NSLog(@"Zip task succeeded.");
+        DLog(@"Zip task succeeded.");
 	}
+#endif
 	// close the progress panel when done
 	[self lockProgress];
 	[mProgress.message autorelease];
@@ -222,7 +224,7 @@
 {
 	mPassword = password;
 }
-
+/*
 - (NSString *)albumName
 {
 	return mAlbumName;
@@ -242,7 +244,7 @@
 {
 	mAlbumComments = albumComments;
 }
-
+*/
 - (BOOL)autoAlbum
 {
 	return mAutoAlbum;
@@ -281,7 +283,7 @@
 	// set album name/comments to currently selected in iPhoto
 	if ( [mExportMgr albumCount] > 0 ) {
 		[mAlbumNameText setStringValue:[mExportMgr albumNameAtIndex:0]];
-		[mAlbumCommentsText setStringValue:[mExportMgr albumCommentsAtIndex:0]];
+		[mAlbumCommentsTextView setString:[mExportMgr albumCommentsAtIndex:0]];
 	}
 	
 	/* TODO enable this logic
@@ -336,7 +338,7 @@
 
 - (BOOL)handlesMovieFiles
 {
-	return NO;
+	return YES;
 }
 
 - (BOOL)validateUserCreatedPath:(NSString*)path
@@ -356,7 +358,7 @@
 	[self setSize:[mSizePopUp selectedTag]];
 	[self setQuality:[mQualityPopUp selectedTag]];
 	
-	NSLog(@"url = %@, user = %@, pass = %@", [self url], [self username], [self password]);
+	DLog(@"url = %@, user = %@, pass = %@", [self url], [self username], [self password]);
 	
 	int count = [mExportMgr imageCount];
 	
@@ -423,7 +425,7 @@
 
 - (void)performExport:(NSString *)path
 {
-	NSLog(@"performExport path: %@", path);
+	DLog(@"performExport path: %@", path);
 	
 	int count = [mExportMgr imageCount];
 	BOOL succeeded = YES;
@@ -448,6 +450,10 @@
 	mProgress.message = @"Exporting";
 	[self unlockProgress];
 	
+	NSDateFormatter *xsdDateTimeFormat = [[NSDateFormatter alloc] init];
+	[xsdDateTimeFormat setFormatterBehavior:NSDateFormatterBehavior10_4];
+	[xsdDateTimeFormat setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss"];
+	
 	NSString *dest;
 	
 	int i;
@@ -460,12 +466,12 @@
 							  i + 1, count] retain];
 		[self unlockProgress];
 		
-		NSLog(@"Exporting image from path: %@", [mExportMgr imagePathAtIndex:i]);
+		DLog(@"Exporting image from path: %@", [mExportMgr imagePathAtIndex:i]);
 		id albums = [mExportMgr albumsOfImageAtIndex:i];
 		NSEnumerator *albumEnum = [albums objectEnumerator];
 		NSNumber *albumIndex;
 		while ( albumIndex = [albumEnum nextObject] ) {
-			NSLog(@"Exporting image from album index: %@", [albumIndex description]);
+			DLog(@"Exporting image from album index: %@", [albumIndex description]);
 			
 			dest = [[self exportDir] 
 					 stringByAppendingPathComponent:[mExportMgr albumNameAtIndex:[albumIndex intValue]]];
@@ -473,26 +479,40 @@
 			if ( ![fileManager fileExistsAtPath:dest] ) {
 				[fileManager createDirectoryAtPath:dest attributes:nil];
 			}
-					
-			dest = [dest stringByAppendingPathComponent:[mExportMgr imageFileNameAtIndex:i]];
 			
-			NSLog(@"Exporting image to %@", dest);
+			NSString *destFileName = nil;
+			
+			if ( [self exportOriginals] && [mExportMgr originalIsMovieAtIndex:i] ) {
+				destFileName = [[mExportMgr sourcePathAtIndex:i] lastPathComponent];
+			} else {
+				destFileName = [mExportMgr imageFileNameAtIndex:i];
+			}
+			dest = [dest stringByAppendingPathComponent:destFileName];
+			
+			DLog(@"Exporting image to %@", dest);
 			
 			AlbumExport *album = [colExport findAlbumNamed:
 								  [mExportMgr albumNameAtIndex:[albumIndex intValue]]];
 			if ( album == nil ) {
-				NSLog(@"Creating new album export %@", [mExportMgr albumNameAtIndex:[albumIndex intValue]]);
+				DLog(@"Creating new album export %@", [mExportMgr albumNameAtIndex:[albumIndex intValue]]);
 				album = [colExport addAlbum:[mExportMgr albumNameAtIndex:[albumIndex intValue]]
 								   comments:[mExportMgr albumCommentsAtIndex:[albumIndex intValue]]
 								   sortMode:@"date"]; // TODO add as option to export UI?
 			}
 			
-			NSString *albumPath = [NSString stringWithFormat:@"%@/%@", 
-				[album name], [mExportMgr imageFileNameAtIndex:i]];
+			NSString *albumPath = [[album name] stringByAppendingPathComponent:destFileName];
 			
 			PhotoExport *photo = [album addPhoto:[mExportMgr imageTitleAtIndex:i]
 										comments:[mExportMgr imageCommentsAtIndex:i]
 											path:albumPath];
+			
+			if ( [mExportMgr originalIsMovieAtIndex:i] ) {
+				// copy the date, if available, onto the album because we don't
+				// have good way of extracting date from video itself in Matte yet
+				NSDate *itemDate = [mExportMgr imageDateAtIndex:i];
+				NSString *itemDateStr = [xsdDateTimeFormat stringFromDate:itemDate];
+				[photo setDate:itemDateStr];
+			}
 			
 			[photo addKeywords:[mExportMgr imageKeywordsAtIndex:i]];
 			[photo setRating:[mExportMgr imageRatingAtIndex:i]];
@@ -500,7 +520,13 @@
 		if ( ![self exportOriginals] ) {
 			succeeded = [mExportMgr exportImageAtIndex:i dest:dest options:&imageOptions];
 		} else {
-			succeeded = [fileManager copyPath:[mExportMgr imagePathAtIndex:i]
+			// for movie files, we have to get the "sourcePath", because the "imagePath" points
+			// to a JPG image extracted from the movie
+			NSString *src = ([mExportMgr originalIsMovieAtIndex:i] 
+							 ? [mExportMgr sourcePathAtIndex:i] 
+							 : [mExportMgr imagePathAtIndex:i]);
+			DLog(@"Exporting original file %@", src);
+			succeeded = [fileManager copyPath:src
 									   toPath:dest
 									  handler:self];
 		}
@@ -509,11 +535,12 @@
 	// write CollectionExport as metadata.xml
 	if ( succeeded ) {
 		dest = [[self exportDir] stringByAppendingPathComponent:@"metadata.xml"];
-		NSLog(@"Writing colExport as XML to %@", dest);
+		DLog(@"Writing colExport as XML to %@", dest);
 		[colExport saveAsXml:dest];
 	}
 	[colExport release];
-	NSLog(@"released colExport");
+	[xsdDateTimeFormat release];
+	DLog(@"released colExport");
 
 	// Handle failure
 	if (!succeeded) {

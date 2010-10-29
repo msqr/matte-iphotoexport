@@ -26,7 +26,7 @@
 	IBOutlet NSButton			*mExportOriginalsButton;
 	IBOutlet NSButton			*mAutoAlbumButton;
 	IBOutlet NSTextField		*mAlbumNameText;
-	IBOutlet NSTextField		*mAlbumCommentsText;
+	IBOutlet NSTextView			*mAlbumCommentsTextView;
 	
 	NSString *mExportDir;
 	int mCollectionId;
@@ -37,8 +37,11 @@
 	NSString *mPassword;
 	BOOL mExportOriginals;
 	BOOL mAutoAlbum;
+	/*
 	NSString *mAlbumName;
 	NSString *mAlbumComments;
+	*/
+	
 	NSTask *mZipTask;
 	NSConditionLock *mZipTaskLock;
 	//NSNumber *mZipTaskRunningCondition; 
@@ -72,10 +75,12 @@
 - (void)setUsername:(NSString *)username;
 - (NSString *)password;
 - (void)setPassword:(NSString *)password;
+/*
 - (NSString *)albumName;
 - (void)setAlbumName:(NSString *)albumName;
 - (NSString *)albumComments;
 - (void)setAlbumComments:(NSString *)albumComments;
+*/
 - (BOOL)autoAlbum;
 - (void)setAutoAlbum:(BOOL)autoAlbum;
 - (BOOL)exportOriginals;

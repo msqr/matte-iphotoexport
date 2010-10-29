@@ -55,6 +55,7 @@
 	keywords = [[NSMutableArray array] retain];
 	metadata = [[NSMutableDictionary  dictionary] retain];
 	rating = 0;
+	date = nil;
 	return self;
 }
 
@@ -62,6 +63,7 @@
 	[path release];
 	[keywords release];
 	[metadata release];
+	[date release];
 	[super dealloc];
 }
 
@@ -78,6 +80,9 @@
 	}
 	if ( [self path] != nil ) {
 		[item addAttribute:[NSXMLNode attributeWithName:@"archive-path" stringValue:[self path]]];
+	}
+	if ( [self date] != nil ) {
+		[item addAttribute:[NSXMLNode attributeWithName:@"item-date" stringValue:[self date]]];
 	}
 	
 	if ( [self comments] != nil ) {
@@ -103,6 +108,19 @@
 		oldPath = path;
 		path = [thePath retain];
 		[oldPath release];
+	}
+}
+
+- (NSString *)date {
+	return date;
+}
+
+- (void)setDate:(NSString *)theDate {
+	NSString *oldDate = nil;
+	if ( date != theDate ) {
+		oldDate = date;
+		date = [theDate retain];
+		[oldDate release];
 	}
 }
 
