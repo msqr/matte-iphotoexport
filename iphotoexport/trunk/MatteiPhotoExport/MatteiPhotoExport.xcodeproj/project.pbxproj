@@ -144,8 +144,8 @@
 		C9F64C99127B9AA100D8EE9D /* ZipArchive.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZipArchive.h; sourceTree = "<group>"; };
 		C9F64C9A127B9AA100D8EE9D /* ZipArchive.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ZipArchive.mm; sourceTree = "<group>"; };
 		C9F64CAB127B9B1A00D8EE9D /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
-		C9F64CEA127B9F2D00D8EE9D /* MatteExportSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MatteExportSettings.h; sourceTree = "<group>"; };
-		C9F64CEB127B9F2D00D8EE9D /* MatteExportSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MatteExportSettings.m; sourceTree = "<group>"; };
+		C9F64CEA127B9F2D00D8EE9D /* MatteExportSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MatteExportSettings.h; path = Source/MatteExportSettings.h; sourceTree = "<group>"; };
+		C9F64CEB127B9F2D00D8EE9D /* MatteExportSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MatteExportSettings.m; path = Source/MatteExportSettings.m; sourceTree = "<group>"; };
 		D2F7E65807B2D6F200F64583 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
