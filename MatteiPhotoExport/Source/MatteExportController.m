@@ -24,16 +24,8 @@
 @synthesize settings;
 
 - (void) awakeFromNib {
-	//[mExportOriginalsButton setState:NSOnState];
-	//[mAutoAlbumButton setState:NSOnState];
-	//[mSizePopUp selectItemWithTag:2];
-	//[mQualityPopUp selectItemWithTag:2];
-	//[self changeExportOriginals:nil];
-
 	if ( [exportMgr albumCount] > 0 ) {
 		DLog(@"Hello, album %d: %@", 0, [exportMgr albumNameAtIndex:0]);
-		//[mAlbumNameText setStringValue:[exportMgr albumNameAtIndex:0]];
-		//[mAlbumCommentsTextView setString:[exportMgr albumCommentsAtIndex:0]];
 	}
 }
 
@@ -112,10 +104,6 @@
 
 - (IBAction)populateCollections:(id)sender 
 {
-	//[self setUsername:[mUsernameText stringValue]];
-	//[self setPassword:[mPasswordText stringValue]];
-	//[self setUrl:[mUrlText stringValue]];
-	
 	DLog(@"populateCollections action called by %@, user = %@, pass = %@", 
 		sender, [settings username], [settings password]);
 	
@@ -240,9 +228,6 @@
 - (void)startExport:(NSString *)path
 {
 	NSFileManager *fileManager = [NSFileManager defaultManager];
-	
-	// FIXME: [self setSize:[mSizePopUp selectedTag]];
-	// FIXME: [self setQuality:[mQualityPopUp selectedTag]];
 	
 	DLog(@"url = %@, user = %@, pass = %@", [settings url], 
 		 [settings username], [settings password]);
