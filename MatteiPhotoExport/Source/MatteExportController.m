@@ -8,6 +8,7 @@
 
 #import "MatteExportController.h"
 #import "CollectionExport.h"
+#import "ZipArchive.h"
 #import "gsoap/MatteSoapBinding.nsmap"
 #import "smdevp.h"
 #import "wsseapi.h"
@@ -36,10 +37,6 @@
 		progress.message = nil;
 		progressLock = [[NSLock alloc] init];
 		taskCondition = [[NSCondition alloc] init];
-		[[NSNotificationCenter defaultCenter] addObserver:self 
-												 selector:@selector(finishedZip:)
-													 name:NSTaskDidTerminateNotification 
-												   object:nil];
 	}
 	return self;
 }
@@ -50,7 +47,6 @@
 	[progressLock release];
 	[progress.message release];
 	[taskCondition release];
-	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[super dealloc];
 }
 
@@ -328,6 +324,7 @@
 	[xsdDateTimeFormat setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"UTC"]];
 	
 	NSString *dest;
+	NSMutableDictionary *outputFiles = [NSMutableDictionary dictionary];
 	
 	int i;
 	for(i = 0; cancelExport == NO && succeeded == YES && i < count; i++)
@@ -396,6 +393,7 @@
 			
 			[photo addKeywords:[exportMgr imageKeywordsAtIndex:i]];
 			[photo setRating:[exportMgr imageRatingAtIndex:i]];
+			[outputFiles setObject:dest forKey:albumPath];
 		}
 		if ( ![settings isExportOriginals] ) {
 			succeeded = [exportMgr exportImageAtIndex:i dest:dest options:&imageOptions];
@@ -428,6 +426,7 @@
 		dest = [[self exportDir] stringByAppendingPathComponent:@"metadata.xml"];
 		DLog(@"Writing colExport as XML to %@", dest);
 		[colExport saveAsXml:dest];
+		[outputFiles setObject:dest forKey:@"metadata.xml"];
 	}
 	[colExport release];
 	[xsdDateTimeFormat release];
@@ -444,47 +443,42 @@
 		return;
 	}
 	
-	// create zip archive
-	zipTask = [[NSTask alloc] init];
-	[zipTask setCurrentDirectoryPath:[self exportDir]];
-	[zipTask setLaunchPath:@"/usr/bin/zip"]; // TODO make sure this exists, or find it?
+	[self lockProgress];
+	[progress.message autorelease];
+	progress.message = [[NSString stringWithFormat:@"Zipping item 1 of %d", [outputFiles count]] retain];
+	progress.totalItems = [outputFiles count];
+	progress.currentItem = 0;
+	[self unlockProgress];
 	
-	// consstruct arguments array
-	NSMutableArray *args = [NSMutableArray array];
-	[args addObject:@"-r"];
+	// create zip archive
+	// TODO handle non-album output
+	ZipArchive *zip = [[ZipArchive alloc] init];
 	unsigned albumCount =  [exportMgr albumCount];
 	unsigned albumIdx;
 	for ( albumIdx = 0; albumIdx < albumCount; albumIdx++ ) {
 		if ( albumIdx == 0 ) {
-			// add zip name as first album name
-			[args addObject:[[exportMgr albumNameAtIndex:albumIdx] stringByAppendingString:@".zip"]];
+			[zip CreateZipFile2:[[self exportDir] stringByAppendingPathComponent:[[exportMgr albumNameAtIndex:albumIdx] stringByAppendingString:@".zip"]]];
 		}
-		[args addObject:[exportMgr albumNameAtIndex:albumIdx]];
+		for ( NSString *archivePath in outputFiles ) {
+			[self lockProgress];
+			progress.currentItem = progress.currentItem + 1;
+			[progress.message autorelease];
+			progress.message = [[NSString stringWithFormat:@"Zipping item %d of %d", 
+								 progress.currentItem, [outputFiles count]] retain];
+			[self unlockProgress];
+			
+			[zip addFileToZip:[outputFiles objectForKey:archivePath] newname:archivePath];
+		}
 	}
-	[args addObject:@"metadata.xml"];
-	[zipTask setArguments:args];
+	[zip CloseZipFile2];
+	[zip release];
 	
 	[self lockProgress];
 	[progress.message autorelease];
-	progress.message = @"Creating zip archive";
-	progress.indeterminateProgress = YES;
+	progress.message = nil;
+	progress.shouldStop = YES;
 	[self unlockProgress];
-	
-	// iPhoto runs export in own thread, so for notificaiton of task complete to reach us,
-	// run the task from the main thread which is the thread that created us in the first place
-	[taskCondition lock];
-	taskRunning = YES;
-	[zipTask performSelectorOnMainThread:@selector(launch) withObject:nil waitUntilDone:NO];
-	while ( taskRunning ) {
-		[taskCondition wait];
-	}
-	[taskCondition unlock];
 }
-/*
-- (void)createZipArchive {
-	[mZipTask launch];
-	[mZipTaskLock unlockWithCondition:ZIP_TASK_RUNNING];
-}*/
 
 - (void)fileManager:(NSFileManager *)manager willProcessPath:(NSString *)path {
 	if ( [manager fileExistsAtPath:path] ) {
@@ -515,35 +509,6 @@
 - (NSString *)name
 {
 	return @"Matte Exporter";
-}
-
-#pragma mark Zip export support
-
-- (void)finishedZip:(NSNotification *)aNotification {
-	DLog(@"Got notification %@", aNotification);
-    int status = [[aNotification object] terminationStatus];
-#ifdef DEBUG
-    if (status) {
-        DLog(@"Zip task failed with status %d", status);
-    } else {
-        DLog(@"Zip task succeeded.");
-	}
-#endif
-	// close the progress panel when done
-	[self lockProgress];
-	[progress.message autorelease];
-	progress.message = nil;
-	progress.shouldStop = YES;
-	[zipTask release];
-	zipTask = nil;
-	
-	// signal that we've completed
-	[taskCondition lock];
-	taskRunning = NO;
-	[taskCondition signal];
-	[taskCondition unlock];
-	
-	[self unlockProgress];
 }
 
 #pragma mark Movie export support

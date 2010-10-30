@@ -23,8 +23,6 @@
 	
 	NSString *exportDir;
 	QTMovie *movie;
-	
-	NSTask *zipTask;
 	BOOL taskRunning;
 	NSCondition *taskCondition;
 	
