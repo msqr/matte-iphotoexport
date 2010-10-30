@@ -14,8 +14,15 @@
 #import "wsseapi.h"
 
 @interface MatteExportController (MovieSupport)
+- (NSArray *)availableComponents;
+- (NSData *)getExportSettings:(NSUInteger)selectedComponentIndex;
+- (BOOL)componentSupportsSettingsDialog:(NSUInteger)selectedComponentIndex;
 - (void)setupQTMovie:(NSDictionary *)attributes;
 - (void)exportMovie:(NSString *)dest;
+@end
+
+@interface MatteExportController (Private)
+- (void)setupImageExportOptions:(ImageExportOptions *)imageOptions;
 @end
 
 #pragma mark -
@@ -28,6 +35,19 @@
 	if ( [exportMgr albumCount] > 0 ) {
 		DLog(@"Hello, album %d: %@", 0, [exportMgr albumNameAtIndex:0]);
 	}
+	[mQTComponentPopUp removeAllItems];
+	qtComponents = [[self availableComponents] retain];
+	for ( NSDictionary *component in qtComponents ) {
+		NSString *name = [component objectForKey:@"name"];
+		unsigned int i;
+		for ( i = 2; [mQTComponentPopUp itemWithTitle:name] != nil; ++i) {
+			name = [NSString stringWithFormat:@"%@-%u", [component objectForKey:@"name"], i];
+		}
+		[mQTComponentPopUp addItemWithTitle:name];
+	}
+	
+	[self changeExportOriginals:nil];
+	[self changeExportOriginalMovies:nil];
 }
 
 - (id) initWithExportImageObj:(id <ExportImageProtocol>)obj {
@@ -47,6 +67,7 @@
 	[progressLock release];
 	[progress.message release];
 	[taskCondition release];
+	[qtComponents release];
 	[super dealloc];
 }
 
@@ -98,6 +119,8 @@
 	soap_done(soap);
 }
 
+#pragma mark Actions
+
 - (IBAction)populateCollections:(id)sender 
 {
 	DLog(@"populateCollections action called by %@, user = %@, pass = %@", 
@@ -118,6 +141,27 @@
 	
 	[mSizePopUp setEnabled:(![settings isExportOriginals])];
 	[mQualityPopUp setEnabled:(![settings isExportOriginals])];
+}
+
+- (IBAction)changeExportOriginalMovies:(id)sender 
+{
+	BOOL enabled = ![settings isExportOriginalMovies];
+	DLog(@"changeExportOriginals action called by %@, exportOriginals = %@", 
+		 sender, (enabled ? @"YES" : @"NO"));
+	
+	[mQTComponentPopUp setEnabled:enabled];
+	[mQTSettingButton setEnabled:[self componentSupportsSettingsDialog:settings.selectedComponentIndex]];
+}
+
+- (IBAction)changeExportMovieType:(id)sender
+{
+	[mQTSettingButton setEnabled:[self componentSupportsSettingsDialog:settings.selectedComponentIndex]];
+}
+
+- (IBAction)configureMovieExportSettings:(id)sender
+{
+	NSData *qtSettings = [self getExportSettings:settings.selectedComponentIndex];
+	settings.exportMovieSettings = qtSettings;
 }
 
 #pragma mark Accessors
@@ -291,6 +335,17 @@
 	imageOptions->metadata = EMBoth;
 }
 
+- (BOOL)componentSupportsSettingsDialog:(NSUInteger)selectedComponentIndex
+{
+	NSDictionary *qtComponent = [qtComponents objectAtIndex:selectedComponentIndex];
+	NSString *subtype = [qtComponent objectForKey:@"subtype"];
+	if ( [subtype hasPrefix:@"M4V"] || [subtype hasPrefix:@"iph"] ) {
+		// these types do not support any settings
+		return NO;
+	}
+	return YES;
+}
+
 - (void)performExport:(NSString *)path
 {
 	DLog(@"performExport path: %@", path);
@@ -298,12 +353,36 @@
 	int count = [exportMgr imageCount];
 	BOOL succeeded = YES;
 	cancelExport = NO;
+	int i;
+	
+	if ( settings.exportMovieSettings == nil && !settings.exportOriginalMovies ) {
+		// need to recompress movies, but we don't have settings selected for movies.
+		// look for a movie in our export, and if we have one, present the settings dialog
+		// to choose the movie export settings
+		for ( i = 0; i < count; i++ ) {
+			if ( [exportMgr originalIsMovieAtIndex:i] ) {
+				if ( [self componentSupportsSettingsDialog:settings.selectedComponentIndex] ) {
+					[self performSelectorOnMainThread:@selector(configureMovieExportSettings:) withObject:nil waitUntilDone:YES];
+					if ( settings.exportMovieSettings == nil ) {
+						cancelExport = YES;
+						[self lockProgress];
+						progress.shouldStop = YES;
+						[self unlockProgress];
+						return;
+					}
+				}
+				break;
+			}
+		}
+	}
+	
 	CollectionExport *colExport = [[CollectionExport alloc] init];
 	
 	[self setExportDir:path];
 	
 	ImageExportOptions imageOptions;
 	NSFileManager *fileManager = [NSFileManager defaultManager];
+	NSString *exportMovieExtension = nil;
 	
 	if ( ![settings isExportOriginals] ) {
 		// set export options when not exporting originals
@@ -326,7 +405,6 @@
 	NSString *dest;
 	NSMutableDictionary *outputFiles = [NSMutableDictionary dictionary];
 	
-	int i;
 	for(i = 0; cancelExport == NO && succeeded == YES && i < count; i++)
 	{
 		[self lockProgress];
@@ -352,15 +430,28 @@
 			
 			NSString *destFileName = nil;
 			
-			if ( [settings isExportOriginals] && [exportMgr originalIsMovieAtIndex:i] ) {
-				NSDictionary *qtAttr = [NSDictionary dictionaryWithObjectsAndKeys:
-										[exportMgr sourcePathAtIndex:i], QTMovieFileNameAttribute,
-										[NSNumber numberWithBool:NO], QTMovieOpenAsyncOKAttribute, 
-										nil];
-				[self performSelectorOnMainThread:@selector(setupQTMovie:) withObject:qtAttr waitUntilDone:YES];
-				
-				destFileName = [[[[exportMgr sourcePathAtIndex:i] lastPathComponent] stringByDeletingPathExtension]
-								stringByAppendingFormat:@".%@", @"m4v"];
+			if ( [exportMgr originalIsMovieAtIndex:i] ) {
+				if ( settings.exportOriginalMovies ) {
+					destFileName = [[exportMgr sourcePathAtIndex:i] lastPathComponent];
+				} else {
+					NSDictionary *qtAttr = [NSDictionary dictionaryWithObjectsAndKeys:
+											[exportMgr sourcePathAtIndex:i], QTMovieFileNameAttribute,
+											[NSNumber numberWithBool:NO], QTMovieOpenAsyncOKAttribute, 
+											nil];
+					[self performSelectorOnMainThread:@selector(setupQTMovie:) withObject:qtAttr waitUntilDone:YES];
+					
+					// FIXME: get file extension from component type
+					if ( exportMovieExtension == nil ) {
+						NSNumber *subtype = [[qtComponents objectAtIndex:settings.selectedComponentIndex] objectForKey:@"subtypeLong"];
+						OSType exportMovieType = [subtype longValue];
+						exportMovieExtension = [exportMgr getExtensionForImageFormat:exportMovieType];
+						if ( exportMovieExtension == nil ) {
+							exportMovieExtension = @"mov";
+						}
+					}
+					destFileName = [[[[exportMgr sourcePathAtIndex:i] lastPathComponent] stringByDeletingPathExtension]
+									stringByAppendingFormat:@".%@", exportMovieExtension];
+				}
 			} else {
 				destFileName = [exportMgr imageFileNameAtIndex:i];
 			}
@@ -395,29 +486,27 @@
 			[photo setRating:[exportMgr imageRatingAtIndex:i]];
 			[outputFiles setObject:dest forKey:albumPath];
 		}
-		if ( ![settings isExportOriginals] ) {
+		if ( movie != nil ) {
+			[taskCondition lock];
+			taskRunning = YES;
+			[NSThread detachNewThreadSelector:@selector(exportMovie:) toTarget:self withObject:dest];
+			while ( taskRunning ) {
+				[taskCondition wait];
+			}
+			[taskCondition unlock];
+		} else if ( movie == nil && !settings.exportOriginals ) {
 			succeeded = [exportMgr exportImageAtIndex:i dest:dest options:&imageOptions];
 		} else {
 			// for movie files, we have to get the "sourcePath", because the "imagePath" points
 			// to a JPG image extracted from the movie
-			NSString *src = ([exportMgr originalIsMovieAtIndex:i] 
-							 ? [exportMgr sourcePathAtIndex:i] 
-							 : [exportMgr imagePathAtIndex:i]);
 			
-			if ( movie != nil ) {
-				[taskCondition lock];
-				taskRunning = YES;
-				[NSThread detachNewThreadSelector:@selector(exportMovie:) toTarget:self withObject:dest];
-				while ( taskRunning ) {
-					[taskCondition wait];
-				}
-				[taskCondition unlock];
-			} else {
-				DLog(@"Exporting original file %@", src);
-				succeeded = [fileManager copyPath:src
-										   toPath:dest
-										  handler:self];
-			}
+			NSString *src = ([exportMgr originalIsMovieAtIndex:i]
+							 ? [exportMgr sourcePathAtIndex:i]
+							 : [exportMgr imagePathAtIndex:i]);
+			DLog(@"Exporting original file %@", src);
+			succeeded = [fileManager copyPath:src
+									   toPath:dest
+									  handler:self];
 		}
 	}
 	
@@ -513,6 +602,103 @@
 
 #pragma mark Movie export support
 
+// code adapted from http://cocoadev.com/index.pl?QTMovieExportSettings
+
+- (NSArray *)availableComponents
+{
+	NSMutableArray		*results = nil;
+	ComponentDescription	cd = {};
+	Component		 c = NULL;
+	Handle			 nameHandle = NewHandle(0);
+	
+	if ( nameHandle == NULL )
+		return( nil );
+	
+	cd.componentType = MovieExportType;
+	cd.componentSubType = 0;
+	cd.componentManufacturer = 0;
+	cd.componentFlags = canMovieExportFiles;
+	cd.componentFlagsMask = canMovieExportFiles;
+	
+	while((c = FindNextComponent(c, &cd)))
+	{
+		ComponentDescription	exportCD = {};
+		
+		if ( GetComponentInfo( c, &exportCD, nameHandle, NULL, NULL ) == noErr )
+		{
+			HLock( nameHandle );
+			NSString	*nameStr = [[[NSString alloc] initWithBytes:(*nameHandle)+1 length:(int)**nameHandle encoding:NSMacOSRomanStringEncoding] autorelease];
+			HUnlock( nameHandle );
+			
+			// these numbers are required by QTKit
+			NSNumber *typeNum = [NSNumber numberWithLong:exportCD.componentSubType];
+			NSNumber *subTypeNum = [NSNumber numberWithLong:exportCD.componentSubType];
+			NSNumber *manufacturerNum = [NSNumber numberWithLong:exportCD.componentManufacturer];
+			
+			// the following string versions are to help with debugging
+			exportCD.componentType = CFSwapInt32HostToBig(exportCD.componentType);
+			exportCD.componentSubType = CFSwapInt32HostToBig(exportCD.componentSubType);
+			exportCD.componentManufacturer = CFSwapInt32HostToBig(exportCD.componentManufacturer);
+			
+			NSString *type = [[[NSString alloc] initWithBytes:&exportCD.componentType length:sizeof(OSType) encoding:NSMacOSRomanStringEncoding] autorelease];
+			NSString *subType = [[[NSString alloc] initWithBytes:&exportCD.componentSubType length:sizeof(OSType) encoding:NSMacOSRomanStringEncoding] autorelease];
+			NSString *manufacturer = [[[NSString alloc] initWithBytes:&exportCD.componentManufacturer length:sizeof(OSType) encoding:NSMacOSRomanStringEncoding] autorelease];
+			
+			NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:
+										nameStr, @"name", [NSData dataWithBytes:&c length:sizeof(c)], @"component",
+										type, @"type", subType, @"subtype", 
+										typeNum, @"typeLong", subTypeNum, @"subtypeLong",
+										manufacturer, @"manufacturer", manufacturerNum, @"manufacturerLong",
+										nil];
+			
+			if ( results == nil ) {
+				results = [NSMutableArray array];
+			}
+			DLog(@"Found component: %@", dictionary);
+			[results addObject:dictionary];
+		}
+	}
+	
+	DisposeHandle( nameHandle );
+	
+	return results;
+}
+
+- (NSData *)getExportSettings:(NSUInteger)selectedComponentIndex
+{
+	Component c;
+	memcpy(&c, [[[qtComponents objectAtIndex:selectedComponentIndex] objectForKey:@"component"] bytes], sizeof(c));
+	
+	MovieExportComponent exporter = OpenComponent(c);
+	Boolean canceled;
+	ComponentResult err = MovieExportDoUserDialog(exporter, NULL, NULL, 0, 0, &canceled);
+	if(err)
+	{
+		NSLog(@"Got error %d when calling MovieExportDoUserDialog",err);
+		CloseComponent(exporter);
+		return nil;
+	}
+	if(canceled)
+	{
+		CloseComponent(exporter);
+		return nil;
+	}
+	QTAtomContainer qtSettings;
+	err = MovieExportGetSettingsAsAtomContainer(exporter, &qtSettings);
+	if(err)
+	{
+		NSLog(@"Got error %d when calling MovieExportGetSettingsAsAtomContainer",err);
+		CloseComponent(exporter);
+		return nil;
+	}
+	NSData *data = [NSData dataWithBytes:*qtSettings length:GetHandleSize(qtSettings)];
+	DisposeHandle(qtSettings);
+	
+	CloseComponent(exporter);
+	
+	return data;
+}
+
 - (void)setupQTMovie:(NSDictionary *)attributes
 {
 	[movie release];
@@ -548,13 +734,23 @@ withAttributes:(NSDictionary *)attributes
 	progress.totalItems = 100;
 	progress.currentItem = 0;
 	[self unlockProgress];
-	
 	[QTMovie enterQTKitOnThreadDisablingThreadSafetyProtection];
 	[movie attachToCurrentThread];
-	NSDictionary *exportAttrs = [NSDictionary dictionaryWithObjectsAndKeys:
-								 [NSNumber numberWithBool:YES], QTMovieExport,
-								 [NSNumber numberWithLong:'M4V '], QTMovieExportType,
-								 nil];
+	NSDictionary *component = [qtComponents objectAtIndex:settings.selectedComponentIndex];
+	NSDictionary *exportAttrs;
+	if ( [self componentSupportsSettingsDialog:settings.selectedComponentIndex] ) {
+		exportAttrs = [NSDictionary dictionaryWithObjectsAndKeys:
+					   [NSNumber numberWithBool:YES], QTMovieExport,
+					   [component objectForKey:@"subtypeLong"], QTMovieExportType,
+					   [component objectForKey:@"manufacturerLong"], QTMovieExportManufacturer,
+					   settings.exportMovieSettings, QTMovieExportSettings,
+					   nil];
+	} else {
+		exportAttrs = [NSDictionary dictionaryWithObjectsAndKeys:
+					   [NSNumber numberWithBool:YES], QTMovieExport,
+					   [component objectForKey:@"subtypeLong"], QTMovieExportType,
+					   nil];
+	}
 	[movie writeToFile:dest withAttributes:exportAttrs];
 	[movie detachFromCurrentThread];
 	[QTMovie exitQTKitOnThread];
