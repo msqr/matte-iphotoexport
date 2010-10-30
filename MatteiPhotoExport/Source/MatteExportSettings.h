@@ -11,13 +11,20 @@
 @interface MatteExportSettings : NSObject {
 @private
 	int collectionId;
-	int size;
-	int quality;
 	NSString *url;
 	NSString *username;
 	NSString *password;
+	
+	// image options
 	BOOL exportOriginals;
 	BOOL autoAlbum;	
+	int size;
+	int quality;
+
+	// movie options
+	BOOL exportOriginalMovies;
+	NSUInteger selectedComponentIndex;
+	NSData *exportMovieSettings;
 }
 
 @property (assign) int collectionId;
@@ -28,5 +35,9 @@
 @property (retain) NSString *password;
 @property (assign,getter=isExportOriginals) BOOL exportOriginals;
 @property (assign,getter=isAutoAlbum) BOOL autoAlbum;
+
+@property (assign,getter=isExportOriginalMovies) BOOL exportOriginalMovies;
+@property (assign) NSUInteger selectedComponentIndex;
+@property (retain) NSData *exportMovieSettings;
 
 @end

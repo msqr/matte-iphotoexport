@@ -21,7 +21,11 @@
 	IBOutlet NSPopUpButton		*mSizePopUp;
 	IBOutlet NSPopUpButton		*mQualityPopUp;
 	
+	IBOutlet NSPopUpButton		*mQTComponentPopUp;
+	IBOutlet NSButton			*mQTSettingButton;
+	
 	NSString *exportDir;
+	NSArray *qtComponents;
 	QTMovie *movie;
 	BOOL taskRunning;
 	NSCondition *taskCondition;
@@ -40,7 +44,12 @@
 // internal
 - (IBAction)populateCollections:(id)sender;
 - (IBAction)changeExportOriginals:(id)sender;
-- (void)setupImageExportOptions:(ImageExportOptions *)imageOptions;
+
+- (IBAction)changeExportOriginalMovies:(id)sender;
+- (IBAction)changeExportMovieType:(id)sender;
+- (IBAction)configureMovieExportSettings:(id)sender;
+
+
 
 // getters/setters
 - (NSString *)exportDir;
