@@ -29,6 +29,13 @@
 		C9A72B360CF8D86A0019950D /* MatteExportController.m in Sources */ = {isa = PBXBuildFile; fileRef = C9A72B350CF8D86A0019950D /* MatteExportController.m */; };
 		C9A72B5A0CF8DD060019950D /* Panel.nib in Resources */ = {isa = PBXBuildFile; fileRef = C9A72B580CF8DD060019950D /* Panel.nib */; };
 		C9E285DD127AAD230082FC48 /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9E285DC127AAD230082FC48 /* QTKit.framework */; };
+		C9F64C9B127B9AA100D8EE9D /* ioapi.c in Sources */ = {isa = PBXBuildFile; fileRef = C9F64C90127B9AA100D8EE9D /* ioapi.c */; };
+		C9F64C9C127B9AA100D8EE9D /* mztools.c in Sources */ = {isa = PBXBuildFile; fileRef = C9F64C92127B9AA100D8EE9D /* mztools.c */; };
+		C9F64C9D127B9AA100D8EE9D /* unzip.c in Sources */ = {isa = PBXBuildFile; fileRef = C9F64C94127B9AA100D8EE9D /* unzip.c */; };
+		C9F64C9E127B9AA100D8EE9D /* zip.c in Sources */ = {isa = PBXBuildFile; fileRef = C9F64C97127B9AA100D8EE9D /* zip.c */; };
+		C9F64C9F127B9AA100D8EE9D /* ZipArchive.mm in Sources */ = {isa = PBXBuildFile; fileRef = C9F64C9A127B9AA100D8EE9D /* ZipArchive.mm */; };
+		C9F64CAC127B9B1A00D8EE9D /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C9F64CAB127B9B1A00D8EE9D /* libz.dylib */; };
+		C9F64CEC127B9F2D00D8EE9D /* MatteExportSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = C9F64CEB127B9F2D00D8EE9D /* MatteExportSettings.m */; };
 		C9FD417E0D8CB785002CB43D /* MatteSoapBinding.nsmap in Resources */ = {isa = PBXBuildFile; fileRef = C99974D50D135D280086DF84 /* MatteSoapBinding.nsmap */; };
 /* End PBXBuildFile section */
 
@@ -124,6 +131,21 @@
 		C9A72B590CF8DD060019950D /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Resources/English.lproj/Panel.nib; sourceTree = "<group>"; };
 		C9E285DC127AAD230082FC48 /* QTKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QTKit.framework; path = System/Library/Frameworks/QTKit.framework; sourceTree = SDKROOT; };
 		C9E677A80D97416C00B4A76D /* README.rtfd */ = {isa = PBXFileReference; lastKnownFileType = wrapper.rtfd; name = README.rtfd; path = Docs/README.rtfd; sourceTree = "<group>"; };
+		C9F64C8F127B9AA100D8EE9D /* crypt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = crypt.h; sourceTree = "<group>"; };
+		C9F64C90127B9AA100D8EE9D /* ioapi.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ioapi.c; sourceTree = "<group>"; };
+		C9F64C91127B9AA100D8EE9D /* ioapi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ioapi.h; sourceTree = "<group>"; };
+		C9F64C92127B9AA100D8EE9D /* mztools.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = mztools.c; sourceTree = "<group>"; };
+		C9F64C93127B9AA100D8EE9D /* mztools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mztools.h; sourceTree = "<group>"; };
+		C9F64C94127B9AA100D8EE9D /* unzip.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = unzip.c; sourceTree = "<group>"; };
+		C9F64C95127B9AA100D8EE9D /* unzip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = unzip.h; sourceTree = "<group>"; };
+		C9F64C96127B9AA100D8EE9D /* zconf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zconf.h; sourceTree = "<group>"; };
+		C9F64C97127B9AA100D8EE9D /* zip.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = zip.c; sourceTree = "<group>"; };
+		C9F64C98127B9AA100D8EE9D /* zip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zip.h; sourceTree = "<group>"; };
+		C9F64C99127B9AA100D8EE9D /* ZipArchive.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZipArchive.h; sourceTree = "<group>"; };
+		C9F64C9A127B9AA100D8EE9D /* ZipArchive.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ZipArchive.mm; sourceTree = "<group>"; };
+		C9F64CAB127B9B1A00D8EE9D /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
+		C9F64CEA127B9F2D00D8EE9D /* MatteExportSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MatteExportSettings.h; sourceTree = "<group>"; };
+		C9F64CEB127B9F2D00D8EE9D /* MatteExportSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MatteExportSettings.m; sourceTree = "<group>"; };
 		D2F7E65807B2D6F200F64583 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
@@ -134,6 +156,7 @@
 			files = (
 				8D5B49B4048680CD000E48DA /* Cocoa.framework in Frameworks */,
 				C9E285DD127AAD230082FC48 /* QTKit.framework in Frameworks */,
+				C9F64CAC127B9B1A00D8EE9D /* libz.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -148,6 +171,7 @@
 				C9A72B380CF8D87E0019950D /* SDK Interface */,
 				08FB77AFFE84173DC02AAC07 /* Classes */,
 				32C88E010371C26100C91783 /* Other Sources */,
+				C9F64C8D127B9AA100D8EE9D /* ZipFile-OC */,
 				089C167CFE841241C02AAC07 /* Resources */,
 				089C1671FE841209C02AAC07 /* Frameworks and Libraries */,
 				19C28FB8FE9D52D311CA2CBB /* Products */,
@@ -177,12 +201,14 @@
 		08FB77AFFE84173DC02AAC07 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				C9A72B310CF8D8490019950D /* MatteExportPluginBox.h */,
-				C9A72B320CF8D8490019950D /* MatteExportPluginBox.m */,
-				C9A72B340CF8D86A0019950D /* MatteExportController.h */,
-				C9A72B350CF8D86A0019950D /* MatteExportController.m */,
 				C9A624C20D8EF04500418EEB /* CollectionExport.h */,
 				C9A624C30D8EF04500418EEB /* CollectionExport.m */,
+				C9A72B340CF8D86A0019950D /* MatteExportController.h */,
+				C9A72B350CF8D86A0019950D /* MatteExportController.m */,
+				C9A72B310CF8D8490019950D /* MatteExportPluginBox.h */,
+				C9A72B320CF8D8490019950D /* MatteExportPluginBox.m */,
+				C9F64CEA127B9F2D00D8EE9D /* MatteExportSettings.h */,
+				C9F64CEB127B9F2D00D8EE9D /* MatteExportSettings.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -192,6 +218,7 @@
 			children = (
 				1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */,
 				C9E285DC127AAD230082FC48 /* QTKit.framework */,
+				C9F64CAB127B9B1A00D8EE9D /* libz.dylib */,
 			);
 			name = "Linked Frameworks";
 			sourceTree = "<group>";
@@ -335,6 +362,34 @@
 			name = Docs;
 			sourceTree = "<group>";
 		};
+		C9F64C8D127B9AA100D8EE9D /* ZipFile-OC */ = {
+			isa = PBXGroup;
+			children = (
+				C9F64C8E127B9AA100D8EE9D /* minizip */,
+				C9F64C99127B9AA100D8EE9D /* ZipArchive.h */,
+				C9F64C9A127B9AA100D8EE9D /* ZipArchive.mm */,
+			);
+			name = "ZipFile-OC";
+			path = "Source/ZipFile-OC";
+			sourceTree = "<group>";
+		};
+		C9F64C8E127B9AA100D8EE9D /* minizip */ = {
+			isa = PBXGroup;
+			children = (
+				C9F64C8F127B9AA100D8EE9D /* crypt.h */,
+				C9F64C90127B9AA100D8EE9D /* ioapi.c */,
+				C9F64C91127B9AA100D8EE9D /* ioapi.h */,
+				C9F64C92127B9AA100D8EE9D /* mztools.c */,
+				C9F64C93127B9AA100D8EE9D /* mztools.h */,
+				C9F64C94127B9AA100D8EE9D /* unzip.c */,
+				C9F64C95127B9AA100D8EE9D /* unzip.h */,
+				C9F64C96127B9AA100D8EE9D /* zconf.h */,
+				C9F64C97127B9AA100D8EE9D /* zip.c */,
+				C9F64C98127B9AA100D8EE9D /* zip.h */,
+			);
+			path = minizip;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -416,6 +471,12 @@
 				C90CA1FA0D14A95F00224FBC /* soapC.c in Sources */,
 				C90CA2050D14AA5100224FBC /* md5evp.c in Sources */,
 				C9A624C40D8EF04500418EEB /* CollectionExport.m in Sources */,
+				C9F64C9B127B9AA100D8EE9D /* ioapi.c in Sources */,
+				C9F64C9C127B9AA100D8EE9D /* mztools.c in Sources */,
+				C9F64C9D127B9AA100D8EE9D /* unzip.c in Sources */,
+				C9F64C9E127B9AA100D8EE9D /* zip.c in Sources */,
+				C9F64C9F127B9AA100D8EE9D /* ZipArchive.mm in Sources */,
+				C9F64CEC127B9F2D00D8EE9D /* MatteExportSettings.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
