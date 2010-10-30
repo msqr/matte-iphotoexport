@@ -8,9 +8,11 @@
 #import <Cocoa/Cocoa.h>
 #import <QTKit/QTKit.h>
 #import "ExportPluginProtocol.h"
+#import "MatteExportSettings.h"
 
 @interface MatteExportController : NSObject <ExportPluginProtocol> {
-	id <ExportImageProtocol> mExportMgr;
+	id <ExportImageProtocol> exportMgr;
+	MatteExportSettings *settings;
 	
 	IBOutlet NSBox <ExportPluginBoxProtocol> *mSettingsBox;
 	IBOutlet NSControl *mFirstView;
@@ -18,34 +20,20 @@
 	IBOutlet NSPopUpButton		*mCollectionPopUp;
 	IBOutlet NSPopUpButton		*mSizePopUp;
 	IBOutlet NSPopUpButton		*mQualityPopUp;
-	IBOutlet NSTextField		*mUrlText;
-	IBOutlet NSTextField		*mUsernameText;
-	IBOutlet NSSecureTextField	*mPasswordText;
-	IBOutlet NSButton			*mExportOriginalsButton;
-	IBOutlet NSButton			*mAutoAlbumButton;
-	IBOutlet NSTextField		*mAlbumNameText;
-	IBOutlet NSTextView			*mAlbumCommentsTextView;
 	
-	NSString *mExportDir;
-	int mCollectionId;
-	int mSize;
-	int mQuality;
-	NSString *mUrl;
-	NSString *mUsername;
-	NSString *mPassword;
-	BOOL mExportOriginals;
-	BOOL mAutoAlbum;
-	QTMovie *mMovie;
+	NSString *exportDir;
+	QTMovie *movie;
 	
-	NSTask *mZipTask;
+	NSTask *zipTask;
 	BOOL taskRunning;
+	NSCondition *taskCondition;
 	
-	NSCondition *mTaskCondition;
-	
-	ExportPluginProgress mProgress;
-	NSLock *mProgressLock;
-	BOOL mCancelExport;
+	ExportPluginProgress progress;
+	NSLock *progressLock;
+	BOOL cancelExport;
 }
+
+@property (readonly) MatteExportSettings *settings;
 
 // overrides
 - (void)awakeFromNib;
@@ -59,27 +47,5 @@
 // getters/setters
 - (NSString *)exportDir;
 - (void)setExportDir:(NSString *)dir;
-- (int)collectionId;
-- (void)setCollectionId:(int)collectionId;
-- (int)size;
-- (void)setSize:(int)size;
-- (int)quality;
-- (void)setQuality:(int)quality;
-- (NSString *)url;
-- (void)setUrl:(NSString *)url;
-- (NSString *)username;
-- (void)setUsername:(NSString *)username;
-- (NSString *)password;
-- (void)setPassword:(NSString *)password;
-/*
-- (NSString *)albumName;
-- (void)setAlbumName:(NSString *)albumName;
-- (NSString *)albumComments;
-- (void)setAlbumComments:(NSString *)albumComments;
-*/
-- (BOOL)autoAlbum;
-- (void)setAutoAlbum:(BOOL)autoAlbum;
-- (BOOL)exportOriginals;
-- (void)setExportOriginals:(BOOL)exportOriginals;
 
 @end

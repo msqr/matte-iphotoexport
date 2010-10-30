@@ -12,7 +12,7 @@
 		</object>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="2"/>
+			<integer value="3"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -237,7 +237,7 @@
 											<reference key="NSSuperview" ref="898911808"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSPopUpButtonCell" key="NSCell" id="313579308">
-												<int key="NSCellFlags">-2076049856</int>
+												<int key="NSCellFlags">-1539178944</int>
 												<int key="NSCellFlags2">2048</int>
 												<reference key="NSSupport" ref="700818372"/>
 												<reference key="NSControlView" ref="461087053"/>
@@ -355,7 +355,7 @@
 											<reference key="NSSuperview" ref="898911808"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSPopUpButtonCell" key="NSCell" id="66866146">
-												<int key="NSCellFlags">-2076049856</int>
+												<int key="NSCellFlags">-1539178944</int>
 												<int key="NSCellFlags2">2048</int>
 												<reference key="NSSupport" ref="700818372"/>
 												<reference key="NSControlView" ref="719793549"/>
@@ -528,6 +528,23 @@
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1920, 1178}}</string>
 				<string key="NSMaxSize">{1.79769e+308, 1.79769e+308}</string>
+			</object>
+			<object class="NSObjectController" id="226957887">
+				<object class="NSMutableArray" key="NSDeclaredKeys">
+					<bool key="EncodedWithXMLCoder">YES</bool>
+					<string>exportOriginals</string>
+					<string>autoAlbum</string>
+					<string>quality</string>
+					<string>size</string>
+					<string>collectionId</string>
+					<string>password</string>
+					<string>username</string>
+					<object class="NSMutableString">
+						<characters key="NS.bytes">url</characters>
+					</object>
+				</object>
+				<bool key="NSEditable">YES</bool>
+				<object class="_NSManagedProxy" key="_NSManagedProxy"/>
 			</object>
 		</object>
 		<object class="IBObjectContainer" key="IBDocument.Objects">
@@ -708,6 +725,150 @@
 						<reference key="destination" ref="332025839"/>
 					</object>
 					<int key="connectionID">120</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">contentObject: settings</string>
+						<reference key="source" ref="226957887"/>
+						<reference key="destination" ref="1001"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="226957887"/>
+							<reference key="NSDestination" ref="1001"/>
+							<string key="NSLabel">contentObject: settings</string>
+							<string key="NSBinding">contentObject</string>
+							<string key="NSKeyPath">settings</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">157</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: selection.exportOriginals</string>
+						<reference key="source" ref="397265415"/>
+						<reference key="destination" ref="226957887"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="397265415"/>
+							<reference key="NSDestination" ref="226957887"/>
+							<string key="NSLabel">value: selection.exportOriginals</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">selection.exportOriginals</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">159</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: selection.autoAlbum</string>
+						<reference key="source" ref="189688750"/>
+						<reference key="destination" ref="226957887"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="189688750"/>
+							<reference key="NSDestination" ref="226957887"/>
+							<string key="NSLabel">value: selection.autoAlbum</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">selection.autoAlbum</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">162</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">selectedTag: selection.quality</string>
+						<reference key="source" ref="719793549"/>
+						<reference key="destination" ref="226957887"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="719793549"/>
+							<reference key="NSDestination" ref="226957887"/>
+							<string key="NSLabel">selectedTag: selection.quality</string>
+							<string key="NSBinding">selectedTag</string>
+							<string key="NSKeyPath">selection.quality</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">171</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">selectedTag: selection.size</string>
+						<reference key="source" ref="461087053"/>
+						<reference key="destination" ref="226957887"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="461087053"/>
+							<reference key="NSDestination" ref="226957887"/>
+							<string key="NSLabel">selectedTag: selection.size</string>
+							<string key="NSBinding">selectedTag</string>
+							<string key="NSKeyPath">selection.size</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">174</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">selectedTag: selection.collectionId</string>
+						<reference key="source" ref="474451934"/>
+						<reference key="destination" ref="226957887"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="474451934"/>
+							<reference key="NSDestination" ref="226957887"/>
+							<string key="NSLabel">selectedTag: selection.collectionId</string>
+							<string key="NSBinding">selectedTag</string>
+							<string key="NSKeyPath">selection.collectionId</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">177</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: selection.password</string>
+						<reference key="source" ref="541748061"/>
+						<reference key="destination" ref="226957887"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="541748061"/>
+							<reference key="NSDestination" ref="226957887"/>
+							<string key="NSLabel">value: selection.password</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">selection.password</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">180</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: selection.username</string>
+						<reference key="source" ref="471450404"/>
+						<reference key="destination" ref="226957887"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="471450404"/>
+							<reference key="NSDestination" ref="226957887"/>
+							<string key="NSLabel">value: selection.username</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">selection.username</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">183</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: selection.url</string>
+						<reference key="source" ref="332025839"/>
+						<reference key="destination" ref="226957887"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="332025839"/>
+							<reference key="NSDestination" ref="226957887"/>
+							<string key="NSLabel">value: selection.url</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">selection.url</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">185</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -1066,6 +1227,11 @@
 						<reference key="object" ref="534538459"/>
 						<reference key="parent" ref="397265415"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">154</int>
+						<reference key="object" ref="226957887"/>
+						<reference key="parent" ref="0"/>
+					</object>
 				</object>
 			</object>
 			<object class="NSMutableDictionary" key="flattenedProperties">
@@ -1086,6 +1252,7 @@
 					<string>110.IBPluginDependency</string>
 					<string>13.IBPluginDependency</string>
 					<string>14.IBPluginDependency</string>
+					<string>154.IBPluginDependency</string>
 					<string>16.IBPluginDependency</string>
 					<string>17.IBPluginDependency</string>
 					<string>18.IBPluginDependency</string>
@@ -1138,6 +1305,7 @@
 					<string>{{129, 858}, {492, 287}}</string>
 					<integer value="0"/>
 					<string>{{395, 262}, {492, 433}}</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -1207,7 +1375,7 @@
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">120</int>
+			<int key="maxID">185</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -1251,88 +1419,47 @@
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>mAlbumCommentsTextView</string>
-							<string>mAlbumNameText</string>
-							<string>mAutoAlbumButton</string>
+							<string>exportMgr</string>
 							<string>mCollectionPopUp</string>
-							<string>mExportMgr</string>
-							<string>mExportOriginalsButton</string>
 							<string>mFirstView</string>
-							<string>mPasswordText</string>
 							<string>mQualityPopUp</string>
 							<string>mSettingsBox</string>
 							<string>mSizePopUp</string>
-							<string>mUrlText</string>
-							<string>mUsernameText</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>NSTextView</string>
-							<string>NSTextField</string>
-							<string>NSButton</string>
-							<string>NSPopUpButton</string>
 							<string>id</string>
-							<string>NSButton</string>
+							<string>NSPopUpButton</string>
 							<string>NSControl</string>
-							<string>NSSecureTextField</string>
 							<string>NSPopUpButton</string>
 							<string>NSBox</string>
 							<string>NSPopUpButton</string>
-							<string>NSTextField</string>
-							<string>NSTextField</string>
 						</object>
 					</object>
 					<object class="NSMutableDictionary" key="toOneOutletInfosByName">
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>mAlbumCommentsTextView</string>
-							<string>mAlbumNameText</string>
-							<string>mAutoAlbumButton</string>
+							<string>exportMgr</string>
 							<string>mCollectionPopUp</string>
-							<string>mExportMgr</string>
-							<string>mExportOriginalsButton</string>
 							<string>mFirstView</string>
-							<string>mPasswordText</string>
 							<string>mQualityPopUp</string>
 							<string>mSettingsBox</string>
 							<string>mSizePopUp</string>
-							<string>mUrlText</string>
-							<string>mUsernameText</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<object class="IBToOneOutletInfo">
-								<string key="name">mAlbumCommentsTextView</string>
-								<string key="candidateClassName">NSTextView</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">mAlbumNameText</string>
-								<string key="candidateClassName">NSTextField</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">mAutoAlbumButton</string>
-								<string key="candidateClassName">NSButton</string>
+								<string key="name">exportMgr</string>
+								<string key="candidateClassName">id</string>
 							</object>
 							<object class="IBToOneOutletInfo">
 								<string key="name">mCollectionPopUp</string>
 								<string key="candidateClassName">NSPopUpButton</string>
 							</object>
 							<object class="IBToOneOutletInfo">
-								<string key="name">mExportMgr</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">mExportOriginalsButton</string>
-								<string key="candidateClassName">NSButton</string>
-							</object>
-							<object class="IBToOneOutletInfo">
 								<string key="name">mFirstView</string>
 								<string key="candidateClassName">NSControl</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">mPasswordText</string>
-								<string key="candidateClassName">NSSecureTextField</string>
 							</object>
 							<object class="IBToOneOutletInfo">
 								<string key="name">mQualityPopUp</string>
@@ -1345,14 +1472,6 @@
 							<object class="IBToOneOutletInfo">
 								<string key="name">mSizePopUp</string>
 								<string key="candidateClassName">NSPopUpButton</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">mUrlText</string>
-								<string key="candidateClassName">NSTextField</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">mUsernameText</string>
-								<string key="candidateClassName">NSTextField</string>
 							</object>
 						</object>
 					</object>
@@ -1507,11 +1626,27 @@
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
+					<string key="className">NSController</string>
+					<string key="superclassName">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">AppKit.framework/Headers/NSController.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
 					<string key="className">NSFormatter</string>
 					<string key="superclassName">NSObject</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBFrameworkSource</string>
 						<string key="minorKey">Foundation.framework/Headers/NSFormatter.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSManagedObjectContext</string>
+					<string key="superclassName">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">CoreData.framework/Headers/NSManagedObjectContext.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
@@ -1783,6 +1918,56 @@
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">QTKit.framework/Headers/QTCaptureDecompressedVideoOutput.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">QTKit.framework/Headers/QTCaptureFileOutput.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">QTKit.framework/Headers/QTCaptureVideoPreviewOutput.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">QTKit.framework/Headers/QTCaptureView.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">QTKit.framework/Headers/QTMovie.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">QTKit.framework/Headers/QTMovieView.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObjectController</string>
+					<string key="superclassName">NSController</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">AppKit.framework/Headers/NSObjectController.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
 					<string key="className">NSPopUpButton</string>
 					<string key="superclassName">NSButton</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
@@ -1827,14 +2012,6 @@
 					<reference key="sourceIdentifier" ref="108503669"/>
 				</object>
 				<object class="IBPartialClassDescription">
-					<string key="className">NSText</string>
-					<string key="superclassName">NSView</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBFrameworkSource</string>
-						<string key="minorKey">AppKit.framework/Headers/NSText.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
 					<string key="className">NSTextField</string>
 					<string key="superclassName">NSControl</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
@@ -1848,14 +2025,6 @@
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBFrameworkSource</string>
 						<string key="minorKey">AppKit.framework/Headers/NSTextFieldCell.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">NSTextView</string>
-					<string key="superclassName">NSText</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBFrameworkSource</string>
-						<string key="minorKey">AppKit.framework/Headers/NSTextView.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
