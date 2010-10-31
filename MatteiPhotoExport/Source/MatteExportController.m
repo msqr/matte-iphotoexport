@@ -53,6 +53,8 @@ NSString * const MatteExportPluginVersion = @"1.0";
 	
 	[self changeExportOriginals:nil];
 	[self changeExportOriginalMovies:nil];
+	
+	[mVersionLabel setStringValue:[NSString stringWithFormat:@"Version %@", MatteExportPluginVersion]];
 }
 
 - (id) initWithExportImageObj:(id <ExportImageProtocol>)obj {
