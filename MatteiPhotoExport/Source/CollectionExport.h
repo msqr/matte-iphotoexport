@@ -67,12 +67,15 @@
 @interface CollectionExport : ExportObject {
 @private
 	NSMutableArray *albums;
+	NSMutableArray *photos;
 	long collectionId;
 }
 
 - (NSArray *)albums;
+- (NSArray *)photos;
 
 - (AlbumExport *)addAlbum:(NSString *)theName comments:(NSString *)theComments sortMode:(NSString *)theSortMode;
+- (PhotoExport *)addPhoto:(NSString *)theName comments:(NSString *)theComments path:(NSString *)thePath;
 
 - (AlbumExport *)findAlbumNamed:(NSString *)theName;
 

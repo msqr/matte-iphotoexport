@@ -24,9 +24,11 @@
 	IBOutlet NSPopUpButton		*mQTComponentPopUp;
 	IBOutlet NSButton			*mQTSettingButton;
 	
+	NSDateFormatter *xsdDateTimeFormat;
 	NSString *exportDir;
 	NSArray *qtComponents;
 	QTMovie *movie;
+	NSString *exportMovieExtension;
 	BOOL taskRunning;
 	NSCondition *taskCondition;
 	

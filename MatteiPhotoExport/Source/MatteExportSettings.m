@@ -30,4 +30,28 @@
 	[super dealloc];
 }
 
+- (void) restoreFromUserDefaults:(NSUserDefaults *)defaults {
+	autoAlbum = [defaults boolForKey:@"settings.autoAlbum"];
+	
+	exportOriginals = [defaults boolForKey:@"settings.exportOriginals"];
+	size = [defaults integerForKey:@"settings.size"];
+	quality = [defaults integerForKey:@"settings.quality"];
+	
+	exportOriginalMovies = [defaults boolForKey:@"settings.exportOriginalMovies"];
+	selectedComponentIndex = [defaults integerForKey:@"settings.selectedComponentIndex"];
+	self.exportMovieSettings = [defaults dataForKey:@"settings.exportMovieSettings"];
+}
+
+- (void) saveToUserDefaults:(NSUserDefaults *)defaults {
+	[defaults setBool:autoAlbum forKey:@"settings.autoAlbum"];
+	
+	[defaults setBool:exportOriginals forKey:@"settings.exportOriginals"];
+	[defaults setInteger:size forKey:@"settings.size"];
+	[defaults setInteger:quality forKey:@"settings.quality"];
+	
+	[defaults setBool:exportOriginalMovies forKey:@"settings.exportOriginalMovies"];
+	[defaults setInteger:selectedComponentIndex forKey:@"settings.selectedComponentIndex"];
+	[defaults setObject:exportMovieSettings forKey:@"settings.exportMovieSettings"];
+}
+
 @end
