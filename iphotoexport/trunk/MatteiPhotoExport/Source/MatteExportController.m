@@ -424,8 +424,6 @@ NSString * const MatteExportPluginVersion = @"1.0";
 	progress.message = @"Exporting";
 	[self unlockProgress];
 	
-	NSString *dest;
-	
 	for(i = 0; cancelExport == NO && succeeded == YES && i < count; i++)
 	{
 		[self lockProgress];
@@ -453,7 +451,7 @@ NSString * const MatteExportPluginVersion = @"1.0";
 	if (!succeeded) {
 		[self lockProgress];
 		[progress.message autorelease];
-		progress.message = [[NSString stringWithFormat:@"Unable to create %@", dest] retain];
+		progress.message = @"Unable to complete export";
 		[self cancelExport];
 		progress.shouldCancel = YES;
 		[self unlockProgress];
@@ -462,9 +460,9 @@ NSString * const MatteExportPluginVersion = @"1.0";
 	}
 	
 	// write CollectionExport as metadata.xml
-	dest = [context.exportDir stringByAppendingPathComponent:@"metadata.xml"];
-	DLog(@"Writing colExport as XML to %@", dest);
-	[context.metadata saveAsXml:dest];
+	NSString *metadataFile = [context.exportDir stringByAppendingPathComponent:@"metadata.xml"];
+	DLog(@"Writing colExport as XML to %@", metadataFile);
+	[context.metadata saveAsXml:metadataFile];
 	
 	[self lockProgress];
 	[progress.message autorelease];
@@ -488,7 +486,7 @@ NSString * const MatteExportPluginVersion = @"1.0";
 	}
 
 	// add metadata.xml to list of files to archive
-	[context recordExport:nil toPath:dest inArchive:@"metadata.xml"];
+	[context recordExport:nil toPath:metadataFile inArchive:@"metadata.xml"];
 	
 	[zip CreateZipFile2:[context.exportDir stringByAppendingPathComponent:[zipName stringByAppendingString:@".zip"]]];
 	for ( NSString *archivePath in [context archivePaths] ) {
