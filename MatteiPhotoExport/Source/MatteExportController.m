@@ -489,14 +489,6 @@
 		}
 	}
 	
-	// write CollectionExport as metadata.xml
-	if ( succeeded ) {
-		dest = [context.exportDir stringByAppendingPathComponent:@"metadata.xml"];
-		DLog(@"Writing colExport as XML to %@", dest);
-		[context.metadata saveAsXml:dest];
-		[outputFiles setObject:dest forKey:@"metadata.xml"];
-	}
-
 	// Handle failure
 	if (!succeeded) {
 		[self lockProgress];
@@ -505,8 +497,16 @@
 		[self cancelExport];
 		progress.shouldCancel = YES;
 		[self unlockProgress];
+		[context release];
+		context = nil;
 		return;
 	}
+	
+	// write CollectionExport as metadata.xml
+	dest = [context.exportDir stringByAppendingPathComponent:@"metadata.xml"];
+	DLog(@"Writing colExport as XML to %@", dest);
+	[context.metadata saveAsXml:dest];
+	[outputFiles setObject:dest forKey:@"metadata.xml"];
 	
 	[self lockProgress];
 	[progress.message autorelease];
@@ -542,6 +542,9 @@
 	progress.message = nil;
 	progress.shouldStop = YES;
 	[self unlockProgress];
+	
+	[context release];
+	context = nil;
 }
 
 - (ExportPluginProgress *)progress
