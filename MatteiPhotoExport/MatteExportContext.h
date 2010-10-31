@@ -19,11 +19,13 @@
 	NSMutableSet *exportedPaths;
 	NSMutableDictionary *outputPathMap;
 	CollectionExport *metadata;
+	NSString *exportMovieExtension;
 }
 
 @property (nonatomic, readonly) ImageExportOptions *imageOptions;
 @property (nonatomic, retain) NSString *exportDir;
 @property (nonatomic, readonly) CollectionExport *metadata;
+@property (nonatomic, retain) NSString *exportMovieExtension;
 
 - (id) initWithSettings:(MatteExportSettings *)settings;
 
