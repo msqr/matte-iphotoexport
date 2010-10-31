@@ -8,17 +8,24 @@
 
 #import <Foundation/Foundation.h>
 
+#import "ExportImageProtocol.h"
+
 @class CollectionExport;
+@class MatteExportSettings;
 
 @interface MatteExportContext : NSObject {
+	ImageExportOptions imageOptions;
 	NSString *exportDir;
 	NSMutableSet *exportedPaths;
-	NSMutableDictionary *outputPaths;
+	NSMutableDictionary *outputPathMap;
 	CollectionExport *metadata;
 }
 
-@property (retain) NSString *exportDir;
+@property (nonatomic, readonly) ImageExportOptions *imageOptions;
+@property (nonatomic, retain) NSString *exportDir;
 @property (nonatomic, readonly) CollectionExport *metadata;
+
+- (id) initWithSettings:(MatteExportSettings *)settings;
 
 // returns YES if the given path has been passed to recordExport:toPath:inArchive: already
 - (BOOL) isExported:(NSString *)srcPath;
@@ -27,5 +34,9 @@
 - (void) recordExport:(NSString *)srcPath 
 			   toPath:(NSString *)outputPath 
 			inArchive:(NSString *)archivePath;
+
+- (NSUInteger) outputCount;
+- (NSArray *) archivePaths;
+- (NSString *) outputPathForArchivePath:(NSString *)archivePath;
 
 @end

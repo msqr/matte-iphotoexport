@@ -10,13 +10,11 @@
 #import "ExportPluginProtocol.h"
 #import "MatteExportSettings.h"
 
-@class MatteExportContext;
 @class MatteExportSettings;
 
 @interface MatteExportController : NSObject <ExportPluginProtocol> {
 	id <ExportImageProtocol> exportMgr;
 	MatteExportSettings *settings;
-	MatteExportContext *context;
 	
 	IBOutlet NSBox <ExportPluginBoxProtocol> *mSettingsBox;
 	IBOutlet NSControl *mFirstView;
