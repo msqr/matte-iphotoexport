@@ -15,9 +15,10 @@
 	NSString *username;
 	NSString *password;
 	
+	BOOL autoAlbum;
+	
 	// image options
 	BOOL exportOriginals;
-	BOOL autoAlbum;	
 	int size;
 	int quality;
 
@@ -39,5 +40,8 @@
 @property (assign,getter=isExportOriginalMovies) BOOL exportOriginalMovies;
 @property (assign) NSUInteger selectedComponentIndex;
 @property (retain) NSData *exportMovieSettings;
+
+- (void) restoreFromUserDefaults:(NSUserDefaults *)defaults;
+- (void) saveToUserDefaults:(NSUserDefaults *)defaults;
 
 @end
