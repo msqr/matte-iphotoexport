@@ -15,6 +15,8 @@
 #import "smdevp.h"
 #import "wsseapi.h"
 
+NSString * const MatteExportPluginVersion = @"1.0";
+
 @interface MatteExportController (MovieSupport)
 - (NSArray *)availableComponents;
 - (NSData *)getExportSettings:(NSUInteger)selectedComponentIndex;
@@ -278,10 +280,12 @@
 	}
 	
 	NSString *destFileName = nil;
+	NSString *srcFile = nil;
 	
 	if ( [exportMgr originalIsMovieAtIndex:i] ) {
+		srcFile = [exportMgr sourcePathAtIndex:i];
 		if ( settings.exportOriginalMovies ) {
-			destFileName = [[exportMgr sourcePathAtIndex:i] lastPathComponent];
+			destFileName = [srcFile lastPathComponent];
 		} else {
 			NSDictionary *qtAttr = [NSDictionary dictionaryWithObjectsAndKeys:
 									[exportMgr sourcePathAtIndex:i], QTMovieFileNameAttribute,
@@ -301,16 +305,20 @@
 							stringByAppendingFormat:@".%@", context.exportMovieExtension];
 		}
 	} else {
+		srcFile = [exportMgr imagePathAtIndex:i];
 		destFileName = [exportMgr imageFileNameAtIndex:i];
 	}
 	
-	NSString *archivePath;
-	if ( albumName != nil ) {
-		archivePath = [albumName stringByAppendingPathComponent:destFileName];
-	} else {
-		archivePath = destFileName;
+	NSString *outputPath = nil;
+	NSString *archivePath = [context archivePathForSourcePath:srcFile];
+	if ( archivePath == nil ) {
+		if ( albumName != nil ) {
+			archivePath = [albumName stringByAppendingPathComponent:destFileName];
+		} else {
+			archivePath = destFileName;
+		}
+		outputPath = [context.exportDir stringByAppendingPathComponent:archivePath];
 	}
-	NSString *outputPath = [context.exportDir stringByAppendingPathComponent:archivePath];
 	
 	DLog(@"Exporting image to %@", outputPath);
 	PhotoExport *photo = nil;
@@ -342,30 +350,32 @@
 	
 	[photo addKeywords:[exportMgr imageKeywordsAtIndex:i]];
 	[photo setRating:[exportMgr imageRatingAtIndex:i]];
-	[context recordExport:nil toPath:outputPath inArchive:archivePath];
 
 	BOOL succeeded = YES;
-	if ( movie != nil ) {
-		[taskCondition lock];
-		taskRunning = YES;
-		[NSThread detachNewThreadSelector:@selector(exportMovie:) toTarget:self withObject:outputPath];
-		while ( taskRunning ) {
-			[taskCondition wait];
+	if ( outputPath != nil ) {
+		[context recordExport:srcFile toPath:outputPath inArchive:archivePath];
+		if ( movie != nil ) {
+			[taskCondition lock];
+			taskRunning = YES;
+			[NSThread detachNewThreadSelector:@selector(exportMovie:) toTarget:self withObject:outputPath];
+			while ( taskRunning ) {
+				[taskCondition wait];
+			}
+			[taskCondition unlock];
+		} else if ( movie == nil && !settings.exportOriginals ) {
+			succeeded = [exportMgr exportImageAtIndex:i dest:outputPath options:context.imageOptions];
+		} else {
+			// for movie files, we have to get the "sourcePath", because the "imagePath" points
+			// to a JPG image extracted from the movie
+			
+			NSString *src = ([exportMgr originalIsMovieAtIndex:i]
+							 ? [exportMgr sourcePathAtIndex:i]
+							 : [exportMgr imagePathAtIndex:i]);
+			DLog(@"Exporting original file %@", src);
+			succeeded = [fileManager copyPath:src
+									   toPath:outputPath
+									  handler:self];
 		}
-		[taskCondition unlock];
-	} else if ( movie == nil && !settings.exportOriginals ) {
-		succeeded = [exportMgr exportImageAtIndex:i dest:outputPath options:context.imageOptions];
-	} else {
-		// for movie files, we have to get the "sourcePath", because the "imagePath" points
-		// to a JPG image extracted from the movie
-		
-		NSString *src = ([exportMgr originalIsMovieAtIndex:i]
-						 ? [exportMgr sourcePathAtIndex:i]
-						 : [exportMgr imagePathAtIndex:i]);
-		DLog(@"Exporting original file %@", src);
-		succeeded = [fileManager copyPath:src
-								   toPath:outputPath
-								  handler:self];
 	}
 	return succeeded;
 }
@@ -375,7 +385,7 @@
 	DLog(@"performExport path: %@", path);
 	
 	int count = [exportMgr imageCount];
-	int albumCount =  [exportMgr albumCount];
+	int albumCount =  (settings.autoAlbum ? [exportMgr albumCount] : 0);
 	BOOL succeeded = YES;
 	cancelExport = NO;
 	int i;
@@ -424,7 +434,7 @@
 		[self unlockProgress];
 		
 		DLog(@"Exporting image %d from path: %@", i, [exportMgr imagePathAtIndex:i]);
-		NSArray *albums = [exportMgr albumsOfImageAtIndex:i];
+		NSArray *albums = (settings.autoAlbum ? [exportMgr albumsOfImageAtIndex:i] : nil);
 		if ( albums != nil && [albums count] > 0 ) {
 			for ( NSNumber *albumIndex in albums ) {
 				succeeded = [self exportItem:i inAlbum:albumIndex context:context];
@@ -453,7 +463,6 @@
 	dest = [context.exportDir stringByAppendingPathComponent:@"metadata.xml"];
 	DLog(@"Writing colExport as XML to %@", dest);
 	[context.metadata saveAsXml:dest];
-	[context recordExport:nil toPath:dest inArchive:@"metadata.xml"];
 	
 	[self lockProgress];
 	[progress.message autorelease];
@@ -463,23 +472,32 @@
 	[self unlockProgress];
 	
 	// create zip archive
-	// TODO handle non-album output
 	ZipArchive *zip = [[ZipArchive alloc] init];
-	unsigned albumIdx;
-	for ( albumIdx = 0; albumIdx < albumCount; albumIdx++ ) {
-		if ( albumIdx == 0 ) {
-			[zip CreateZipFile2:[context.exportDir stringByAppendingPathComponent:[[exportMgr albumNameAtIndex:albumIdx] stringByAppendingString:@".zip"]]];
-		}
-		for ( NSString *archivePath in [context archivePaths] ) {
-			[self lockProgress];
-			progress.currentItem = progress.currentItem + 1;
-			[progress.message autorelease];
-			progress.message = [[NSString stringWithFormat:@"Zipping item %d of %d", 
-								 progress.currentItem, progress.totalItems] retain];
-			[self unlockProgress];
-			
-			[zip addFileToZip:[context outputPathForArchivePath:archivePath] newname:archivePath];
-		}
+	NSString *zipName;
+	if ( albumCount > 0 ) {
+		// name zip archive after first album
+		zipName = [exportMgr albumNameAtIndex:0];
+	} else if ( count == 1 ) {
+		// name zip archive after image
+		zipName = [[[[context archivePaths] objectAtIndex:0] lastPathComponent] stringByDeletingPathExtension];
+	} else {
+		// name zip archive generic name
+		zipName = @"Matte Export";
+	}
+
+	// add metadata.xml to list of files to archive
+	[context recordExport:nil toPath:dest inArchive:@"metadata.xml"];
+	
+	[zip CreateZipFile2:[context.exportDir stringByAppendingPathComponent:[zipName stringByAppendingString:@".zip"]]];
+	for ( NSString *archivePath in [context archivePaths] ) {
+		[self lockProgress];
+		progress.currentItem = progress.currentItem + 1;
+		[progress.message autorelease];
+		progress.message = [[NSString stringWithFormat:@"Zipping item %d of %d", 
+							 progress.currentItem, progress.totalItems] retain];
+		[self unlockProgress];
+		
+		[zip addFileToZip:[context outputPathForArchivePath:archivePath] newname:archivePath];
 	}
 	[zip CloseZipFile2];
 	[zip release];

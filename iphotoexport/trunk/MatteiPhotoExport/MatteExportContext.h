@@ -16,7 +16,7 @@
 @interface MatteExportContext : NSObject {
 	ImageExportOptions imageOptions;
 	NSString *exportDir;
-	NSMutableSet *exportedPaths;
+	NSMutableDictionary *inputPathMap;
 	NSMutableDictionary *outputPathMap;
 	CollectionExport *metadata;
 	NSString *exportMovieExtension;
@@ -40,5 +40,6 @@
 - (NSUInteger) outputCount;
 - (NSArray *) archivePaths;
 - (NSString *) outputPathForArchivePath:(NSString *)archivePath;
+- (NSString *) archivePathForSourcePath:(NSString *)sourcePath;
 
 @end
