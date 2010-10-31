@@ -8,6 +8,8 @@
 
 #import "MatteExportController.h"
 #import "CollectionExport.h"
+#import "MatteExportContext.h"
+#import "MatteExportSettings.h"
 #import "ZipArchive.h"
 #import "gsoap/MatteSoapBinding.nsmap"
 #import "smdevp.h"
@@ -69,8 +71,8 @@
 }
 
 - (void) dealloc {
+	[context release];
 	[settings release];
-	[exportDir release];
 	[progressLock release];
 	[progress.message release];
 	[taskCondition release];
@@ -143,8 +145,6 @@
 
 - (IBAction)changeExportOriginals:(id)sender 
 {
-	//[self setExportOriginals:([mExportOriginalsButton state] == NSOnState)];
-	
 	DLog(@"changeExportOriginals action called by %@, exportOriginals = %@", 
 		  sender, ([settings isExportOriginals] ? @"YES" : @"NO"));
 	
@@ -171,21 +171,6 @@
 {
 	NSData *qtSettings = [self getExportSettings:settings.selectedComponentIndex];
 	settings.exportMovieSettings = qtSettings;
-}
-
-#pragma mark Accessors
-
-- (NSString *) exportDir {
-	return exportDir;
-}
-
-- (void) setExportDir:(NSString *)dir {
-	NSString *oldDir;
-	if ( exportDir != dir ) {
-		oldDir = exportDir;
-		exportDir = [dir retain];
-		[oldDir autorelease];
-	}
 }
 
 #pragma mark ExportPluginBoxProtocol
@@ -431,6 +416,7 @@
 	DLog(@"performExport path: %@", path);
 	
 	int count = [exportMgr imageCount];
+	int albumCount =  [exportMgr albumCount];
 	BOOL succeeded = YES;
 	cancelExport = NO;
 	int i;
@@ -456,9 +442,9 @@
 		}
 	}
 	
-	CollectionExport *colExport = [[CollectionExport alloc] init];
-	
-	[self setExportDir:path];
+	[context release];
+	context = [[MatteExportContext alloc] init];
+	context.exportDir = path;
 	
 	ImageExportOptions imageOptions;
 	[exportMovieExtension release];
@@ -493,25 +479,23 @@
 		NSArray *albums = [exportMgr albumsOfImageAtIndex:i];
 		if ( albums != nil && [albums count] > 0 ) {
 			for ( NSNumber *albumIndex in albums ) {
-				succeeded = [self exportItem:i toDir:[self exportDir] inAlbum:albumIndex metadata:colExport output:outputFiles imageOptions:imageOptions];
+				succeeded = [self exportItem:i toDir:context.exportDir inAlbum:albumIndex metadata:context.metadata output:outputFiles imageOptions:imageOptions];
 				if ( !succeeded ) {
 					break;
 				}
 			}
 		} else {
-			succeeded = [self exportItem:i toDir:[self exportDir] inAlbum:nil metadata:colExport output:outputFiles imageOptions:imageOptions];
+			succeeded = [self exportItem:i toDir:context.exportDir inAlbum:nil metadata:context.metadata output:outputFiles imageOptions:imageOptions];
 		}
 	}
 	
 	// write CollectionExport as metadata.xml
 	if ( succeeded ) {
-		dest = [[self exportDir] stringByAppendingPathComponent:@"metadata.xml"];
+		dest = [context.exportDir stringByAppendingPathComponent:@"metadata.xml"];
 		DLog(@"Writing colExport as XML to %@", dest);
-		[colExport saveAsXml:dest];
+		[context.metadata saveAsXml:dest];
 		[outputFiles setObject:dest forKey:@"metadata.xml"];
 	}
-	[colExport release];
-	DLog(@"released colExport");
 
 	// Handle failure
 	if (!succeeded) {
@@ -534,11 +518,10 @@
 	// create zip archive
 	// TODO handle non-album output
 	ZipArchive *zip = [[ZipArchive alloc] init];
-	unsigned albumCount =  [exportMgr albumCount];
 	unsigned albumIdx;
 	for ( albumIdx = 0; albumIdx < albumCount; albumIdx++ ) {
 		if ( albumIdx == 0 ) {
-			[zip CreateZipFile2:[[self exportDir] stringByAppendingPathComponent:[[exportMgr albumNameAtIndex:albumIdx] stringByAppendingString:@".zip"]]];
+			[zip CreateZipFile2:[context.exportDir stringByAppendingPathComponent:[[exportMgr albumNameAtIndex:albumIdx] stringByAppendingString:@".zip"]]];
 		}
 		for ( NSString *archivePath in outputFiles ) {
 			[self lockProgress];
@@ -560,12 +543,6 @@
 	progress.shouldStop = YES;
 	[self unlockProgress];
 }
-
-/*- (void)fileManager:(NSFileManager *)manager willProcessPath:(NSString *)path {
-	if ( [manager fileExistsAtPath:path] ) {
-		[manager removeFileAtPath:path handler:nil];
-	}
-}*/
 
 - (ExportPluginProgress *)progress
 {

@@ -10,9 +10,13 @@
 #import "ExportPluginProtocol.h"
 #import "MatteExportSettings.h"
 
+@class MatteExportContext;
+@class MatteExportSettings;
+
 @interface MatteExportController : NSObject <ExportPluginProtocol> {
 	id <ExportImageProtocol> exportMgr;
 	MatteExportSettings *settings;
+	MatteExportContext *context;
 	
 	IBOutlet NSBox <ExportPluginBoxProtocol> *mSettingsBox;
 	IBOutlet NSControl *mFirstView;
@@ -25,7 +29,6 @@
 	IBOutlet NSButton			*mQTSettingButton;
 	
 	NSDateFormatter *xsdDateTimeFormat;
-	NSString *exportDir;
 	NSArray *qtComponents;
 	QTMovie *movie;
 	NSString *exportMovieExtension;
@@ -50,11 +53,5 @@
 - (IBAction)changeExportOriginalMovies:(id)sender;
 - (IBAction)changeExportMovieType:(id)sender;
 - (IBAction)configureMovieExportSettings:(id)sender;
-
-
-
-// getters/setters
-- (NSString *)exportDir;
-- (void)setExportDir:(NSString *)dir;
 
 @end
