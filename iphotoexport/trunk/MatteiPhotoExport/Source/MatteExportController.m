@@ -76,7 +76,6 @@
 	[progress.message release];
 	[taskCondition release];
 	[qtComponents release];
-	[exportMovieExtension release];
 	[xsdDateTimeFormat release];
 	[super dealloc];
 }
@@ -289,16 +288,16 @@
 									nil];
 			[self performSelectorOnMainThread:@selector(setupQTMovie:) withObject:qtAttr waitUntilDone:YES];
 			
-			if ( exportMovieExtension == nil ) {
+			if ( context.exportMovieExtension == nil ) {
 				NSNumber *subtype = [[qtComponents objectAtIndex:settings.selectedComponentIndex] objectForKey:@"subtypeLong"];
 				OSType exportMovieType = [subtype longValue];
-				exportMovieExtension = [[exportMgr getExtensionForImageFormat:exportMovieType] retain];
-				if ( exportMovieExtension == nil ) {
-					exportMovieExtension = @"mov";
+				context.exportMovieExtension = [[exportMgr getExtensionForImageFormat:exportMovieType] retain];
+				if ( context.exportMovieExtension == nil ) {
+					context.exportMovieExtension = @"mov";
 				}
 			}
 			destFileName = [[[[exportMgr sourcePathAtIndex:i] lastPathComponent] stringByDeletingPathExtension]
-							stringByAppendingFormat:@".%@", exportMovieExtension];
+							stringByAppendingFormat:@".%@", context.exportMovieExtension];
 		}
 	} else {
 		destFileName = [exportMgr imageFileNameAtIndex:i];
@@ -403,9 +402,6 @@
 	
 	MatteExportContext *context = [[MatteExportContext alloc] initWithSettings:settings];
 	context.exportDir = path;
-	
-	[exportMovieExtension release];
-	exportMovieExtension = nil;
 	
 	// Do the export
 	[self lockProgress];

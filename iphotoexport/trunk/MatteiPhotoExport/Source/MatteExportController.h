@@ -29,7 +29,6 @@
 	NSDateFormatter *xsdDateTimeFormat;
 	NSArray *qtComponents;
 	QTMovie *movie;
-	NSString *exportMovieExtension;
 	BOOL taskRunning;
 	NSCondition *taskCondition;
 	

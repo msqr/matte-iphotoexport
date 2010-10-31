@@ -22,7 +22,7 @@
 
 @implementation MatteExportContext
 
-@synthesize exportDir, metadata;
+@synthesize exportDir, exportMovieExtension, metadata;
 
 - (id) initWithSettings:(MatteExportSettings *)settings {
 	if ( (self = [super init]) ) {
@@ -38,6 +38,7 @@
 
 - (void) dealloc {
 	[exportDir release], exportDir = nil;
+	[exportMovieExtension release], exportMovieExtension = nil;
 	[exportedPaths release], exportedPaths = nil;
 	[outputPathMap release], outputPathMap = nil;
 	[metadata release], metadata =  nil;
