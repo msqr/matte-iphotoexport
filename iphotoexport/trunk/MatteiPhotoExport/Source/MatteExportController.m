@@ -47,6 +47,7 @@
 		}
 		[mQTComponentPopUp addItemWithTitle:name];
 	}
+	[mQTComponentPopUp selectItemAtIndex:settings.selectedComponentIndex];
 	
 	[self changeExportOriginals:nil];
 	[self changeExportOriginalMovies:nil];
