@@ -18,6 +18,7 @@
 	
 	IBOutlet NSBox <ExportPluginBoxProtocol> *mSettingsBox;
 	IBOutlet NSControl *mFirstView;
+	IBOutlet NSTextField *mVersionLabel;
 	
 	IBOutlet NSPopUpButton		*mCollectionPopUp;
 	IBOutlet NSPopUpButton		*mSizePopUp;
