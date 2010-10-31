@@ -26,7 +26,7 @@
 
 - (id) initWithSettings:(MatteExportSettings *)settings {
 	if ( (self = [super init]) ) {
-		exportedPaths = [[NSMutableSet alloc] init];
+		inputPathMap = [[NSMutableDictionary alloc] init];
 		outputPathMap = [[NSMutableDictionary alloc] init];
 		metadata = [[CollectionExport alloc] init];
 		if ( ![settings isExportOriginals] ) {
@@ -39,7 +39,7 @@
 - (void) dealloc {
 	[exportDir release], exportDir = nil;
 	[exportMovieExtension release], exportMovieExtension = nil;
-	[exportedPaths release], exportedPaths = nil;
+	[inputPathMap release], inputPathMap = nil;
 	[outputPathMap release], outputPathMap = nil;
 	[metadata release], metadata =  nil;
 	[super dealloc];
@@ -47,7 +47,7 @@
 
 // returns YES if the given path has been passed to recordExport:toPath:inArchive: already
 - (BOOL) isExported:(NSString *)srcPath {
-	return [exportedPaths member:srcPath] != nil;
+	return [inputPathMap objectForKey:srcPath] != nil;
 }
 
 // record that an item has been exported
@@ -55,7 +55,7 @@
 			   toPath:(NSString *)outputPath 
 			inArchive:(NSString *)archivePath {
 	if ( srcPath != nil ) {
-		[exportedPaths addObject:srcPath];
+		[inputPathMap setObject:archivePath forKey:srcPath];
 	}
 	[outputPathMap setObject:outputPath forKey:archivePath];
 }
@@ -74,6 +74,10 @@
 
 - (NSString *) outputPathForArchivePath:(NSString *)archivePath {
 	return [outputPathMap objectForKey:archivePath];
+}
+
+- (NSString *) archivePathForSourcePath:(NSString *)sourcePath {
+	return [inputPathMap objectForKey:sourcePath];
 }
 
 #pragma mark Private

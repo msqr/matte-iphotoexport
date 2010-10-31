@@ -135,6 +135,7 @@
 		C9A72B590CF8DD060019950D /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Resources/English.lproj/Panel.nib; sourceTree = "<group>"; };
 		C9B39AE9127E027C00044A13 /* MatteExportContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MatteExportContext.h; sourceTree = "<group>"; };
 		C9B39AEA127E027C00044A13 /* MatteExportContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MatteExportContext.m; sourceTree = "<group>"; };
+		C9B39DBD127E272F00044A13 /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
 		C9E285DC127AAD230082FC48 /* QTKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QTKit.framework; path = System/Library/Frameworks/QTKit.framework; sourceTree = SDKROOT; };
 		C9E677A80D97416C00B4A76D /* README.rtfd */ = {isa = PBXFileReference; lastKnownFileType = wrapper.rtfd; name = README.rtfd; path = Docs/README.rtfd; sourceTree = "<group>"; };
 		C9F64C8F127B9AA100D8EE9D /* crypt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = crypt.h; sourceTree = "<group>"; };
@@ -211,6 +212,7 @@
 			children = (
 				C9A624C20D8EF04500418EEB /* CollectionExport.h */,
 				C9A624C30D8EF04500418EEB /* CollectionExport.m */,
+				C9B39DBD127E272F00044A13 /* Constants.h */,
 				C9B39AE9127E027C00044A13 /* MatteExportContext.h */,
 				C9B39AEA127E027C00044A13 /* MatteExportContext.m */,
 				C9A72B340CF8D86A0019950D /* MatteExportController.h */,
