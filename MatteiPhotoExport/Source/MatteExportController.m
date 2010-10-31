@@ -176,6 +176,15 @@ NSString * const MatteExportPluginVersion = @"1.0";
 	settings.exportMovieSettings = qtSettings;
 }
 
+#pragma mark NSFileManager delegate
+
+- (void)fileManager:(NSFileManager *)manager willProcessPath:(NSString *)path {
+	// we replace existing files without warning
+	if ( [manager fileExistsAtPath:path] ) {
+		[manager removeFileAtPath:path handler:nil];
+	}
+}
+
 #pragma mark ExportPluginBoxProtocol
 
 // protocol implementation
