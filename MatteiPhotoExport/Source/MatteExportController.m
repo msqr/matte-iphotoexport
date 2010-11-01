@@ -22,7 +22,7 @@ NSString * const MatteExportPluginVersion = @"1.0";
 - (NSData *)getExportSettings:(NSUInteger)selectedComponentIndex;
 - (BOOL)componentSupportsSettingsDialog:(NSUInteger)selectedComponentIndex;
 - (void)setupQTMovie:(NSDictionary *)attributes;
-- (void)exportMovie:(NSString *)dest;
+- (void)exportMovie:(NSDictionary *)dest;
 @end
 
 @interface MatteExportController (Private)
@@ -368,11 +368,16 @@ NSString * const MatteExportPluginVersion = @"1.0";
 		if ( movie != nil ) {
 			[taskCondition lock];
 			taskRunning = YES;
-			[NSThread detachNewThreadSelector:@selector(exportMovie:) toTarget:self withObject:outputPath];
+			NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
+									outputPath, @"outputPath",
+									context, @"context", 
+									nil];
+			[NSThread detachNewThreadSelector:@selector(exportMovie:) toTarget:self withObject:params];
 			while ( taskRunning ) {
 				[taskCondition wait];
 			}
 			[taskCondition unlock];
+			succeeded = context.succeeded;
 		} else if ( movie == nil && !settings.exportOriginals ) {
 			succeeded = [exportMgr exportImageAtIndex:i dest:outputPath options:context.imageOptions];
 		} else {
@@ -397,7 +402,6 @@ NSString * const MatteExportPluginVersion = @"1.0";
 	
 	int count = [exportMgr imageCount];
 	int albumCount =  (settings.autoAlbum ? [exportMgr albumCount] : 0);
-	BOOL succeeded = YES;
 	cancelExport = NO;
 	int i;
 	
@@ -433,7 +437,7 @@ NSString * const MatteExportPluginVersion = @"1.0";
 	progress.message = @"Exporting";
 	[self unlockProgress];
 	
-	for(i = 0; cancelExport == NO && succeeded == YES && i < count; i++)
+	for(i = 0; cancelExport == NO && context.succeeded == YES && i < count; i++)
 	{
 		[self lockProgress];
 		progress.currentItem = i;
@@ -446,21 +450,21 @@ NSString * const MatteExportPluginVersion = @"1.0";
 		NSArray *albums = (settings.autoAlbum ? [exportMgr albumsOfImageAtIndex:i] : nil);
 		if ( albums != nil && [albums count] > 0 ) {
 			for ( NSNumber *albumIndex in albums ) {
-				succeeded = [self exportItem:i inAlbum:albumIndex context:context];
-				if ( !succeeded ) {
+				context.succeeded = [self exportItem:i inAlbum:albumIndex context:context];
+				if ( !context.succeeded ) {
 					break;
 				}
 			}
 		} else {
-			succeeded = [self exportItem:i inAlbum:nil context:context];
+			context.succeeded = [self exportItem:i inAlbum:nil context:context];
 		}
 	}
 	
 	// Handle failure
-	if (!succeeded) {
+	if (!context.succeeded) {
 		[self lockProgress];
-		[progress.message autorelease];
-		progress.message = @"Unable to complete export";
+		//[progress.message autorelease];
+		//progress.message = @"Unable to complete export";
 		[self cancelExport];
 		progress.shouldCancel = YES;
 		[self unlockProgress];
@@ -657,10 +661,18 @@ NSString * const MatteExportPluginVersion = @"1.0";
 
 - (void)setupQTMovie:(NSDictionary *)attributes
 {
-	[movie release];
-	movie = [[QTMovie movieWithAttributes:attributes error:nil] retain];
-	[movie setDelegate:self];
-	[movie detachFromCurrentThread];
+	[QTMovie enterQTKitOnThread];
+	[movie release], movie = nil;
+	NSError *error = nil;
+	DLog(@"Setting up QTMovie %@", attributes);
+	movie = [[QTMovie movieWithAttributes:attributes error:&error] retain];
+	if ( error ) {
+		NSLog(@"Unable to open movie: %@", error);
+	} else {
+		[movie setDelegate:self];
+		[movie detachFromCurrentThread];
+	}
+	[QTMovie exitQTKitOnThread];
 }
 
 - (BOOL)movie:(QTMovie *)theMovie shouldContinueOperation:(NSString *)op 
@@ -680,9 +692,12 @@ withAttributes:(NSDictionary *)attributes
 	return YES;
 }
 
-- (void)exportMovie:(NSString *)dest
+- (void)exportMovie:(NSDictionary *)params
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	
+	NSString *dest = [params objectForKey:@"outputPath"];
+	MatteExportContext *context = [params objectForKey:@"context"];
 	
 	[self lockProgress];
 	unsigned long prevTotal = progress.totalItems;
@@ -690,7 +705,7 @@ withAttributes:(NSDictionary *)attributes
 	progress.totalItems = 100;
 	progress.currentItem = 0;
 	[self unlockProgress];
-	[QTMovie enterQTKitOnThreadDisablingThreadSafetyProtection];
+	[QTMovie enterQTKitOnThread];
 	[movie attachToCurrentThread];
 	NSDictionary *component = [qtComponents objectAtIndex:settings.selectedComponentIndex];
 	NSDictionary *exportAttrs;
@@ -707,7 +722,15 @@ withAttributes:(NSDictionary *)attributes
 					   [component objectForKey:@"subtypeLong"], QTMovieExportType,
 					   nil];
 	}
-	[movie writeToFile:dest withAttributes:exportAttrs];
+	NSError *error = nil;
+	if ( ![movie writeToFile:dest withAttributes:exportAttrs error:&error] ) {
+		NSLog(@"Failed to export movie: %@", error);
+		context.succeeded = NO;
+		[self lockProgress];
+		[progress.message autorelease];
+		progress.message = [[NSString stringWithFormat:@"Error exporting movie: %@", [error localizedDescription]] retain];
+		[self unlockProgress];
+	}
 	[movie detachFromCurrentThread];
 	[QTMovie exitQTKitOnThread];
 	[movie setDelegate:nil];
