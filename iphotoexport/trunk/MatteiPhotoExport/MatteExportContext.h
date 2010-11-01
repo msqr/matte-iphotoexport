@@ -20,8 +20,10 @@
 	NSMutableDictionary *outputPathMap;
 	CollectionExport *metadata;
 	NSString *exportMovieExtension;
+	BOOL succeeded;
 }
 
+@property (assign) BOOL succeeded;
 @property (nonatomic, readonly) ImageExportOptions *imageOptions;
 @property (nonatomic, retain) NSString *exportDir;
 @property (nonatomic, readonly) CollectionExport *metadata;

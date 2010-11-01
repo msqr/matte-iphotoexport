@@ -22,7 +22,7 @@
 
 @implementation MatteExportContext
 
-@synthesize exportDir, exportMovieExtension, metadata;
+@synthesize exportDir, exportMovieExtension, metadata, succeeded;
 
 - (id) initWithSettings:(MatteExportSettings *)settings {
 	if ( (self = [super init]) ) {
@@ -32,6 +32,7 @@
 		if ( ![settings isExportOriginals] ) {
 			[self setupImageExportOptionsFromSettings:settings];
 		}
+		succeeded = YES;
 	}
 	return self;
 }
