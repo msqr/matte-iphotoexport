@@ -79,6 +79,7 @@
 
 - (AlbumExport *)findAlbumNamed:(NSString *)theName;
 
+- (NSXMLElement *) asXml;
 - (BOOL)saveAsXml:(NSString *)dest;
 
 @end
