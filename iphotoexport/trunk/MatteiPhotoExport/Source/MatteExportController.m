@@ -7,16 +7,19 @@
 //
 
 #import "MatteExportController.h"
+
+#import "AddMediaRequest.h"
 #import "CollectionExport.h"
 #import "MatteExportContext.h"
 #import "MatteExportSettings.h"
-#import "SoapMessage.h"
+#import "SoapURLConnection.h"
 #import "ZipArchive.h"
 #import "gsoap/MatteSoapBinding.nsmap"
 #import "smdevp.h"
 #import "wsseapi.h"
 
-NSString * const MatteExportPluginVersion = @"1.0";
+NSString * const MatteExportPluginVersion = @"1.1";
+NSString * const MatteWebServiceUrlPath = @"/ws/Matte";
 
 @interface MatteExportController (MovieSupport)
 - (NSArray *)availableComponents;
@@ -101,7 +104,7 @@ NSString * const MatteExportPluginVersion = @"1.0";
 	
 	soap = soap_new();
 	soap_register_plugin(soap, soap_wsse);
-	endpoint = [[[settings url] stringByAppendingString:@"/ws/Matte"] UTF8String];
+	endpoint = [[[settings url] stringByAppendingString:MatteWebServiceUrlPath] UTF8String];
 	user = [[settings username] UTF8String];
 	pass = [[settings password] UTF8String];
 	
@@ -531,41 +534,39 @@ NSString * const MatteExportPluginVersion = @"1.0";
 
 - (void) generateSoapMessage:(MatteExportContext *)context zipFile:(NSString *)zipPath
 {
-	NSXMLNode *nsMatte = [NSXMLNode namespaceWithName:@"" stringValue:@"http://msqr.us/xsd/matte"];
-	NSXMLNode *nsXmime = [NSXMLNode namespaceWithName:@"xmime" stringValue:@"http://www.w3.org/2005/05/xmlmime"];
-    NSXMLElement *addMediaMessage = [NSXMLElement elementWithName:@"AddMediaRequest" URI:[nsMatte stringValue]];
-	[addMediaMessage addNamespace:nsMatte];
-	[addMediaMessage addNamespace:nsXmime];
-	[addMediaMessage addAttribute:[NSXMLNode attributeWithName:@"collection-id" stringValue:[NSString stringWithFormat:@"%d", settings.collectionId]]];
-	
-	// add collection import
-	NSXMLElement *importElem = [context.metadata asXml];
-	[importElem removeNamespaceForPrefix:@""];
-	[addMediaMessage addChild:importElem];
-	
-	// add media data
-	[addMediaMessage addChild:[NSXMLNode commentWithStringValue:[NSString stringWithFormat:
-													  @" Archive %@ with %d items and metadata.xml ",
-													  [zipPath lastPathComponent],
-													  [context outputCount] - 1]]];
-	NSData *zipData = [NSData dataWithContentsOfFile:zipPath];
-	NSXMLElement *mediaElement = [NSXMLElement elementWithName:@"media-data" URI:[nsMatte stringValue]];
-	NSXMLNode *mimeAttr = [NSXMLNode attributeWithName:@"xmime:contentType" URI:[nsXmime stringValue] stringValue:@"application/zip"];
-	[mediaElement addAttribute:mimeAttr];
-	[mediaElement setObjectValue:zipData];
-	[addMediaMessage addChild:mediaElement];
-	
-	SoapMessage *request = [[SoapMessage alloc] init];
+	AddMediaRequest *request = [[[AddMediaRequest alloc] init] autorelease];
 	request.username = settings.username;
 	request.password = settings.password;
-	request.message = addMediaMessage;
+	request.collectionId = settings.collectionId;
+	request.mediaCount = [context outputCount] - 1;
+	request.mediaFile = zipPath;
 	
 	NSData *xmlData = [[request asXml] XMLDataWithOptions:NSXMLNodePrettyPrint];
 	if ( ![xmlData writeToFile:[context.exportDir stringByAppendingPathComponent:@"import.xml"] atomically:YES] ) {
         NSLog(@"Could not write document out...");
     }
 	
-	[request release];
+	// execute ws call
+	NSURL *url = [NSURL URLWithString:[settings.url stringByAppendingPathComponent:MatteWebServiceUrlPath]];
+	NSMutableURLRequest *httpRequest = [[[NSMutableURLRequest alloc] initWithURL:url
+																	 cachePolicy:NSURLRequestReloadIgnoringCacheData 
+																timeoutInterval:60.0] autorelease];
+    [httpRequest setHTTPMethod:@"POST"];
+	[httpRequest setHTTPBody:xmlData];
+	[httpRequest setValue:@"text/xml; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
+    [httpRequest setValue:[NSString stringWithFormat:@"%d", [xmlData length]] forHTTPHeaderField:@"Content-Length"];
+    [httpRequest setValue:request.action forHTTPHeaderField:@"SOAPAction"];
+    SoapURLConnection *conn = [[[SoapURLConnection alloc] initWithRequest:httpRequest delegate:self] autorelease];
+	
+    NSXMLDocument *response = nil;
+	while ( !conn.finished ) {
+		[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]];
+	}
+	NSError *error = nil;
+	response = [[[NSXMLDocument alloc] initWithData:[conn data] options:NSXMLNodeOptionsNone error:&error] autorelease];
+	if ( error ) {
+		NSLog(@"Could not complete SOAP AddMediaRequest: %@", error);
+	}
 }
 
 - (ExportPluginProgress *)progress
@@ -591,6 +592,20 @@ NSString * const MatteExportPluginVersion = @"1.0";
 - (NSString *)name
 {
 	return @"Matte Exporter";
+}
+
+#pragma mark NSURLConnectionDelegate
+
+- (void) connection:(SoapURLConnection *)urlconn didReceiveResponse:(NSURLResponse *)response {
+    urlconn.response = response;
+}
+
+- (void) connection:(SoapURLConnection *)urlconn didReceiveData:(NSData *)data {
+    [urlconn appendData:data];
+}
+
+- (void) connectionDidFinishLoading:(SoapURLConnection *)urlconn {
+    [urlconn setFinished:YES];
 }
 
 #pragma mark Movie export support

@@ -12,10 +12,12 @@
 	NSString *username;
 	NSString *password;
 	NSXMLNode *message;
+	NSString *action;
 }
 
 @property (nonatomic, retain) NSString *username;
 @property (nonatomic, retain) NSString *password;
+@property (nonatomic, retain) NSString *action;
 @property (nonatomic, retain) NSXMLNode *message;
 
 - (NSXMLDocument *) asXml;
