@@ -15,6 +15,7 @@
 
 - (id) init {
 	if ( (self = [super init]) ) {
+		collectionId = -1;
 		autoAlbum = YES;
 		exportOriginals = YES;
 		exportOriginalMovies = NO;
