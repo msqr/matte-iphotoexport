@@ -10,6 +10,7 @@
 #import "CollectionExport.h"
 #import "MatteExportContext.h"
 #import "MatteExportSettings.h"
+#import "SoapMessage.h"
 #import "ZipArchive.h"
 #import "gsoap/MatteSoapBinding.nsmap"
 #import "smdevp.h"
@@ -27,6 +28,7 @@ NSString * const MatteExportPluginVersion = @"1.0";
 
 @interface MatteExportController (Private)
 - (void)setupImageExportOptions:(ImageExportOptions *)imageOptions;
+- (void) generateSoapMessage:(MatteExportContext *)context zipFile:(NSString *)zipPath;
 @end
 
 #pragma mark -
@@ -501,7 +503,8 @@ NSString * const MatteExportPluginVersion = @"1.0";
 	// add metadata.xml to list of files to archive
 	[context recordExport:nil toPath:metadataFile inArchive:@"metadata.xml"];
 	
-	[zip CreateZipFile2:[context.exportDir stringByAppendingPathComponent:[zipName stringByAppendingString:@".zip"]]];
+	NSString *zipPath = [context.exportDir stringByAppendingPathComponent:[zipName stringByAppendingString:@".zip"]];
+	[zip CreateZipFile2:zipPath];
 	for ( NSString *archivePath in [context archivePaths] ) {
 		[self lockProgress];
 		progress.currentItem = progress.currentItem + 1;
@@ -515,6 +518,8 @@ NSString * const MatteExportPluginVersion = @"1.0";
 	[zip CloseZipFile2];
 	[zip release];
 	
+	[self generateSoapMessage:context zipFile:zipPath];
+	
 	[self lockProgress];
 	[progress.message autorelease];
 	progress.message = nil;
@@ -522,6 +527,45 @@ NSString * const MatteExportPluginVersion = @"1.0";
 	[self unlockProgress];
 	
 	[context release];
+}
+
+- (void) generateSoapMessage:(MatteExportContext *)context zipFile:(NSString *)zipPath
+{
+	NSXMLNode *nsMatte = [NSXMLNode namespaceWithName:@"" stringValue:@"http://msqr.us/xsd/matte"];
+	NSXMLNode *nsXmime = [NSXMLNode namespaceWithName:@"xmime" stringValue:@"http://www.w3.org/2005/05/xmlmime"];
+    NSXMLElement *addMediaMessage = [NSXMLElement elementWithName:@"AddMediaRequest" URI:[nsMatte stringValue]];
+	[addMediaMessage addNamespace:nsMatte];
+	[addMediaMessage addNamespace:nsXmime];
+	[addMediaMessage addAttribute:[NSXMLNode attributeWithName:@"collection-id" stringValue:[NSString stringWithFormat:@"%d", settings.collectionId]]];
+	
+	// add collection import
+	NSXMLElement *importElem = [context.metadata asXml];
+	[importElem removeNamespaceForPrefix:@""];
+	[addMediaMessage addChild:importElem];
+	
+	// add media data
+	[addMediaMessage addChild:[NSXMLNode commentWithStringValue:[NSString stringWithFormat:
+													  @" Archive %@ with %d items and metadata.xml ",
+													  [zipPath lastPathComponent],
+													  [context outputCount] - 1]]];
+	NSData *zipData = [NSData dataWithContentsOfFile:zipPath];
+	NSXMLElement *mediaElement = [NSXMLElement elementWithName:@"media-data" URI:[nsMatte stringValue]];
+	NSXMLNode *mimeAttr = [NSXMLNode attributeWithName:@"xmime:contentType" URI:[nsXmime stringValue] stringValue:@"application/zip"];
+	[mediaElement addAttribute:mimeAttr];
+	[mediaElement setObjectValue:zipData];
+	[addMediaMessage addChild:mediaElement];
+	
+	SoapMessage *request = [[SoapMessage alloc] init];
+	request.username = settings.username;
+	request.password = settings.password;
+	request.message = addMediaMessage;
+	
+	NSData *xmlData = [[request asXml] XMLDataWithOptions:NSXMLNodePrettyPrint];
+	if ( ![xmlData writeToFile:[context.exportDir stringByAppendingPathComponent:@"import.xml"] atomically:YES] ) {
+        NSLog(@"Could not write document out...");
+    }
+	
+	[request release];
 }
 
 - (ExportPluginProgress *)progress
