@@ -8,3 +8,4 @@
  */
 
 extern NSString * const MatteExportPluginVersion;
+extern NSString * const MatteWebServiceUrlPath;

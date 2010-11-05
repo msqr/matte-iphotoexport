@@ -12,9 +12,10 @@
 
 @implementation SoapMessage
 
-@synthesize message, password, username;
+@synthesize action, message, password, username;
 
 - (void) dealloc {
+	self.action = nil;
 	self.message = nil;
 	self.password = nil;
 	self.username = nil;
@@ -42,6 +43,7 @@
 		NSXMLNode *nsWsse = [NSXMLNode namespaceWithName:@"wsse" 
 											 stringValue:@"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd"];
 		NSXMLElement *security = [NSXMLElement elementWithName:@"wsse:Security" URI:[nsWsse stringValue]];
+		[security addNamespace:nsWsse];
 		[header addChild:security];
 		NSXMLElement *token = [NSXMLElement elementWithName:@"wsse:UsernameToken" URI:[nsWsse stringValue]];
 		[security addChild:token];

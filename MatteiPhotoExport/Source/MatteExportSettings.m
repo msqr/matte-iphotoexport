@@ -32,6 +32,10 @@
 }
 
 - (void) restoreFromUserDefaults:(NSUserDefaults *)defaults {
+	self.url = [defaults stringForKey:@"settings.url"];
+	self.username = [defaults stringForKey:@"settings.username"];
+	
+	
 	autoAlbum = [defaults boolForKey:@"settings.autoAlbum"];
 	
 	exportOriginals = [defaults boolForKey:@"settings.exportOriginals"];
@@ -44,6 +48,9 @@
 }
 
 - (void) saveToUserDefaults:(NSUserDefaults *)defaults {
+	[defaults setObject:url forKey:@"settings.url"];
+	[defaults setObject:username forKey:@"settings.username"];
+	
 	[defaults setBool:autoAlbum forKey:@"settings.autoAlbum"];
 	
 	[defaults setBool:exportOriginals forKey:@"settings.exportOriginals"];
