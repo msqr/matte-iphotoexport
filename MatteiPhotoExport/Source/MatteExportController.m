@@ -30,8 +30,13 @@ NSString * const MatteWebServiceUrlPath = @"/ws/Matte";
 @end
 
 @interface MatteExportController (Private)
-- (void)setupImageExportOptions:(ImageExportOptions *)imageOptions;
-- (void) generateSoapMessage:(MatteExportContext *)context zipFile:(NSString *)zipPath;
+- (void) updateProgress:(NSString *)message 
+			   currItem:(unsigned long)currItem
+			 totalItems:(unsigned long)totalItems
+			 shouldStop:(BOOL)stop
+		  indeterminate:(BOOL)indeterminate;
+- (void) setupImageExportOptions:(ImageExportOptions *)imageOptions;
+- (void) postToServer:(MatteExportContext *)context zipFile:(NSString *)zipPath;
 @end
 
 #pragma mark -
@@ -125,7 +130,8 @@ NSString * const MatteWebServiceUrlPath = @"/ws/Matte";
 	
 	// populate the collections menu
 	[mCollectionPopUp removeAllItems];
-	for ( i = 0; i < response.__sizecollection; i++ ) {
+	int numCollections = response.__sizecollection;
+	for ( i = 0; i < numCollections; i++ ) {
 		NSString *title = [NSString stringWithCString:response.collection[i].name encoding:NSUTF8StringEncoding];
 		NSString *format = [NSString stringWithFormat:@"%d", i];
 		NSMenuItem *item = [[mCollectionPopUp menu] 
@@ -133,6 +139,11 @@ NSString * const MatteWebServiceUrlPath = @"/ws/Matte";
 							action:nil
 							keyEquivalent:format];
 		[item setTag:response.collection[i].collection_id];
+	}
+	
+	if ( ![mCollectionPopUp selectItemWithTag:settings.collectionId] && numCollections > 0 ) {
+		[mCollectionPopUp selectItemAtIndex:0];
+		settings.collectionId = [mCollectionPopUp itemAtIndex:0].tag;
 	}
 	soap_end(soap);
 	soap_done(soap);
@@ -521,18 +532,12 @@ NSString * const MatteWebServiceUrlPath = @"/ws/Matte";
 	[zip CloseZipFile2];
 	[zip release];
 	
-	[self generateSoapMessage:context zipFile:zipPath];
-	
-	[self lockProgress];
-	[progress.message autorelease];
-	progress.message = nil;
-	progress.shouldStop = YES;
-	[self unlockProgress];
+	[self postToServer:context zipFile:zipPath];
 	
 	[context release];
 }
 
-- (void) generateSoapMessage:(MatteExportContext *)context zipFile:(NSString *)zipPath
+- (void) postToServer:(MatteExportContext *)context zipFile:(NSString *)zipPath
 {
 	AddMediaRequest *request = [[[AddMediaRequest alloc] init] autorelease];
 	request.username = settings.username;
@@ -540,11 +545,18 @@ NSString * const MatteWebServiceUrlPath = @"/ws/Matte";
 	request.collectionId = settings.collectionId;
 	request.mediaCount = [context outputCount] - 1;
 	request.mediaFile = zipPath;
+	request.metadata = context.metadata;
 	
-	NSData *xmlData = [[request asXml] XMLDataWithOptions:NSXMLNodePrettyPrint];
+	[self updateProgress:@"Generating Matte request data..." currItem:-1 totalItems:-1 shouldStop:NO indeterminate:YES];
+	
+	NSData *xmlData = [[request asXml] XMLDataWithOptions:NSXMLNodeOptionsNone];
+#ifdef DEBUG
 	if ( ![xmlData writeToFile:[context.exportDir stringByAppendingPathComponent:@"import.xml"] atomically:YES] ) {
         NSLog(@"Could not write document out...");
     }
+#endif
+	
+	[self updateProgress:@"Posting data to Matte" currItem:0 totalItems:100 shouldStop:NO indeterminate:NO];
 	
 	// execute ws call
 	NSURL *url = [NSURL URLWithString:[settings.url stringByAppendingPathComponent:MatteWebServiceUrlPath]];
@@ -562,11 +574,61 @@ NSString * const MatteWebServiceUrlPath = @"/ws/Matte";
 	while ( !conn.finished ) {
 		[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]];
 	}
+	DLog(@"AddMediaRequest response: %@", [[[NSString alloc] initWithData:[conn data] encoding:NSUTF8StringEncoding] autorelease]);
 	NSError *error = nil;
 	response = [[[NSXMLDocument alloc] initWithData:[conn data] options:NSXMLNodeOptionsNone error:&error] autorelease];
 	if ( error ) {
 		NSLog(@"Could not complete SOAP AddMediaRequest: %@", error);
+		return;
 	}
+
+	// check for error
+	NSArray *nodes = [response nodesForXPath:@"(//faultstring)[1]/text()" error:&error];
+	if ( error ) {
+		NSLog(@"Could not execute XPath for fault: %@", error);
+		return;
+	}
+	if ( [nodes count] > 0 ) {
+		// oops, error on server
+		NSString *msg = [[nodes objectAtIndex:0] stringValue];
+		[self updateProgress:msg currItem:-1 totalItems:-1 shouldStop:NO indeterminate:NO];
+	} else {
+		// <m:AddMediaResponse xmlns:m="http://msqr.us/xsd/matte" success="true" ticket="1" />
+		// NSXML XPath doesn't support namespaces properly... have to use convoluted work-around
+		nodes = [response nodesForXPath:@"(//*[local-name() = 'AddMediaResponse'])[1]" error:&error];
+		BOOL success = YES;
+		if ( [nodes count] > 0 ) {
+			success = [[[[nodes objectAtIndex:0] attributeForName:@"success"] stringValue] isEqualToString:@"true"];
+			long long ticket = [[[[nodes objectAtIndex:0] attributeForName:@"ticket"] stringValue] longLongValue];
+			DLog(@"Import successful: %@ work ticket: %ld", (success ? @"YES" : @"NO"), ticket);
+		}
+		// wait for work ticket to complete? for now just finish up
+		[self updateProgress:(success ? nil : @"Import did not succeed on server, no message returned.") 
+					currItem:-1
+				  totalItems:-1
+				  shouldStop:success
+			   indeterminate:NO];
+	}
+}
+
+- (void) updateProgress:(NSString *)message 
+			   currItem:(unsigned long)currItem
+			 totalItems:(unsigned long)totalItems
+			 shouldStop:(BOOL)stop
+		  indeterminate:(BOOL)indeterminate
+{
+	[self lockProgress];
+	[progress.message autorelease];
+	progress.message = [message retain];
+	if ( currItem >= 0 ) {
+		progress.currentItem = currItem;
+	}
+	if ( totalItems >= 0 ) {
+		progress.totalItems = totalItems;
+	}
+	progress.shouldStop = stop;
+	progress.indeterminateProgress = indeterminate;
+	[self unlockProgress];
 }
 
 - (ExportPluginProgress *)progress
@@ -606,6 +668,17 @@ NSString * const MatteWebServiceUrlPath = @"/ws/Matte";
 
 - (void) connectionDidFinishLoading:(SoapURLConnection *)urlconn {
     [urlconn setFinished:YES];
+}
+
+- (void)connection:(SoapURLConnection *)connection 
+   didSendBodyData:(NSInteger)bytesWritten 
+ totalBytesWritten:(NSInteger)totalBytesWritten 
+totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite
+{
+	int percent = (int)round(((double)totalBytesWritten / (double)totalBytesExpectedToWrite) * 100);
+	[self lockProgress];
+	progress.currentItem = percent;
+	[self unlockProgress];
 }
 
 #pragma mark Movie export support

@@ -34,6 +34,7 @@
 - (void) restoreFromUserDefaults:(NSUserDefaults *)defaults {
 	self.url = [defaults stringForKey:@"settings.url"];
 	self.username = [defaults stringForKey:@"settings.username"];
+	collectionId = [defaults integerForKey:@"settings.collectionId"];
 	
 	
 	autoAlbum = [defaults boolForKey:@"settings.autoAlbum"];
@@ -50,6 +51,7 @@
 - (void) saveToUserDefaults:(NSUserDefaults *)defaults {
 	[defaults setObject:url forKey:@"settings.url"];
 	[defaults setObject:username forKey:@"settings.username"];
+	[defaults setInteger:collectionId forKey:@"settings.collectionId"];
 	
 	[defaults setBool:autoAlbum forKey:@"settings.autoAlbum"];
 	
