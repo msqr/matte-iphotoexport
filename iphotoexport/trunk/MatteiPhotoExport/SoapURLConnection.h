@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
+@class SoapMessage;
+
 @interface SoapURLConnection : NSURLConnection {
 @private
     NSURLResponse *response;
@@ -17,6 +19,12 @@
 
 @property (nonatomic, assign, getter=isFinished) BOOL finished;
 @property (nonatomic, retain) NSURLResponse *response;
+
++ (NSXMLDocument *) request:(NSURL *)url 
+					message:(SoapMessage *)message 
+				   delegate:(id)delegate;
+
++ (NSString *) faultString:(NSXMLDocument *)soapResponse error:(NSError **)error;
 
 - (NSData *) data;
 - (void) appendData:(NSData *)value;
