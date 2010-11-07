@@ -13,6 +13,7 @@
 		C90CA1F80D14A95500224FBC /* soapClient.c in Sources */ = {isa = PBXBuildFile; fileRef = C90CA17A0D1496E300224FBC /* soapClient.c */; };
 		C90CA1FA0D14A95F00224FBC /* soapC.c in Sources */ = {isa = PBXBuildFile; fileRef = C90CA1790D1496E300224FBC /* soapC.c */; };
 		C90CA2050D14AA5100224FBC /* md5evp.c in Sources */ = {isa = PBXBuildFile; fileRef = C99974A70D135CD30086DF84 /* md5evp.c */; };
+		C932409712867EDF008260D7 /* GetCollectionListRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = C932409612867EDF008260D7 /* GetCollectionListRequest.m */; };
 		C95263EC127BFB9A00391FA0 /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C95263EB127BFB9A00391FA0 /* QuickTime.framework */; };
 		C99974B80D135CD30086DF84 /* dom.c in Sources */ = {isa = PBXBuildFile; fileRef = C99974710D135CD30086DF84 /* dom.c */; };
 		C99974BB0D135CD30086DF84 /* cacerts.c in Sources */ = {isa = PBXBuildFile; fileRef = C99974930D135CD30086DF84 /* cacerts.c */; };
@@ -58,6 +59,8 @@
 		C90CA17C0D1496E300224FBC /* soapH.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = soapH.h; path = Source/gsoap/soapH.h; sourceTree = "<group>"; };
 		C90CA1B30D149DD100224FBC /* threads.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = threads.c; sourceTree = "<group>"; };
 		C90CA1B40D149DD100224FBC /* threads.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = threads.h; sourceTree = "<group>"; };
+		C932409512867EDF008260D7 /* GetCollectionListRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GetCollectionListRequest.h; sourceTree = "<group>"; };
+		C932409612867EDF008260D7 /* GetCollectionListRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GetCollectionListRequest.m; sourceTree = "<group>"; };
 		C95263BC127BEA3500391FA0 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = "Resources/English.lproj/Panel-Service.nib"; sourceTree = "<group>"; };
 		C95263EB127BFB9A00391FA0 /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = System/Library/Frameworks/QuickTime.framework; sourceTree = SDKROOT; };
 		C99974650D135A900086DF84 /* MatteService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MatteService.h; path = Source/gsoap/MatteService.h; sourceTree = "<group>"; };
@@ -225,6 +228,8 @@
 				C9A624C20D8EF04500418EEB /* CollectionExport.h */,
 				C9A624C30D8EF04500418EEB /* CollectionExport.m */,
 				C9B39DBD127E272F00044A13 /* Constants.h */,
+				C932409512867EDF008260D7 /* GetCollectionListRequest.h */,
+				C932409612867EDF008260D7 /* GetCollectionListRequest.m */,
 				C9B39AE9127E027C00044A13 /* MatteExportContext.h */,
 				C9B39AEA127E027C00044A13 /* MatteExportContext.m */,
 				C9A72B340CF8D86A0019950D /* MatteExportController.h */,
@@ -511,6 +516,7 @@
 				C9F253E11283D8F40071BA83 /* SoapMessage.m in Sources */,
 				C9F254341283E8750071BA83 /* AddMediaRequest.m in Sources */,
 				C9F254881283F1580071BA83 /* SoapURLConnection.m in Sources */,
+				C932409712867EDF008260D7 /* GetCollectionListRequest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

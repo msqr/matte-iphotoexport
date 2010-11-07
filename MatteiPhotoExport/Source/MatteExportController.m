@@ -10,13 +10,12 @@
 
 #import "AddMediaRequest.h"
 #import "CollectionExport.h"
+#import "GetCollectionListRequest.h"
 #import "MatteExportContext.h"
 #import "MatteExportSettings.h"
 #import "SoapURLConnection.h"
 #import "ZipArchive.h"
 #import "gsoap/MatteSoapBinding.nsmap"
-#import "smdevp.h"
-#import "wsseapi.h"
 
 NSString * const MatteExportPluginVersion = @"1.1";
 NSString * const MatteWebServiceUrlPath = @"/ws/Matte";
@@ -36,6 +35,7 @@ NSString * const MatteWebServiceUrlPath = @"/ws/Matte";
 			 shouldStop:(BOOL)stop
 		  indeterminate:(BOOL)indeterminate;
 - (void) setupImageExportOptions:(ImageExportOptions *)imageOptions;
+- (void) populateCollectionPopUp;
 - (void) postToServer:(MatteExportContext *)context zipFile:(NSString *)zipPath;
 @end
 
@@ -93,60 +93,6 @@ NSString * const MatteWebServiceUrlPath = @"/ws/Matte";
 	[qtComponents release];
 	[xsdDateTimeFormat release];
 	[super dealloc];
-}
-
-- (void)populateCollectionPopUp
-{
-	struct soap *soap;
-	const char *user;
-	const char *pass;
-	const char *endpoint;
-	int i;
-	struct m__get_collection_list_request_type request;
-	struct m__get_collection_list_response_type response;
-	
-	DLog(@"Populating collection pop up...");
-	
-	soap = soap_new();
-	soap_register_plugin(soap, soap_wsse);
-	endpoint = [[[settings url] stringByAppendingString:MatteWebServiceUrlPath] UTF8String];
-	user = [[settings username] UTF8String];
-	pass = [[settings password] UTF8String];
-	
-	DLog(@"Calling WS %s, user: %s, pass: %s", endpoint, user, pass);
-
-	soap_wsse_add_UsernameTokenText(soap, NULL, user, pass);
-	
-	// call the service
-	if ( soap_call___mws__GetCollectionList(soap, endpoint, NULL, &request, &response) ) {
-		NSLog(@"Error calling WS %s: %d", endpoint, soap->error);
-		soap_print_fault(soap, stderr);
-		soap_end(soap);
-		soap_done(soap);
-		// TODO handle error with dialog warning
-		return;
-	}
-	DLog(@"Called WS %s OK, # collections: %d", endpoint, response.__sizecollection);
-	
-	// populate the collections menu
-	[mCollectionPopUp removeAllItems];
-	int numCollections = response.__sizecollection;
-	for ( i = 0; i < numCollections; i++ ) {
-		NSString *title = [NSString stringWithCString:response.collection[i].name encoding:NSUTF8StringEncoding];
-		NSString *format = [NSString stringWithFormat:@"%d", i];
-		NSMenuItem *item = [[mCollectionPopUp menu] 
-							addItemWithTitle:title
-							action:nil
-							keyEquivalent:format];
-		[item setTag:response.collection[i].collection_id];
-	}
-	
-	if ( ![mCollectionPopUp selectItemWithTag:settings.collectionId] && numCollections > 0 ) {
-		[mCollectionPopUp selectItemAtIndex:0];
-		settings.collectionId = [mCollectionPopUp itemAtIndex:0].tag;
-	}
-	soap_end(soap);
-	soap_done(soap);
 }
 
 #pragma mark Actions
@@ -537,55 +483,6 @@ NSString * const MatteWebServiceUrlPath = @"/ws/Matte";
 	[context release];
 }
 
-- (void) postToServer:(MatteExportContext *)context zipFile:(NSString *)zipPath
-{
-	AddMediaRequest *request = [[[AddMediaRequest alloc] init] autorelease];
-	request.username = settings.username;
-	request.password = settings.password;
-	request.collectionId = settings.collectionId;
-	request.mediaCount = [context outputCount] - 1;
-	request.mediaFile = zipPath;
-	request.metadata = context.metadata;
-	
-	[self updateProgress:@"Posting data to Matte" currItem:0 totalItems:100 shouldStop:NO indeterminate:NO];
-	
-	NSXMLDocument *response = [SoapURLConnection request:[NSURL URLWithString:[settings.url stringByAppendingPathComponent:MatteWebServiceUrlPath]]
-												 message:request
-												delegate:self];
-	
-	if ( !response ) {
-		return;
-	}
-
-	// check for error
-	NSError *error;
-	NSString *faultMsg = [SoapURLConnection faultString:response error:&error];
-	if ( error ) {
-		NSLog(@"Could not check for SOAP fault: %@", error);
-		return;
-	}
-	if ( faultMsg != nil ) {
-		// oops, error on server
-		[self updateProgress:faultMsg currItem:-1 totalItems:-1 shouldStop:NO indeterminate:NO];
-	} else {
-		// <m:AddMediaResponse xmlns:m="http://msqr.us/xsd/matte" success="true" ticket="1" />
-		// NSXML XPath doesn't support namespaces properly... have to use convoluted work-around
-		NSArray *nodes = [response nodesForXPath:@"(//*[local-name() = 'AddMediaResponse'])[1]" error:&error];
-		BOOL success = YES;
-		if ( [nodes count] > 0 ) {
-			success = [[[[nodes objectAtIndex:0] attributeForName:@"success"] stringValue] isEqualToString:@"true"];
-			long long ticket = [[[[nodes objectAtIndex:0] attributeForName:@"ticket"] stringValue] longLongValue];
-			DLog(@"Import successful: %@ work ticket: %ld", (success ? @"YES" : @"NO"), ticket);
-		}
-		// wait for work ticket to complete? for now just finish up
-		[self updateProgress:(success ? nil : @"Import did not succeed on server, no message returned.") 
-					currItem:-1
-				  totalItems:-1
-				  shouldStop:success
-			   indeterminate:NO];
-	}
-}
-
 - (void) updateProgress:(NSString *)message 
 			   currItem:(unsigned long)currItem
 			 totalItems:(unsigned long)totalItems
@@ -631,6 +528,161 @@ NSString * const MatteWebServiceUrlPath = @"/ws/Matte";
 	return @"Matte Exporter";
 }
 
+#pragma mark SOAP
+
+- (void) populateCollectionPopUp
+{
+	GetCollectionListRequest *request = [[[GetCollectionListRequest alloc] init] autorelease];
+	request.username = settings.username;
+	request.password = settings.password;
+
+	NSURL *url = [NSURL URLWithString:[settings.url stringByAppendingPathComponent:MatteWebServiceUrlPath]];
+	NSXMLDocument *response = [SoapURLConnection request:url
+												 message:request
+												delegate:self];
+	
+	if ( !response ) {
+		return;
+	}
+	
+	// check for error
+	NSError *error;
+	NSString *faultMsg = [SoapURLConnection faultString:response error:&error];
+	if ( error ) {
+		NSLog(@"Could not check for SOAP fault: %@", error);
+		return;
+	}
+	if ( faultMsg != nil ) {
+		// oops, error on server
+		NSLog(@"Error calling GetCollectionListRequest: %@", faultMsg);
+	} else {
+		// <GetCollectionListResponse xmlns="http://msqr.us/xsd/matte"><collection collection-id="1" name="Foo"/></GetCollectionListResponse>
+		// NSXML XPath doesn't support namespaces properly... have to use convoluted work-around
+		NSArray *nodes = [response nodesForXPath:@"//*[local-name() = 'collection']" error:&error];
+		NSUInteger i = 0;
+		NSUInteger len = [nodes count];
+		[mCollectionPopUp removeAllItems];
+		if ( len > 0 ) {
+			NSXMLElement *collectionElement;
+			for ( ; i < len; i++ ) {
+				collectionElement = [nodes objectAtIndex:i];
+				NSString *name = [[collectionElement attributeForName:@"name"] stringValue];
+				NSInteger collectionId = [[[collectionElement attributeForName:@"collection-id"] stringValue] integerValue];
+				NSMenuItem *item = [[mCollectionPopUp menu] 
+									addItemWithTitle:name
+									action:nil
+									keyEquivalent:[NSString stringWithFormat:@"%d", i]];
+				[item setTag:collectionId];
+			}
+		}
+	}
+}
+
+/*
+- (void) populateCollectionPopUp
+{
+	struct soap *soap;
+	const char *user;
+	const char *pass;
+	const char *endpoint;
+	int i;
+	struct m__get_collection_list_request_type request;
+	struct m__get_collection_list_response_type response;
+	
+	DLog(@"Populating collection pop up...");
+	
+	soap = soap_new();
+	soap_register_plugin(soap, soap_wsse);
+	endpoint = [[[settings url] stringByAppendingString:MatteWebServiceUrlPath] UTF8String];
+	user = [[settings username] UTF8String];
+	pass = [[settings password] UTF8String];
+	
+	DLog(@"Calling WS %s, user: %s, pass: %s", endpoint, user, pass);
+	
+	soap_wsse_add_UsernameTokenText(soap, NULL, user, pass);
+	
+	// call the service
+	if ( soap_call___mws__GetCollectionList(soap, endpoint, NULL, &request, &response) ) {
+		NSLog(@"Error calling WS %s: %d", endpoint, soap->error);
+		soap_print_fault(soap, stderr);
+		soap_end(soap);
+		soap_done(soap);
+		// TODO handle error with dialog warning
+		return;
+	}
+	DLog(@"Called WS %s OK, # collections: %d", endpoint, response.__sizecollection);
+	
+	// populate the collections menu
+	[mCollectionPopUp removeAllItems];
+	int numCollections = response.__sizecollection;
+	for ( i = 0; i < numCollections; i++ ) {
+		NSString *title = [NSString stringWithCString:response.collection[i].name encoding:NSUTF8StringEncoding];
+		NSString *format = [NSString stringWithFormat:@"%d", i];
+		NSMenuItem *item = [[mCollectionPopUp menu] 
+							addItemWithTitle:title
+							action:nil
+							keyEquivalent:format];
+		[item setTag:response.collection[i].collection_id];
+	}
+	
+	if ( ![mCollectionPopUp selectItemWithTag:settings.collectionId] && numCollections > 0 ) {
+		[mCollectionPopUp selectItemAtIndex:0];
+		settings.collectionId = [mCollectionPopUp itemAtIndex:0].tag;
+	}
+	soap_end(soap);
+	soap_done(soap);
+}
+*/
+
+- (void) postToServer:(MatteExportContext *)context zipFile:(NSString *)zipPath
+{
+	AddMediaRequest *request = [[[AddMediaRequest alloc] init] autorelease];
+	request.username = settings.username;
+	request.password = settings.password;
+	request.collectionId = settings.collectionId;
+	request.mediaCount = [context outputCount] - 1;
+	request.mediaFile = zipPath;
+	request.metadata = context.metadata;
+	
+	[self updateProgress:@"Posting data to Matte" currItem:0 totalItems:100 shouldStop:NO indeterminate:NO];
+	
+	NSXMLDocument *response = [SoapURLConnection request:[NSURL URLWithString:[settings.url stringByAppendingPathComponent:MatteWebServiceUrlPath]]
+												 message:request
+												delegate:self];
+	
+	if ( !response ) {
+		return;
+	}
+	
+	// check for error
+	NSError *error;
+	NSString *faultMsg = [SoapURLConnection faultString:response error:&error];
+	if ( error ) {
+		NSLog(@"Could not check for SOAP fault: %@", error);
+		return;
+	}
+	if ( faultMsg != nil ) {
+		// oops, error on server
+		[self updateProgress:faultMsg currItem:-1 totalItems:-1 shouldStop:NO indeterminate:NO];
+	} else {
+		// <m:AddMediaResponse xmlns:m="http://msqr.us/xsd/matte" success="true" ticket="1" />
+		// NSXML XPath doesn't support namespaces properly... have to use convoluted work-around
+		NSArray *nodes = [response nodesForXPath:@"(//*[local-name() = 'AddMediaResponse'])[1]" error:&error];
+		BOOL success = YES;
+		if ( [nodes count] > 0 ) {
+			success = [[[[nodes objectAtIndex:0] attributeForName:@"success"] stringValue] isEqualToString:@"true"];
+			long long ticket = [[[[nodes objectAtIndex:0] attributeForName:@"ticket"] stringValue] longLongValue];
+			DLog(@"Import successful: %@ work ticket: %ld", (success ? @"YES" : @"NO"), ticket);
+		}
+		// wait for work ticket to complete? for now just finish up
+		[self updateProgress:(success ? nil : @"Import did not succeed on server, no message returned.") 
+					currItem:-1
+				  totalItems:-1
+				  shouldStop:success
+			   indeterminate:NO];
+	}
+}
+
 #pragma mark NSURLConnectionDelegate
 
 - (void) connection:(SoapURLConnection *)urlconn didReceiveResponse:(NSURLResponse *)response {
@@ -650,6 +702,9 @@ NSString * const MatteWebServiceUrlPath = @"/ws/Matte";
  totalBytesWritten:(NSInteger)totalBytesWritten 
 totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite
 {
+	if ( !connection.updateProgress ) {
+		return;
+	}
 	int percent = (int)round(((double)totalBytesWritten / (double)totalBytesExpectedToWrite) * 100);
 	[self lockProgress];
 	progress.currentItem = percent;

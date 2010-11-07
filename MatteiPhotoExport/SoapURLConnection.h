@@ -15,9 +15,11 @@
     NSURLResponse *response;
     NSMutableData *data;
     BOOL finished;
+	BOOL updateProgress;
 }
 
 @property (nonatomic, assign, getter=isFinished) BOOL finished;
+@property (nonatomic, assign, getter=isUpdateProgress) BOOL updateProgress;
 @property (nonatomic, retain) NSURLResponse *response;
 
 + (NSXMLDocument *) request:(NSURL *)url 
