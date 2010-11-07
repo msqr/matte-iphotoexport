@@ -547,55 +547,30 @@ NSString * const MatteWebServiceUrlPath = @"/ws/Matte";
 	request.mediaFile = zipPath;
 	request.metadata = context.metadata;
 	
-	[self updateProgress:@"Generating Matte request data..." currItem:-1 totalItems:-1 shouldStop:NO indeterminate:YES];
-	
-	NSData *xmlData = [[request asXml] XMLDataWithOptions:NSXMLNodeOptionsNone];
-#ifdef DEBUG
-	if ( ![xmlData writeToFile:[context.exportDir stringByAppendingPathComponent:@"import.xml"] atomically:YES] ) {
-        NSLog(@"Could not write document out...");
-    }
-#endif
-	
 	[self updateProgress:@"Posting data to Matte" currItem:0 totalItems:100 shouldStop:NO indeterminate:NO];
 	
-	// execute ws call
-	NSURL *url = [NSURL URLWithString:[settings.url stringByAppendingPathComponent:MatteWebServiceUrlPath]];
-	NSMutableURLRequest *httpRequest = [[[NSMutableURLRequest alloc] initWithURL:url
-																	 cachePolicy:NSURLRequestReloadIgnoringCacheData 
-																timeoutInterval:60.0] autorelease];
-    [httpRequest setHTTPMethod:@"POST"];
-	[httpRequest setHTTPBody:xmlData];
-	[httpRequest setValue:@"text/xml; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
-    [httpRequest setValue:[NSString stringWithFormat:@"%d", [xmlData length]] forHTTPHeaderField:@"Content-Length"];
-    [httpRequest setValue:request.action forHTTPHeaderField:@"SOAPAction"];
-    SoapURLConnection *conn = [[[SoapURLConnection alloc] initWithRequest:httpRequest delegate:self] autorelease];
+	NSXMLDocument *response = [SoapURLConnection request:[NSURL URLWithString:[settings.url stringByAppendingPathComponent:MatteWebServiceUrlPath]]
+												 message:request
+												delegate:self];
 	
-    NSXMLDocument *response = nil;
-	while ( !conn.finished ) {
-		[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]];
-	}
-	DLog(@"AddMediaRequest response: %@", [[[NSString alloc] initWithData:[conn data] encoding:NSUTF8StringEncoding] autorelease]);
-	NSError *error = nil;
-	response = [[[NSXMLDocument alloc] initWithData:[conn data] options:NSXMLNodeOptionsNone error:&error] autorelease];
-	if ( error ) {
-		NSLog(@"Could not complete SOAP AddMediaRequest: %@", error);
+	if ( !response ) {
 		return;
 	}
 
 	// check for error
-	NSArray *nodes = [response nodesForXPath:@"(//faultstring)[1]/text()" error:&error];
+	NSError *error;
+	NSString *faultMsg = [SoapURLConnection faultString:response error:&error];
 	if ( error ) {
-		NSLog(@"Could not execute XPath for fault: %@", error);
+		NSLog(@"Could not check for SOAP fault: %@", error);
 		return;
 	}
-	if ( [nodes count] > 0 ) {
+	if ( faultMsg != nil ) {
 		// oops, error on server
-		NSString *msg = [[nodes objectAtIndex:0] stringValue];
-		[self updateProgress:msg currItem:-1 totalItems:-1 shouldStop:NO indeterminate:NO];
+		[self updateProgress:faultMsg currItem:-1 totalItems:-1 shouldStop:NO indeterminate:NO];
 	} else {
 		// <m:AddMediaResponse xmlns:m="http://msqr.us/xsd/matte" success="true" ticket="1" />
 		// NSXML XPath doesn't support namespaces properly... have to use convoluted work-around
-		nodes = [response nodesForXPath:@"(//*[local-name() = 'AddMediaResponse'])[1]" error:&error];
+		NSArray *nodes = [response nodesForXPath:@"(//*[local-name() = 'AddMediaResponse'])[1]" error:&error];
 		BOOL success = YES;
 		if ( [nodes count] > 0 ) {
 			success = [[[[nodes objectAtIndex:0] attributeForName:@"success"] stringValue] isEqualToString:@"true"];
