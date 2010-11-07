@@ -12,7 +12,7 @@
 
 @implementation SoapURLConnection
 
-@synthesize finished, response;
+@synthesize finished, response, updateProgress;
 
 - (void) dealloc {
 	self.response = nil;
