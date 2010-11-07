@@ -61,7 +61,6 @@
 		C90CA1B40D149DD100224FBC /* threads.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = threads.h; sourceTree = "<group>"; };
 		C932409512867EDF008260D7 /* GetCollectionListRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GetCollectionListRequest.h; sourceTree = "<group>"; };
 		C932409612867EDF008260D7 /* GetCollectionListRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GetCollectionListRequest.m; sourceTree = "<group>"; };
-		C95263BC127BEA3500391FA0 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = "Resources/English.lproj/Panel-Service.nib"; sourceTree = "<group>"; };
 		C95263EB127BFB9A00391FA0 /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = System/Library/Frameworks/QuickTime.framework; sourceTree = SDKROOT; };
 		C99974650D135A900086DF84 /* MatteService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MatteService.h; path = Source/gsoap/MatteService.h; sourceTree = "<group>"; };
 		C99974710D135CD30086DF84 /* dom.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = dom.c; sourceTree = "<group>"; };
@@ -213,7 +212,6 @@
 			isa = PBXGroup;
 			children = (
 				C9A72B580CF8DD060019950D /* Panel.nib */,
-				C95263BD127BEA3C00391FA0 /* Panel-Service.nib */,
 				8D5B49B7048680CD000E48DA /* Info.plist */,
 				089C167DFE841241C02AAC07 /* InfoPlist.strings */,
 			);
@@ -530,14 +528,6 @@
 			);
 			name = InfoPlist.strings;
 			path = Resources/English.lproj;
-			sourceTree = "<group>";
-		};
-		C95263BD127BEA3C00391FA0 /* Panel-Service.nib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				C95263BC127BEA3500391FA0 /* English */,
-			);
-			name = "Panel-Service.nib";
 			sourceTree = "<group>";
 		};
 		C9A72B580CF8DD060019950D /* Panel.nib */ = {
