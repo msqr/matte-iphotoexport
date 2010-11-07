@@ -37,12 +37,6 @@
 					message:(SoapMessage *)message 
 				   delegate:(id)delegate {
 	NSData *xmlData = [[message asXml] XMLDataWithOptions:NSXMLNodeOptionsNone];
-#ifdef DEBUG
-	DLog(@"Creating import.xml file in %@", NSTemporaryDirectory());
-	if ( ![xmlData writeToFile:[NSTemporaryDirectory() stringByAppendingPathComponent:@"import.xml"] atomically:YES] ) {
-        NSLog(@"Could not write document out...");
-    }
-#endif
 	
 	// execute ws call
 	NSMutableURLRequest *httpRequest = [[[NSMutableURLRequest alloc] initWithURL:url

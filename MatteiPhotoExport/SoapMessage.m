@@ -62,6 +62,7 @@
 	[envelope addChild:body];
 	
 	// message
+	[message detach]; // in case printed out already before
 	[body addChild:message];
 	
 	return xmlDoc;
