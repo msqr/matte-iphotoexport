@@ -97,7 +97,7 @@ NSString * const MatteWebServiceUrlPath = @"/ws/Matte";
 
 #pragma mark Actions
 
-- (IBAction)populateCollections:(id)sender 
+- (IBAction)populateCollections:(id)sender;
 {
 	DLog(@"populateCollections action called by %@, user = %@, pass = %@", 
 		sender, [settings username], [settings password]);
@@ -190,12 +190,30 @@ NSString * const MatteWebServiceUrlPath = @"/ws/Matte";
 
 - (BOOL)wantsDestinationPrompt
 {
-	return YES;
+	return NO;
 }
 
 - (NSString*)getDestinationPath
 {
-	return @"";
+	// adapted from http://cocoawithlove.com/2009/07/temporary-files-and-folders-in-cocoa.html
+	
+	NSString *tempDirectoryTemplate = [NSTemporaryDirectory() stringByAppendingPathComponent:@"matte-iphoto-export.XXXXXX"];
+	const char *tempDirectoryTemplateCString = [tempDirectoryTemplate fileSystemRepresentation];
+	char *tempDirectoryNameCString = (char *)malloc(strlen(tempDirectoryTemplateCString) + 1);
+	strcpy(tempDirectoryNameCString, tempDirectoryTemplateCString);
+	
+	char *result = mkdtemp(tempDirectoryNameCString);
+	if ( !result )
+	{
+		// handle directory creation failure
+		return nil;
+	}
+	
+	NSString *tempDirectoryPath = [[NSFileManager defaultManager]
+								   stringWithFileSystemRepresentation:tempDirectoryNameCString
+								   length:strlen(result)];
+	free(tempDirectoryNameCString);
+	return tempDirectoryPath;
 }
 
 - (NSString *)defaultFileName
@@ -441,7 +459,7 @@ NSString * const MatteWebServiceUrlPath = @"/ws/Matte";
 	
 	[self lockProgress];
 	[progress.message autorelease];
-	progress.totalItems = [context outputCount];
+	progress.totalItems = [context outputCount] + 1; // +1 for metadata.xml added to context later
 	progress.message = [[NSString stringWithFormat:@"Zipping item 1 of %d", progress.totalItems] retain];
 	progress.currentItem = 0;
 	[self unlockProgress];
@@ -479,6 +497,9 @@ NSString * const MatteWebServiceUrlPath = @"/ws/Matte";
 	[zip release];
 	
 	[self postToServer:context zipFile:zipPath];
+	
+	// clean up our temp dir now
+	[[NSFileManager defaultManager] removeItemAtPath:context.exportDir error:nil];
 	
 	[context release];
 }
@@ -528,7 +549,7 @@ NSString * const MatteWebServiceUrlPath = @"/ws/Matte";
 	return @"Matte Exporter";
 }
 
-#pragma mark SOAP
+#pragma mark Web service calls
 
 - (void) populateCollectionPopUp
 {
@@ -643,6 +664,15 @@ NSString * const MatteWebServiceUrlPath = @"/ws/Matte";
 	request.mediaCount = [context outputCount] - 1;
 	request.mediaFile = zipPath;
 	request.metadata = context.metadata;
+	
+#ifdef DEBUG
+	NSData *xmlData = [[request asXml] XMLDataWithOptions:NSXMLNodePrettyPrint];
+	NSString *zipDir = [zipPath stringByDeletingLastPathComponent];
+	DLog(@"Saving import.xml file in %@", zipDir);
+	if ( ![xmlData writeToFile:[zipDir stringByAppendingPathComponent:@"import.xml"] atomically:YES] ) {
+        NSLog(@"Could not write import.xml document out...");
+    }
+#endif
 	
 	[self updateProgress:@"Posting data to Matte" currItem:0 totalItems:100 shouldStop:NO indeterminate:NO];
 	
