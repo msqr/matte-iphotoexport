@@ -20,6 +20,7 @@
 	IBOutlet NSControl *mFirstView;
 	IBOutlet NSTextField *mVersionLabel;
 	
+	IBOutlet NSSecureTextField	*mPasswordField;
 	IBOutlet NSPopUpButton		*mCollectionPopUp;
 	IBOutlet NSPopUpButton		*mSizePopUp;
 	IBOutlet NSPopUpButton		*mQualityPopUp;
@@ -45,7 +46,7 @@
 - (void)dealloc;
 
 // internal
-- (IBAction)populateCollections:(id)sender;
+- (IBAction)changeServerDetails:(id)sender;
 - (IBAction)changeExportOriginals:(id)sender;
 
 - (IBAction)changeExportOriginalMovies:(id)sender;
