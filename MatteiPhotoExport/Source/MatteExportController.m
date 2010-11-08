@@ -8,9 +8,12 @@
 
 #import "MatteExportController.h"
 
+#import <CommonCrypto/CommonDigest.h>
+
 #import "AddMediaRequest.h"
 #import "CollectionExport.h"
 #import "GetCollectionListRequest.h"
+#import "KeychainUtils.h"
 #import "MatteExportContext.h"
 #import "MatteExportSettings.h"
 #import "SoapURLConnection.h"
@@ -64,6 +67,15 @@ NSString * const MatteWebServiceUrlPath = @"/ws/Matte";
 	[self changeExportOriginals:nil];
 	[self changeExportOriginalMovies:nil];
 	
+	if ( settings.url != nil && settings.username != nil ) {
+		NSString *keychainPass = [KeychainUtils passwordForURL:[NSURL URLWithString:settings.url] username:settings.username];
+		if ( keychainPass != nil ) {
+			[mPasswordField setStringValue:keychainPass];
+			settings.password = keychainPass;
+			[self populateCollectionPopUp];
+		}
+	}
+	
 	[mVersionLabel setStringValue:[NSString stringWithFormat:@"Version %@", MatteExportPluginVersion]];
 }
 
@@ -97,15 +109,20 @@ NSString * const MatteWebServiceUrlPath = @"/ws/Matte";
 
 #pragma mark Actions
 
-- (IBAction)populateCollections:(id)sender;
+- (IBAction)changeServerDetails:(id)sender;
 {
-	DLog(@"populateCollections action called by %@, user = %@, pass = %@", 
-		sender, [settings username], [settings password]);
+	DLog(@"changeServerDetails action called by %@, url = %@, user = %@, pass = %@", 
+		sender, settings.url, settings.username, [settings.password md5hex]);
 	
-	if ( [settings username] != nil && [[settings username] length] > 0 
-		&& [settings password] != nil && [[settings password] length] > 0 ) {
+	if ( [settings.url length] > 0 && [settings.username length] > 0 && [settings.password length] > 0 ) {
 		[self populateCollectionPopUp];
-	}	
+
+		NSURL *url = [NSURL URLWithString:settings.url];
+		NSString *keychainPass = [KeychainUtils passwordForURL:url username:settings.username];
+		if ( ![settings.password isEqualToString:keychainPass] ) {
+			[KeychainUtils storePassword:settings.password forURL:url username:settings.username];
+		}
+	}
 }
 
 - (IBAction)changeExportOriginals:(id)sender 

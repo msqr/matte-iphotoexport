@@ -1105,22 +1105,6 @@
 					<int key="connectionID">254</int>
 				</object>
 				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">populateCollections:</string>
-						<reference key="source" ref="1001"/>
-						<reference key="destination" ref="993511286"/>
-					</object>
-					<int key="connectionID">255</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">populateCollections:</string>
-						<reference key="source" ref="1001"/>
-						<reference key="destination" ref="768187376"/>
-					</object>
-					<int key="connectionID">256</int>
-				</object>
-				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
 						<string key="label">nextKeyView</string>
 						<reference key="source" ref="189688750"/>
@@ -1175,6 +1159,38 @@
 						<reference key="destination" ref="639788362"/>
 					</object>
 					<int key="connectionID">265</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">mPasswordField</string>
+						<reference key="source" ref="1001"/>
+						<reference key="destination" ref="768187376"/>
+					</object>
+					<int key="connectionID">266</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">changeServerDetails:</string>
+						<reference key="source" ref="1001"/>
+						<reference key="destination" ref="768187376"/>
+					</object>
+					<int key="connectionID">267</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">changeServerDetails:</string>
+						<reference key="source" ref="1001"/>
+						<reference key="destination" ref="993511286"/>
+					</object>
+					<int key="connectionID">268</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">changeServerDetails:</string>
+						<reference key="source" ref="1001"/>
+						<reference key="destination" ref="733720288"/>
+					</object>
+					<int key="connectionID">269</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -1912,7 +1928,7 @@
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">265</int>
+			<int key="maxID">269</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -1927,8 +1943,8 @@
 							<string>changeExportMovieType:</string>
 							<string>changeExportOriginalMovies:</string>
 							<string>changeExportOriginals:</string>
+							<string>changeServerDetails:</string>
 							<string>configureMovieExportSettings:</string>
-							<string>populateCollections:</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
@@ -1946,8 +1962,8 @@
 							<string>changeExportMovieType:</string>
 							<string>changeExportOriginalMovies:</string>
 							<string>changeExportOriginals:</string>
+							<string>changeServerDetails:</string>
 							<string>configureMovieExportSettings:</string>
-							<string>populateCollections:</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
@@ -1964,11 +1980,11 @@
 								<string key="candidateClassName">id</string>
 							</object>
 							<object class="IBActionInfo">
-								<string key="name">configureMovieExportSettings:</string>
+								<string key="name">changeServerDetails:</string>
 								<string key="candidateClassName">id</string>
 							</object>
 							<object class="IBActionInfo">
-								<string key="name">populateCollections:</string>
+								<string key="name">configureMovieExportSettings:</string>
 								<string key="candidateClassName">id</string>
 							</object>
 						</object>
@@ -1980,6 +1996,7 @@
 							<string>exportMgr</string>
 							<string>mCollectionPopUp</string>
 							<string>mFirstView</string>
+							<string>mPasswordField</string>
 							<string>mQTComponentPopUp</string>
 							<string>mQTSettingButton</string>
 							<string>mQualityPopUp</string>
@@ -1992,6 +2009,7 @@
 							<string>id</string>
 							<string>NSPopUpButton</string>
 							<string>NSControl</string>
+							<string>NSSecureTextField</string>
 							<string>NSPopUpButton</string>
 							<string>NSButton</string>
 							<string>NSPopUpButton</string>
@@ -2007,6 +2025,7 @@
 							<string>exportMgr</string>
 							<string>mCollectionPopUp</string>
 							<string>mFirstView</string>
+							<string>mPasswordField</string>
 							<string>mQTComponentPopUp</string>
 							<string>mQTSettingButton</string>
 							<string>mQualityPopUp</string>
@@ -2027,6 +2046,10 @@
 							<object class="IBToOneOutletInfo">
 								<string key="name">mFirstView</string>
 								<string key="candidateClassName">NSControl</string>
+							</object>
+							<object class="IBToOneOutletInfo">
+								<string key="name">mPasswordField</string>
+								<string key="candidateClassName">NSSecureTextField</string>
 							</object>
 							<object class="IBToOneOutletInfo">
 								<string key="name">mQTComponentPopUp</string>

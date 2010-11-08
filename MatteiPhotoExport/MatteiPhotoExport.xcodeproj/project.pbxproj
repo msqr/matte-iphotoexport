@@ -15,6 +15,9 @@
 		C90CA2050D14AA5100224FBC /* md5evp.c in Sources */ = {isa = PBXBuildFile; fileRef = C99974A70D135CD30086DF84 /* md5evp.c */; };
 		C932409712867EDF008260D7 /* GetCollectionListRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = C932409612867EDF008260D7 /* GetCollectionListRequest.m */; };
 		C95263EC127BFB9A00391FA0 /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C95263EB127BFB9A00391FA0 /* QuickTime.framework */; };
+		C956149812878D450047F087 /* NSString+Digest.m in Sources */ = {isa = PBXBuildFile; fileRef = C956149712878D450047F087 /* NSString+Digest.m */; };
+		C972F4FA12874B6E00F15D7D /* KeychainUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = C972F4F912874B6E00F15D7D /* KeychainUtils.m */; };
+		C972F52012874FD800F15D7D /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C972F51F12874FD800F15D7D /* Security.framework */; };
 		C99974B80D135CD30086DF84 /* dom.c in Sources */ = {isa = PBXBuildFile; fileRef = C99974710D135CD30086DF84 /* dom.c */; };
 		C99974BB0D135CD30086DF84 /* cacerts.c in Sources */ = {isa = PBXBuildFile; fileRef = C99974930D135CD30086DF84 /* cacerts.c */; };
 		C99974BC0D135CD30086DF84 /* httpda.c in Sources */ = {isa = PBXBuildFile; fileRef = C99974950D135CD30086DF84 /* httpda.c */; };
@@ -62,6 +65,11 @@
 		C932409512867EDF008260D7 /* GetCollectionListRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GetCollectionListRequest.h; sourceTree = "<group>"; };
 		C932409612867EDF008260D7 /* GetCollectionListRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GetCollectionListRequest.m; sourceTree = "<group>"; };
 		C95263EB127BFB9A00391FA0 /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = System/Library/Frameworks/QuickTime.framework; sourceTree = SDKROOT; };
+		C956149612878D450047F087 /* NSString+Digest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Digest.h"; sourceTree = "<group>"; };
+		C956149712878D450047F087 /* NSString+Digest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Digest.m"; sourceTree = "<group>"; };
+		C972F4F812874B6E00F15D7D /* KeychainUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeychainUtils.h; sourceTree = "<group>"; };
+		C972F4F912874B6E00F15D7D /* KeychainUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeychainUtils.m; sourceTree = "<group>"; };
+		C972F51F12874FD800F15D7D /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		C99974650D135A900086DF84 /* MatteService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MatteService.h; path = Source/gsoap/MatteService.h; sourceTree = "<group>"; };
 		C99974710D135CD30086DF84 /* dom.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = dom.c; sourceTree = "<group>"; };
 		C99974730D135CD30086DF84 /* c14n.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = c14n.h; sourceTree = "<group>"; };
@@ -177,6 +185,7 @@
 				C9E285DD127AAD230082FC48 /* QTKit.framework in Frameworks */,
 				C9F64CAC127B9B1A00D8EE9D /* libz.dylib in Frameworks */,
 				C95263EC127BFB9A00391FA0 /* QuickTime.framework in Frameworks */,
+				C972F52012874FD800F15D7D /* Security.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -228,6 +237,8 @@
 				C9B39DBD127E272F00044A13 /* Constants.h */,
 				C932409512867EDF008260D7 /* GetCollectionListRequest.h */,
 				C932409612867EDF008260D7 /* GetCollectionListRequest.m */,
+				C972F4F812874B6E00F15D7D /* KeychainUtils.h */,
+				C972F4F912874B6E00F15D7D /* KeychainUtils.m */,
 				C9B39AE9127E027C00044A13 /* MatteExportContext.h */,
 				C9B39AEA127E027C00044A13 /* MatteExportContext.m */,
 				C9A72B340CF8D86A0019950D /* MatteExportController.h */,
@@ -236,6 +247,8 @@
 				C9A72B320CF8D8490019950D /* MatteExportPluginBox.m */,
 				C9F64CEA127B9F2D00D8EE9D /* MatteExportSettings.h */,
 				C9F64CEB127B9F2D00D8EE9D /* MatteExportSettings.m */,
+				C956149612878D450047F087 /* NSString+Digest.h */,
+				C956149712878D450047F087 /* NSString+Digest.m */,
 				C9F253DF1283D8F40071BA83 /* SoapMessage.h */,
 				C9F253E01283D8F40071BA83 /* SoapMessage.m */,
 				C9F254861283F1580071BA83 /* SoapURLConnection.h */,
@@ -251,6 +264,7 @@
 				C9E285DC127AAD230082FC48 /* QTKit.framework */,
 				C95263EB127BFB9A00391FA0 /* QuickTime.framework */,
 				C9F64CAB127B9B1A00D8EE9D /* libz.dylib */,
+				C972F51F12874FD800F15D7D /* Security.framework */,
 			);
 			name = "Linked Frameworks";
 			sourceTree = "<group>";
@@ -515,6 +529,8 @@
 				C9F254341283E8750071BA83 /* AddMediaRequest.m in Sources */,
 				C9F254881283F1580071BA83 /* SoapURLConnection.m in Sources */,
 				C932409712867EDF008260D7 /* GetCollectionListRequest.m in Sources */,
+				C972F4FA12874B6E00F15D7D /* KeychainUtils.m in Sources */,
+				C956149812878D450047F087 /* NSString+Digest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
