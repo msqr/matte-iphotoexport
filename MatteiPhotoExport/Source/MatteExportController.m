@@ -577,7 +577,8 @@ NSString * const MatteWebServiceUrlPath = @"/ws/Matte";
 	NSURL *url = [NSURL URLWithString:[settings.url stringByAppendingPathComponent:MatteWebServiceUrlPath]];
 	NSXMLDocument *response = [SoapURLConnection request:url
 												 message:request
-												delegate:self];
+												delegate:self
+										  updateProgress:NO];
 	
 	if ( !response ) {
 		return;
@@ -695,7 +696,8 @@ NSString * const MatteWebServiceUrlPath = @"/ws/Matte";
 	
 	NSXMLDocument *response = [SoapURLConnection request:[NSURL URLWithString:[settings.url stringByAppendingPathComponent:MatteWebServiceUrlPath]]
 												 message:request
-												delegate:self];
+												delegate:self
+										  updateProgress:YES];
 	
 	if ( !response ) {
 		return;
