@@ -24,7 +24,8 @@
 
 + (NSXMLDocument *) request:(NSURL *)url 
 					message:(SoapMessage *)message 
-				   delegate:(id)delegate;
+				   delegate:(id)delegate
+			 updateProgress:(BOOL)shouldUpdateProgress;
 
 + (NSString *) faultString:(NSXMLDocument *)soapResponse error:(NSError **)error;
 

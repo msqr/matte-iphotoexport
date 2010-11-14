@@ -35,7 +35,8 @@
 
 + (NSXMLDocument *) request:(NSURL *)url 
 					message:(SoapMessage *)message 
-				   delegate:(id)delegate {
+				   delegate:(id)delegate 
+			 updateProgress:(BOOL)shouldUpdateProgress {
 	NSData *xmlData = [[message asXml] XMLDataWithOptions:NSXMLNodeOptionsNone];
 	
 	// execute ws call
@@ -48,6 +49,7 @@
     [httpRequest setValue:[NSString stringWithFormat:@"%d", [xmlData length]] forHTTPHeaderField:@"Content-Length"];
     [httpRequest setValue:message.action forHTTPHeaderField:@"SOAPAction"];
     SoapURLConnection *conn = [[[SoapURLConnection alloc] initWithRequest:httpRequest delegate:delegate] autorelease];
+	conn.updateProgress = shouldUpdateProgress;
 	
     NSXMLDocument *response = nil;
 	while ( !conn.finished ) {
