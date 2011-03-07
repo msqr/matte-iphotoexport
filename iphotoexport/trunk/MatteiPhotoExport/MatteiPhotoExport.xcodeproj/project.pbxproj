@@ -9,29 +9,15 @@
 /* Begin PBXBuildFile section */
 		8D5B49B0048680CD000E48DA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C167DFE841241C02AAC07 /* InfoPlist.strings */; };
 		8D5B49B4048680CD000E48DA /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */; };
-		C90CA1B50D149DD100224FBC /* threads.c in Sources */ = {isa = PBXBuildFile; fileRef = C90CA1B30D149DD100224FBC /* threads.c */; };
-		C90CA1F80D14A95500224FBC /* soapClient.c in Sources */ = {isa = PBXBuildFile; fileRef = C90CA17A0D1496E300224FBC /* soapClient.c */; };
-		C90CA1FA0D14A95F00224FBC /* soapC.c in Sources */ = {isa = PBXBuildFile; fileRef = C90CA1790D1496E300224FBC /* soapC.c */; };
-		C90CA2050D14AA5100224FBC /* md5evp.c in Sources */ = {isa = PBXBuildFile; fileRef = C99974A70D135CD30086DF84 /* md5evp.c */; };
 		C932409712867EDF008260D7 /* GetCollectionListRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = C932409612867EDF008260D7 /* GetCollectionListRequest.m */; };
 		C9416D5C1324361100E0E8FF /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C9416D5B1324361100E0E8FF /* libcrypto.dylib */; };
 		C9416E25132462CD00E0E8FF /* PreformattedMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = C9416E24132462CD00E0E8FF /* PreformattedMessage.m */; };
 		C9416F0213247B6700E0E8FF /* NSFileManager+Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = C9416F0113247B6700E0E8FF /* NSFileManager+Utilities.m */; };
+		C941708C1324CE3B00E0E8FF /* ConcatenatingInputStream.m in Sources */ = {isa = PBXBuildFile; fileRef = C941708B1324CE3B00E0E8FF /* ConcatenatingInputStream.m */; };
 		C95263EC127BFB9A00391FA0 /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C95263EB127BFB9A00391FA0 /* QuickTime.framework */; };
 		C956149812878D450047F087 /* NSString+Digest.m in Sources */ = {isa = PBXBuildFile; fileRef = C956149712878D450047F087 /* NSString+Digest.m */; };
 		C972F4FA12874B6E00F15D7D /* KeychainUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = C972F4F912874B6E00F15D7D /* KeychainUtils.m */; };
 		C972F52012874FD800F15D7D /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C972F51F12874FD800F15D7D /* Security.framework */; };
-		C99974B80D135CD30086DF84 /* dom.c in Sources */ = {isa = PBXBuildFile; fileRef = C99974710D135CD30086DF84 /* dom.c */; };
-		C99974BB0D135CD30086DF84 /* cacerts.c in Sources */ = {isa = PBXBuildFile; fileRef = C99974930D135CD30086DF84 /* cacerts.c */; };
-		C99974BC0D135CD30086DF84 /* httpda.c in Sources */ = {isa = PBXBuildFile; fileRef = C99974950D135CD30086DF84 /* httpda.c */; };
-		C99974BE0D135CD30086DF84 /* httpform.c in Sources */ = {isa = PBXBuildFile; fileRef = C99974990D135CD30086DF84 /* httpform.c */; };
-		C99974BF0D135CD30086DF84 /* httpget.c in Sources */ = {isa = PBXBuildFile; fileRef = C999749B0D135CD30086DF84 /* httpget.c */; };
-		C99974C10D135CD30086DF84 /* httpmd5.c in Sources */ = {isa = PBXBuildFile; fileRef = C999749F0D135CD30086DF84 /* httpmd5.c */; };
-		C99974C30D135CD30086DF84 /* httppost.c in Sources */ = {isa = PBXBuildFile; fileRef = C99974A30D135CD30086DF84 /* httppost.c */; };
-		C99974C40D135CD30086DF84 /* logging.c in Sources */ = {isa = PBXBuildFile; fileRef = C99974A50D135CD30086DF84 /* logging.c */; };
-		C99974C80D135CD30086DF84 /* smdevp.c in Sources */ = {isa = PBXBuildFile; fileRef = C99974AC0D135CD30086DF84 /* smdevp.c */; };
-		C99974CC0D135CD30086DF84 /* wsseapi.c in Sources */ = {isa = PBXBuildFile; fileRef = C99974B40D135CD30086DF84 /* wsseapi.c */; };
-		C99974CD0D135CD30086DF84 /* stdsoap2.c in Sources */ = {isa = PBXBuildFile; fileRef = C99974B60D135CD30086DF84 /* stdsoap2.c */; };
 		C9A624C40D8EF04500418EEB /* CollectionExport.m in Sources */ = {isa = PBXBuildFile; fileRef = C9A624C30D8EF04500418EEB /* CollectionExport.m */; };
 		C9A72B330CF8D8490019950D /* MatteExportPluginBox.m in Sources */ = {isa = PBXBuildFile; fileRef = C9A72B320CF8D8490019950D /* MatteExportPluginBox.m */; };
 		C9A72B360CF8D86A0019950D /* MatteExportController.m in Sources */ = {isa = PBXBuildFile; fileRef = C9A72B350CF8D86A0019950D /* MatteExportController.m */; };
@@ -72,6 +58,8 @@
 		C9416E24132462CD00E0E8FF /* PreformattedMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PreformattedMessage.m; sourceTree = "<group>"; };
 		C9416F0013247B6700E0E8FF /* NSFileManager+Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSFileManager+Utilities.h"; sourceTree = "<group>"; };
 		C9416F0113247B6700E0E8FF /* NSFileManager+Utilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSFileManager+Utilities.m"; sourceTree = "<group>"; };
+		C941708A1324CE3B00E0E8FF /* ConcatenatingInputStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConcatenatingInputStream.h; sourceTree = "<group>"; };
+		C941708B1324CE3B00E0E8FF /* ConcatenatingInputStream.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConcatenatingInputStream.m; sourceTree = "<group>"; };
 		C95263EB127BFB9A00391FA0 /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = System/Library/Frameworks/QuickTime.framework; sourceTree = SDKROOT; };
 		C956149612878D450047F087 /* NSString+Digest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Digest.h"; sourceTree = "<group>"; };
 		C956149712878D450047F087 /* NSString+Digest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Digest.m"; sourceTree = "<group>"; };
@@ -239,15 +227,12 @@
 		08FB77AFFE84173DC02AAC07 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				C9F254321283E8750071BA83 /* AddMediaRequest.h */,
-				C9F254331283E8750071BA83 /* AddMediaRequest.m */,
+				C939449313257F2600A40185 /* gSoap (unused) */,
+				C939448413257E3B00A40185 /* SOAP */,
+				C939448513257E6400A40185 /* Support */,
 				C9A624C20D8EF04500418EEB /* CollectionExport.h */,
 				C9A624C30D8EF04500418EEB /* CollectionExport.m */,
 				C9B39DBD127E272F00044A13 /* Constants.h */,
-				C932409512867EDF008260D7 /* GetCollectionListRequest.h */,
-				C932409612867EDF008260D7 /* GetCollectionListRequest.m */,
-				C972F4F812874B6E00F15D7D /* KeychainUtils.h */,
-				C972F4F912874B6E00F15D7D /* KeychainUtils.m */,
 				C9B39AE9127E027C00044A13 /* MatteExportContext.h */,
 				C9B39AEA127E027C00044A13 /* MatteExportContext.m */,
 				C9A72B340CF8D86A0019950D /* MatteExportController.h */,
@@ -256,16 +241,6 @@
 				C9A72B320CF8D8490019950D /* MatteExportPluginBox.m */,
 				C9F64CEA127B9F2D00D8EE9D /* MatteExportSettings.h */,
 				C9F64CEB127B9F2D00D8EE9D /* MatteExportSettings.m */,
-				C9416F0013247B6700E0E8FF /* NSFileManager+Utilities.h */,
-				C9416F0113247B6700E0E8FF /* NSFileManager+Utilities.m */,
-				C956149612878D450047F087 /* NSString+Digest.h */,
-				C956149712878D450047F087 /* NSString+Digest.m */,
-				C9416E23132462CD00E0E8FF /* PreformattedMessage.h */,
-				C9416E24132462CD00E0E8FF /* PreformattedMessage.m */,
-				C9F253DF1283D8F40071BA83 /* SoapMessage.h */,
-				C9F253E01283D8F40071BA83 /* SoapMessage.m */,
-				C9F254861283F1580071BA83 /* SoapURLConnection.h */,
-				C9F254871283F1580071BA83 /* SoapURLConnection.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -304,24 +279,63 @@
 		32C88E010371C26100C91783 /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
-				C90CA1790D1496E300224FBC /* soapC.c */,
-				C90CA17A0D1496E300224FBC /* soapClient.c */,
-				C90CA17C0D1496E300224FBC /* soapH.h */,
 				C99974CF0D135D280086DF84 /* core.xsd */,
 				C99974D00D135D280086DF84 /* domain.xsd */,
 				C99974D10D135D280086DF84 /* import.xsd */,
 				C99974D20D135D280086DF84 /* Makefile */,
 				C99974D30D135D280086DF84 /* matte.wsdl */,
-				C99974D40D135D280086DF84 /* MatteService.c */,
-				C99974D50D135D280086DF84 /* MatteSoapBinding.nsmap */,
-				C99974D60D135D280086DF84 /* soapMatteSoapBindingService.h */,
 				C99974D70D135D280086DF84 /* typemap.dat */,
 				C99974D80D135D280086DF84 /* ui.xsd */,
 				C99974D90D135D280086DF84 /* ws.xsd */,
-				C99974650D135A900086DF84 /* MatteService.h */,
 				32DBCF630370AF2F00C91783 /* MatteiPhotoExport_Prefix.pch */,
 			);
 			name = "Other Sources";
+			sourceTree = "<group>";
+		};
+		C939448413257E3B00A40185 /* SOAP */ = {
+			isa = PBXGroup;
+			children = (
+				C9F254321283E8750071BA83 /* AddMediaRequest.h */,
+				C9F254331283E8750071BA83 /* AddMediaRequest.m */,
+				C932409512867EDF008260D7 /* GetCollectionListRequest.h */,
+				C932409612867EDF008260D7 /* GetCollectionListRequest.m */,
+				C9416E23132462CD00E0E8FF /* PreformattedMessage.h */,
+				C9416E24132462CD00E0E8FF /* PreformattedMessage.m */,
+				C9F253DF1283D8F40071BA83 /* SoapMessage.h */,
+				C9F253E01283D8F40071BA83 /* SoapMessage.m */,
+				C9F254861283F1580071BA83 /* SoapURLConnection.h */,
+				C9F254871283F1580071BA83 /* SoapURLConnection.m */,
+			);
+			name = SOAP;
+			sourceTree = "<group>";
+		};
+		C939448513257E6400A40185 /* Support */ = {
+			isa = PBXGroup;
+			children = (
+				C941708A1324CE3B00E0E8FF /* ConcatenatingInputStream.h */,
+				C941708B1324CE3B00E0E8FF /* ConcatenatingInputStream.m */,
+				C972F4F812874B6E00F15D7D /* KeychainUtils.h */,
+				C972F4F912874B6E00F15D7D /* KeychainUtils.m */,
+				C9416F0013247B6700E0E8FF /* NSFileManager+Utilities.h */,
+				C9416F0113247B6700E0E8FF /* NSFileManager+Utilities.m */,
+				C956149612878D450047F087 /* NSString+Digest.h */,
+				C956149712878D450047F087 /* NSString+Digest.m */,
+			);
+			name = Support;
+			sourceTree = "<group>";
+		};
+		C939449313257F2600A40185 /* gSoap (unused) */ = {
+			isa = PBXGroup;
+			children = (
+				C90CA1790D1496E300224FBC /* soapC.c */,
+				C90CA17A0D1496E300224FBC /* soapClient.c */,
+				C90CA17C0D1496E300224FBC /* soapH.h */,
+				C99974D40D135D280086DF84 /* MatteService.c */,
+				C99974D50D135D280086DF84 /* MatteSoapBinding.nsmap */,
+				C99974D60D135D280086DF84 /* soapMatteSoapBindingService.h */,
+				C99974650D135A900086DF84 /* MatteService.h */,
+			);
+			name = "gSoap (unused)";
 			sourceTree = "<group>";
 		};
 		C99974700D135CD30086DF84 /* gsoap */ = {
@@ -516,21 +530,6 @@
 			files = (
 				C9A72B330CF8D8490019950D /* MatteExportPluginBox.m in Sources */,
 				C9A72B360CF8D86A0019950D /* MatteExportController.m in Sources */,
-				C99974B80D135CD30086DF84 /* dom.c in Sources */,
-				C99974BB0D135CD30086DF84 /* cacerts.c in Sources */,
-				C99974BC0D135CD30086DF84 /* httpda.c in Sources */,
-				C99974BE0D135CD30086DF84 /* httpform.c in Sources */,
-				C99974BF0D135CD30086DF84 /* httpget.c in Sources */,
-				C99974C10D135CD30086DF84 /* httpmd5.c in Sources */,
-				C99974C30D135CD30086DF84 /* httppost.c in Sources */,
-				C99974C40D135CD30086DF84 /* logging.c in Sources */,
-				C99974C80D135CD30086DF84 /* smdevp.c in Sources */,
-				C99974CC0D135CD30086DF84 /* wsseapi.c in Sources */,
-				C99974CD0D135CD30086DF84 /* stdsoap2.c in Sources */,
-				C90CA1B50D149DD100224FBC /* threads.c in Sources */,
-				C90CA1F80D14A95500224FBC /* soapClient.c in Sources */,
-				C90CA1FA0D14A95F00224FBC /* soapC.c in Sources */,
-				C90CA2050D14AA5100224FBC /* md5evp.c in Sources */,
 				C9A624C40D8EF04500418EEB /* CollectionExport.m in Sources */,
 				C9F64C9B127B9AA100D8EE9D /* ioapi.c in Sources */,
 				C9F64C9C127B9AA100D8EE9D /* mztools.c in Sources */,
@@ -547,6 +546,7 @@
 				C956149812878D450047F087 /* NSString+Digest.m in Sources */,
 				C9416E25132462CD00E0E8FF /* PreformattedMessage.m in Sources */,
 				C9416F0213247B6700E0E8FF /* NSFileManager+Utilities.m in Sources */,
+				C941708C1324CE3B00E0E8FF /* ConcatenatingInputStream.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -638,6 +638,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
+				RUN_CLANG_STATIC_ANALYZER = NO;
 				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.6.sdk";
 			};
 			name = Debug;
@@ -652,6 +653,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
+				RUN_CLANG_STATIC_ANALYZER = NO;
 				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.6.sdk";
 			};
 			name = Release;
