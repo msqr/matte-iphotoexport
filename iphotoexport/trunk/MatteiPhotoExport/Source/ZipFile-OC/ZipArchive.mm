@@ -60,9 +60,10 @@
 	{
 		return NO;
 	}
-	NSData* data = [ NSData dataWithContentsOfFile:file];
+	NSData* data = [[NSData alloc] initWithContentsOfFile:file options:NSDataReadingUncached error:nil];
 	unsigned int dataLen = [data length];
 	ret = zipWriteInFileInZip( _zipFile, (const void*)[data bytes], dataLen);
+	[data release];
 	if( ret!=Z_OK )
 	{
 		return NO;
