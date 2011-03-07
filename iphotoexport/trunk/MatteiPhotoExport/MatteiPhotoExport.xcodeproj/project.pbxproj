@@ -14,6 +14,9 @@
 		C90CA1FA0D14A95F00224FBC /* soapC.c in Sources */ = {isa = PBXBuildFile; fileRef = C90CA1790D1496E300224FBC /* soapC.c */; };
 		C90CA2050D14AA5100224FBC /* md5evp.c in Sources */ = {isa = PBXBuildFile; fileRef = C99974A70D135CD30086DF84 /* md5evp.c */; };
 		C932409712867EDF008260D7 /* GetCollectionListRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = C932409612867EDF008260D7 /* GetCollectionListRequest.m */; };
+		C9416D5C1324361100E0E8FF /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C9416D5B1324361100E0E8FF /* libcrypto.dylib */; };
+		C9416E25132462CD00E0E8FF /* PreformattedMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = C9416E24132462CD00E0E8FF /* PreformattedMessage.m */; };
+		C9416F0213247B6700E0E8FF /* NSFileManager+Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = C9416F0113247B6700E0E8FF /* NSFileManager+Utilities.m */; };
 		C95263EC127BFB9A00391FA0 /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C95263EB127BFB9A00391FA0 /* QuickTime.framework */; };
 		C956149812878D450047F087 /* NSString+Digest.m in Sources */ = {isa = PBXBuildFile; fileRef = C956149712878D450047F087 /* NSString+Digest.m */; };
 		C972F4FA12874B6E00F15D7D /* KeychainUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = C972F4F912874B6E00F15D7D /* KeychainUtils.m */; };
@@ -64,6 +67,11 @@
 		C90CA1B40D149DD100224FBC /* threads.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = threads.h; sourceTree = "<group>"; };
 		C932409512867EDF008260D7 /* GetCollectionListRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GetCollectionListRequest.h; sourceTree = "<group>"; };
 		C932409612867EDF008260D7 /* GetCollectionListRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GetCollectionListRequest.m; sourceTree = "<group>"; };
+		C9416D5B1324361100E0E8FF /* libcrypto.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcrypto.dylib; path = usr/lib/libcrypto.dylib; sourceTree = SDKROOT; };
+		C9416E23132462CD00E0E8FF /* PreformattedMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PreformattedMessage.h; sourceTree = "<group>"; };
+		C9416E24132462CD00E0E8FF /* PreformattedMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PreformattedMessage.m; sourceTree = "<group>"; };
+		C9416F0013247B6700E0E8FF /* NSFileManager+Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSFileManager+Utilities.h"; sourceTree = "<group>"; };
+		C9416F0113247B6700E0E8FF /* NSFileManager+Utilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSFileManager+Utilities.m"; sourceTree = "<group>"; };
 		C95263EB127BFB9A00391FA0 /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = System/Library/Frameworks/QuickTime.framework; sourceTree = SDKROOT; };
 		C956149612878D450047F087 /* NSString+Digest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Digest.h"; sourceTree = "<group>"; };
 		C956149712878D450047F087 /* NSString+Digest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Digest.m"; sourceTree = "<group>"; };
@@ -186,6 +194,7 @@
 				C9F64CAC127B9B1A00D8EE9D /* libz.dylib in Frameworks */,
 				C95263EC127BFB9A00391FA0 /* QuickTime.framework in Frameworks */,
 				C972F52012874FD800F15D7D /* Security.framework in Frameworks */,
+				C9416D5C1324361100E0E8FF /* libcrypto.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -247,8 +256,12 @@
 				C9A72B320CF8D8490019950D /* MatteExportPluginBox.m */,
 				C9F64CEA127B9F2D00D8EE9D /* MatteExportSettings.h */,
 				C9F64CEB127B9F2D00D8EE9D /* MatteExportSettings.m */,
+				C9416F0013247B6700E0E8FF /* NSFileManager+Utilities.h */,
+				C9416F0113247B6700E0E8FF /* NSFileManager+Utilities.m */,
 				C956149612878D450047F087 /* NSString+Digest.h */,
 				C956149712878D450047F087 /* NSString+Digest.m */,
+				C9416E23132462CD00E0E8FF /* PreformattedMessage.h */,
+				C9416E24132462CD00E0E8FF /* PreformattedMessage.m */,
 				C9F253DF1283D8F40071BA83 /* SoapMessage.h */,
 				C9F253E01283D8F40071BA83 /* SoapMessage.m */,
 				C9F254861283F1580071BA83 /* SoapURLConnection.h */,
@@ -263,8 +276,9 @@
 				1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */,
 				C9E285DC127AAD230082FC48 /* QTKit.framework */,
 				C95263EB127BFB9A00391FA0 /* QuickTime.framework */,
-				C9F64CAB127B9B1A00D8EE9D /* libz.dylib */,
 				C972F51F12874FD800F15D7D /* Security.framework */,
+				C9416D5B1324361100E0E8FF /* libcrypto.dylib */,
+				C9F64CAB127B9B1A00D8EE9D /* libz.dylib */,
 			);
 			name = "Linked Frameworks";
 			sourceTree = "<group>";
@@ -531,6 +545,8 @@
 				C932409712867EDF008260D7 /* GetCollectionListRequest.m in Sources */,
 				C972F4FA12874B6E00F15D7D /* KeychainUtils.m in Sources */,
 				C956149812878D450047F087 /* NSString+Digest.m in Sources */,
+				C9416E25132462CD00E0E8FF /* PreformattedMessage.m in Sources */,
+				C9416F0213247B6700E0E8FF /* NSFileManager+Utilities.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -622,7 +638,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
-				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk";
+				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.6.sdk";
 			};
 			name = Debug;
 		};
@@ -636,7 +652,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
-				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk";
+				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.6.sdk";
 			};
 			name = Release;
 		};

@@ -10,6 +10,8 @@
 
 #import "SoapMessage.h"
 
+extern NSString * const kFileDataPlaceholder;
+
 @class CollectionExport;
 
 @interface AddMediaRequest : SoapMessage {

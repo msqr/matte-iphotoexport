@@ -8,7 +8,8 @@
 
 #import "MatteExportController.h"
 
-#import <CommonCrypto/CommonDigest.h>
+#include <openssl/bio.h>
+#include <openssl/evp.h>
 
 #import "AddMediaRequest.h"
 #import "CollectionExport.h"
@@ -16,6 +17,7 @@
 #import "KeychainUtils.h"
 #import "MatteExportContext.h"
 #import "MatteExportSettings.h"
+#import "PreformattedMessage.h"
 #import "SoapURLConnection.h"
 #import "ZipArchive.h"
 #import "gsoap/MatteSoapBinding.nsmap"
@@ -157,11 +159,17 @@ NSString * const MatteWebServiceUrlPath = @"/ws/Matte";
 
 #pragma mark NSFileManager delegate
 
-- (void)fileManager:(NSFileManager *)manager willProcessPath:(NSString *)path {
-	// we replace existing files without warning
-	if ( [manager fileExistsAtPath:path] ) {
-		[manager removeFileAtPath:path handler:nil];
+- (BOOL)fileManager:(NSFileManager *)fileManager shouldRemoveItemAtPath:(NSString *)path
+{
+	return YES;
+}
+
+- (BOOL)fileManager:(NSFileManager *)fileManager shouldCopyItemAtPath:(NSString *)srcPath toPath:(NSString *)dstPath
+{
+	if ( [fileManager fileExistsAtPath:dstPath] ) {
+		[fileManager removeItemAtPath:dstPath error:nil];
 	}
+	return YES;
 }
 
 #pragma mark ExportPluginBoxProtocol
@@ -273,7 +281,8 @@ NSString * const MatteWebServiceUrlPath = @"/ws/Matte";
 
 - (BOOL)exportItem:(int)i inAlbum:(NSNumber *)albumIndex context:(MatteExportContext *)context
 {
-	NSFileManager *fileManager = [NSFileManager defaultManager];
+	NSFileManager *fileManager = [[[NSFileManager alloc] init] autorelease];
+	fileManager.delegate = self;
 	
 	NSString *albumName = nil;
 	NSString *outputDir = context.exportDir;
@@ -284,7 +293,7 @@ NSString * const MatteWebServiceUrlPath = @"/ws/Matte";
 	}
 	
 	if ( ![fileManager fileExistsAtPath:outputDir] ) {
-		[fileManager createDirectoryAtPath:outputDir attributes:nil];
+		[fileManager createDirectoryAtPath:outputDir withIntermediateDirectories:YES attributes:nil error:nil];
 	}
 	
 	NSString *destFileName = nil;
@@ -385,9 +394,7 @@ NSString * const MatteWebServiceUrlPath = @"/ws/Matte";
 							 ? [exportMgr sourcePathAtIndex:i]
 							 : [exportMgr imagePathAtIndex:i]);
 			DLog(@"Exporting original file %@", src);
-			succeeded = [fileManager copyPath:src
-									   toPath:outputPath
-									  handler:self];
+			succeeded = [fileManager copyItemAtPath:src toPath:outputPath error:nil];
 		}
 	}
 	return succeeded;
@@ -673,6 +680,72 @@ NSString * const MatteWebServiceUrlPath = @"/ws/Matte";
 }
 */
 
+static NSString * const kBase64FileExtension = @"b64";
+
+- (void) encodeBase64:(NSString *)filePath
+{
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+
+	// remember previous progress so we can track encoding progress
+	[self lockProgress];
+	[progress.message autorelease];
+	progress.message = [@"Encoding media archive..." retain];
+	unsigned long prevTotal = progress.totalItems;
+	unsigned long prevCurr = progress.currentItem;
+	progress.totalItems = 100;
+	progress.currentItem = 0;
+	[self unlockProgress];
+	
+	unsigned long long inputLength = [NSFileManager sizeOfFileAtPath:filePath];
+	
+	NSString *b64FilePath = [filePath stringByAppendingPathExtension:kBase64FileExtension];
+	DLog(@"Base64 encoding %@ as %@", filePath, [b64FilePath lastPathComponent]);
+	BIO * output = BIO_new_file([b64FilePath cStringUsingEncoding:NSUTF8StringEncoding], "w");
+	if ( !output ) {
+		// TODO handle error
+		DLog(@"Error creating Base64 output stream %@", b64FilePath);
+	} else {
+	
+		// Push on a Base64 filter so that writing to the buffer encodes the data
+		BIO * b64 = BIO_new(BIO_f_base64());
+		output = BIO_push(b64, output);
+		
+		// Encode all the data
+		unsigned long long bytesEncoded = 0;
+		NSFileHandle *fh = [NSFileHandle fileHandleForReadingAtPath:filePath];
+		while ( YES ) {
+			NSAutoreleasePool *bufferPool = [[NSAutoreleasePool alloc] init];
+			NSData *memBuffer = [fh readDataOfLength:4096];
+			if ( [memBuffer length] < 1 ) {
+				break;
+			}
+			BIO_write(output, [memBuffer bytes], [memBuffer length]);
+			bytesEncoded += [memBuffer length];
+			[self lockProgress];
+			progress.currentItem = (unsigned long)(((double)bytesEncoded / (double)inputLength) * 100);
+			[self unlockProgress];
+			[bufferPool drain];
+		}
+		
+		BIO_flush(output);
+		BIO_free_all(output);
+	}
+	
+	// restore previous progress now
+ 	[self lockProgress];
+	progress.totalItems = prevTotal;
+	progress.currentItem = prevCurr;
+	[self unlockProgress];
+	
+	// unlock condition
+	[taskCondition lock];
+	taskRunning = NO;
+	[taskCondition signal];
+	[taskCondition unlock];
+	
+	[pool drain];
+}
+
 - (void) postToServer:(MatteExportContext *)context zipFile:(NSString *)zipPath
 {
 	AddMediaRequest *request = [[[AddMediaRequest alloc] init] autorelease];
@@ -683,19 +756,52 @@ NSString * const MatteWebServiceUrlPath = @"/ws/Matte";
 	request.mediaFile = zipPath;
 	request.metadata = context.metadata;
 	
-#ifdef DEBUG
-	NSData *xmlData = [[request asXml] XMLDataWithOptions:NSXMLNodePrettyPrint];
-	NSString *zipDir = [zipPath stringByDeletingLastPathComponent];
-	DLog(@"Saving import.xml file in %@", zipDir);
-	if ( ![xmlData writeToFile:[zipDir stringByAppendingPathComponent:@"import.xml"] atomically:YES] ) {
-        NSLog(@"Could not write import.xml document out...");
-    }
-#endif
+	// encode zip archive manually as Base64 because NSXML will load entire file in memory
+	[taskCondition lock];
+	taskRunning = YES;
+	[NSThread detachNewThreadSelector:@selector(encodeBase64:) toTarget:self withObject:zipPath];
+	while ( taskRunning ) {
+		[taskCondition wait];
+	}
+	[taskCondition unlock];
 	
+	SoapMessage *message = request;
+	
+	// now copy SOAP request XML to temp file, merging Base64-encoded content into middle
+	NSData *xmlData = [request asData];
+	NSData *placeholderData = [kFileDataPlaceholder dataUsingEncoding:NSUTF8StringEncoding];
+	NSRange placeholderRange = [xmlData rangeOfData:placeholderData options:0 range:NSMakeRange(0, [xmlData length])];
+	if ( placeholderRange.location != NSNotFound ) {
+		NSString *mergedPath = [[zipPath stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"add-media-request.xml"];
+		[@"" writeToFile:mergedPath atomically:YES encoding:NSUTF8StringEncoding error:nil]; // create empty file for NSFileHandle
+		NSFileHandle *mergedOutput = [NSFileHandle fileHandleForWritingAtPath:mergedPath];
+		[mergedOutput writeData:[xmlData subdataWithRange:NSMakeRange(0, placeholderRange.location)]];
+		
+		// copy b64Data without loading entire contents into RAM
+		NSFileHandle *fh = [NSFileHandle fileHandleForReadingAtPath:[zipPath stringByAppendingPathExtension:kBase64FileExtension]];
+		while ( YES ) {
+			NSAutoreleasePool *bufferPool = [[NSAutoreleasePool alloc] init];
+			NSData *memBuffer = [fh readDataOfLength:4096];
+			if ( [memBuffer length] < 1 ) {
+				break;
+			}
+			[mergedOutput writeData:memBuffer];
+			[bufferPool drain];
+		}
+		
+		NSRange tailRange = NSMakeRange(placeholderRange.location+placeholderRange.length, 
+										[xmlData length] - placeholderRange.location - placeholderRange.length);
+		[mergedOutput writeData:[xmlData subdataWithRange:tailRange]];
+		[mergedOutput synchronizeFile];
+		[mergedOutput closeFile];
+		
+		message = [[[PreformattedMessage alloc] initWithSoapMessage:request withContentsOfFile:mergedPath] autorelease];
+	}
+		
 	[self updateProgress:@"Posting data to Matte" currItem:0 totalItems:100 shouldStop:NO indeterminate:NO];
 	
 	NSXMLDocument *response = [SoapURLConnection request:[NSURL URLWithString:[settings.url stringByAppendingPathComponent:MatteWebServiceUrlPath]]
-												 message:request
+												 message:message
 												delegate:self
 										  updateProgress:YES];
 	
@@ -720,8 +826,8 @@ NSString * const MatteWebServiceUrlPath = @"/ws/Matte";
 		BOOL success = YES;
 		if ( [nodes count] > 0 ) {
 			success = [[[[nodes objectAtIndex:0] attributeForName:@"success"] stringValue] isEqualToString:@"true"];
-			long long ticket = [[[[nodes objectAtIndex:0] attributeForName:@"ticket"] stringValue] longLongValue];
-			DLog(@"Import successful: %@ work ticket: %ld", (success ? @"YES" : @"NO"), ticket);
+			DLog(@"Import successful: %@ work ticket: %ld", (success ? @"YES" : @"NO"), 
+				 [[[[nodes objectAtIndex:0] attributeForName:@"ticket"] stringValue] longLongValue]);
 		}
 		// wait for work ticket to complete? for now just finish up
 		[self updateProgress:(success ? nil : @"Import did not succeed on server, no message returned.") 

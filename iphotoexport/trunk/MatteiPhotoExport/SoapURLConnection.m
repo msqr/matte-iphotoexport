@@ -37,16 +37,25 @@
 					message:(SoapMessage *)message 
 				   delegate:(id)delegate 
 			 updateProgress:(BOOL)shouldUpdateProgress {
-	NSData *xmlData = [[message asXml] XMLDataWithOptions:NSXMLNodeOptionsNone];
-	
 	// execute ws call
 	NSMutableURLRequest *httpRequest = [[[NSMutableURLRequest alloc] initWithURL:url
 																	 cachePolicy:NSURLRequestReloadIgnoringCacheData 
 																 timeoutInterval:60.0] autorelease];
     [httpRequest setHTTPMethod:@"POST"];
-	[httpRequest setHTTPBody:xmlData];
+	NSInputStream *inStream = [message asStream];
+	unsigned long long contentLength = 0;
+	if ( inStream ) {
+		[httpRequest setHTTPBodyStream:inStream];
+		contentLength = [message streamLength];
+	} else {
+		NSData *xmlData = [message asData];
+		if ( xmlData ) {
+			[httpRequest setHTTPBody:xmlData];
+			contentLength = [xmlData length];
+		}
+	}
 	[httpRequest setValue:@"text/xml; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
-    [httpRequest setValue:[NSString stringWithFormat:@"%d", [xmlData length]] forHTTPHeaderField:@"Content-Length"];
+    [httpRequest setValue:[NSString stringWithFormat:@"%qu", contentLength] forHTTPHeaderField:@"Content-Length"];
     [httpRequest setValue:message.action forHTTPHeaderField:@"SOAPAction"];
     SoapURLConnection *conn = [[[SoapURLConnection alloc] initWithRequest:httpRequest delegate:delegate] autorelease];
 	conn.updateProgress = shouldUpdateProgress;
