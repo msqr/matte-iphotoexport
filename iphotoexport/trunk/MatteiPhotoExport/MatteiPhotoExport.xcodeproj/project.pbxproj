@@ -282,9 +282,7 @@
 				C99974CF0D135D280086DF84 /* core.xsd */,
 				C99974D00D135D280086DF84 /* domain.xsd */,
 				C99974D10D135D280086DF84 /* import.xsd */,
-				C99974D20D135D280086DF84 /* Makefile */,
 				C99974D30D135D280086DF84 /* matte.wsdl */,
-				C99974D70D135D280086DF84 /* typemap.dat */,
 				C99974D80D135D280086DF84 /* ui.xsd */,
 				C99974D90D135D280086DF84 /* ws.xsd */,
 				32DBCF630370AF2F00C91783 /* MatteiPhotoExport_Prefix.pch */,
@@ -327,6 +325,8 @@
 		C939449313257F2600A40185 /* gSoap (unused) */ = {
 			isa = PBXGroup;
 			children = (
+				C99974D20D135D280086DF84 /* Makefile */,
+				C99974D70D135D280086DF84 /* typemap.dat */,
 				C90CA1790D1496E300224FBC /* soapC.c */,
 				C90CA17A0D1496E300224FBC /* soapClient.c */,
 				C90CA17C0D1496E300224FBC /* soapH.h */,
