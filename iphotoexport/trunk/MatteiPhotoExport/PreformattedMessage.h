@@ -10,9 +10,13 @@
 
 @interface PreformattedMessage : SoapMessage {
 	NSString *filePath;
+	NSInputStream *stream;
 	NSUInteger streamLength;
 }
 
 - (id) initWithSoapMessage:(SoapMessage *)theMessage withContentsOfFile:(NSString *)theFile;
+- (id) initWithSoapMessage:(SoapMessage *)theMessage
+		   withInputStream:(NSInputStream *)theStream
+			  streamLength:(NSUInteger)theStreamLength;
 
 @end
