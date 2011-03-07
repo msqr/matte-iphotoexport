@@ -335,6 +335,9 @@ NSString * const MatteWebServiceUrlPath = @"/ws/Matte";
 			archivePath = destFileName;
 		}
 		outputPath = [context.exportDir stringByAppendingPathComponent:archivePath];
+	} else {
+		// skip, we've already exported this
+		return YES;
 	}
 	
 	DLog(@"Exporting image to %@", outputPath);
@@ -370,7 +373,6 @@ NSString * const MatteWebServiceUrlPath = @"/ws/Matte";
 
 	BOOL succeeded = YES;
 	if ( outputPath != nil ) {
-		[context recordExport:srcFile toPath:outputPath inArchive:archivePath];
 		if ( movie != nil ) {
 			[taskCondition lock];
 			taskRunning = YES;
@@ -383,9 +385,11 @@ NSString * const MatteWebServiceUrlPath = @"/ws/Matte";
 				[taskCondition wait];
 			}
 			[taskCondition unlock];
+			[context export:outputPath atArchivePath:archivePath];
 			succeeded = context.succeeded;
 		} else if ( movie == nil && !settings.exportOriginals ) {
 			succeeded = [exportMgr exportImageAtIndex:i dest:outputPath options:context.imageOptions];
+			[context export:outputPath atArchivePath:archivePath];
 		} else {
 			// for movie files, we have to get the "sourcePath", because the "imagePath" points
 			// to a JPG image extracted from the movie
@@ -394,7 +398,8 @@ NSString * const MatteWebServiceUrlPath = @"/ws/Matte";
 							 ? [exportMgr sourcePathAtIndex:i]
 							 : [exportMgr imagePathAtIndex:i]);
 			DLog(@"Exporting original file %@", src);
-			succeeded = [fileManager copyItemAtPath:src toPath:outputPath error:nil];
+			[context export:src atArchivePath:archivePath];
+			succeeded = YES;
 		}
 	}
 	return succeeded;
@@ -405,7 +410,7 @@ NSString * const MatteWebServiceUrlPath = @"/ws/Matte";
 	DLog(@"performExport path: %@", path);
 	
 	int count = [exportMgr imageCount];
-	int albumCount =  (settings.autoAlbum ? [exportMgr albumCount] : 0);
+	//int albumCount =  (settings.autoAlbum ? [exportMgr albumCount] : 0);
 	cancelExport = NO;
 	int i;
 	
@@ -432,6 +437,9 @@ NSString * const MatteWebServiceUrlPath = @"/ws/Matte";
 	
 	MatteExportContext *context = [[MatteExportContext alloc] initWithSettings:settings];
 	context.exportDir = path;
+	context.zip = [[[ZipArchive alloc] init] autorelease];
+	NSString *zipPath = [context.exportDir stringByAppendingPathComponent:@"data.zip"];
+	[context.zip CreateZipFile2:zipPath];
 	
 	// Do the export
 	[self lockProgress];
@@ -481,44 +489,11 @@ NSString * const MatteWebServiceUrlPath = @"/ws/Matte";
 	DLog(@"Writing colExport as XML to %@", metadataFile);
 	[context.metadata saveAsXml:metadataFile];
 	
-	[self lockProgress];
-	[progress.message autorelease];
-	progress.totalItems = [context outputCount] + 1; // +1 for metadata.xml added to context later
-	progress.message = [[NSString stringWithFormat:@"Zipping item 1 of %d", progress.totalItems] retain];
-	progress.currentItem = 0;
-	[self unlockProgress];
+	// add metadata.xml to archive
+	[context export:metadataFile atArchivePath:[metadataFile lastPathComponent]];
 	
-	// create zip archive
-	ZipArchive *zip = [[ZipArchive alloc] init];
-	NSString *zipName;
-	if ( albumCount > 0 ) {
-		// name zip archive after first album
-		zipName = [exportMgr albumNameAtIndex:0];
-	} else if ( count == 1 ) {
-		// name zip archive after image
-		zipName = [[[[context archivePaths] objectAtIndex:0] lastPathComponent] stringByDeletingPathExtension];
-	} else {
-		// name zip archive generic name
-		zipName = @"Matte Export";
-	}
-
-	// add metadata.xml to list of files to archive
-	[context recordExport:nil toPath:metadataFile inArchive:@"metadata.xml"];
-	
-	NSString *zipPath = [context.exportDir stringByAppendingPathComponent:[zipName stringByAppendingString:@".zip"]];
-	[zip CreateZipFile2:zipPath];
-	for ( NSString *archivePath in [context archivePaths] ) {
-		[self lockProgress];
-		progress.currentItem = progress.currentItem + 1;
-		[progress.message autorelease];
-		progress.message = [[NSString stringWithFormat:@"Zipping item %d of %d", 
-							 progress.currentItem, progress.totalItems] retain];
-		[self unlockProgress];
-		
-		[zip addFileToZip:[context outputPathForArchivePath:archivePath] newname:archivePath];
-	}
-	[zip CloseZipFile2];
-	[zip release];
+	[context.zip CloseZipFile2];
+	context.zip = nil;
 	
 	[self postToServer:context zipFile:zipPath];
 	
