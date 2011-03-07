@@ -12,6 +12,7 @@
 
 #import "CollectionExport.h"
 #import "MatteExportSettings.h"
+#import "ZipArchive.h"
 
 @interface MatteExportContext (Private)
 - (void) setupImageExportOptionsFromSettings:(MatteExportSettings *)settings;
@@ -22,12 +23,11 @@
 
 @implementation MatteExportContext
 
-@synthesize exportDir, exportMovieExtension, metadata, succeeded;
+@synthesize exportDir, exportMovieExtension, metadata, succeeded, zip;
 
 - (id) initWithSettings:(MatteExportSettings *)settings {
 	if ( (self = [super init]) ) {
 		inputPathMap = [[NSMutableDictionary alloc] init];
-		outputPathMap = [[NSMutableDictionary alloc] init];
 		metadata = [[CollectionExport alloc] init];
 		if ( ![settings isExportOriginals] ) {
 			[self setupImageExportOptionsFromSettings:settings];
@@ -41,8 +41,8 @@
 	[exportDir release], exportDir = nil;
 	[exportMovieExtension release], exportMovieExtension = nil;
 	[inputPathMap release], inputPathMap = nil;
-	[outputPathMap release], outputPathMap = nil;
 	[metadata release], metadata =  nil;
+	[zip release], zip = nil;
 	[super dealloc];
 }
 
@@ -51,14 +51,9 @@
 	return [inputPathMap objectForKey:srcPath] != nil;
 }
 
-// record that an item has been exported
-- (void) recordExport:(NSString *)srcPath 
-			   toPath:(NSString *)outputPath 
-			inArchive:(NSString *)archivePath {
-	if ( srcPath != nil ) {
-		[inputPathMap setObject:archivePath forKey:srcPath];
-	}
-	[outputPathMap setObject:outputPath forKey:archivePath];
+- (void) export:(NSString *)srcPath atArchivePath:(NSString *)archivePath {
+	[inputPathMap setObject:srcPath forKey:archivePath];
+	[zip addFileToZip:srcPath newname:archivePath];
 }
 
 - (ImageExportOptions *) imageOptions {
@@ -66,15 +61,11 @@
 }
 
 - (NSUInteger) outputCount {
-	return [outputPathMap count];
+	return [inputPathMap count];
 }
 
 - (NSArray *) archivePaths {
-	return [outputPathMap allKeys];
-}
-
-- (NSString *) outputPathForArchivePath:(NSString *)archivePath {
-	return [outputPathMap objectForKey:archivePath];
+	return [inputPathMap allKeys];
 }
 
 - (NSString *) archivePathForSourcePath:(NSString *)sourcePath {
