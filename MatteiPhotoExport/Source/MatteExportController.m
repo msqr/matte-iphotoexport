@@ -20,7 +20,6 @@
 #import "PreformattedMessage.h"
 #import "SoapURLConnection.h"
 #import "ZipArchive.h"
-#import "gsoap/MatteSoapBinding.nsmap"
 
 NSString * const MatteExportPluginVersion = @"1.1";
 NSString * const MatteWebServiceUrlPath = @"/ws/Matte";
