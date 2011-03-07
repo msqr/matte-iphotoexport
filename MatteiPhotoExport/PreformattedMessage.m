@@ -21,8 +21,22 @@
 	return self;
 }
 
+- (id) initWithSoapMessage:(SoapMessage *)theMessage
+		   withInputStream:(NSInputStream *)theStream
+			  streamLength:(NSUInteger)theStreamLength {
+	if ( (self = [super init]) ) {
+		self.username = theMessage.username;
+		self.password = theMessage.password;
+		self.action = theMessage.action;
+		stream = [theStream retain];
+		streamLength = theStreamLength;
+	}
+	return self;
+}
+
 - (void) dealloc {
 	[filePath release], filePath = nil;
+	[stream release], stream = nil;
 	[super dealloc];
 }
 
@@ -35,7 +49,7 @@
 }
 
 - (NSInputStream *) asStream {
-	return [NSInputStream inputStreamWithFileAtPath:filePath];
+	return (stream != nil ? stream : [NSInputStream inputStreamWithFileAtPath:filePath]);
 }
 
 - (NSUInteger) streamLength {
