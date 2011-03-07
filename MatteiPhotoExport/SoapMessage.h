@@ -21,5 +21,8 @@
 @property (nonatomic, retain) NSXMLNode *message;
 
 - (NSXMLDocument *) asXml;
+- (NSData *) asData;
+- (NSInputStream *) asStream;
+- (NSUInteger) streamLength;
 
 @end

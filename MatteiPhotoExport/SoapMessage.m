@@ -22,6 +22,20 @@
 	[super dealloc];
 }
 
+- (NSData *) asData {
+	return [[self asXml] XMLDataWithOptions:NSXMLNodeOptionsNone];
+}
+
+- (NSInputStream *) asStream {
+	// default implementation does nothing...
+	return nil;
+}
+
+- (NSUInteger) streamLength {
+	// default implementation does nothing...
+	return 0;
+}
+
 - (NSXMLDocument *) asXml {
 	NSXMLNode *nsSoap = [NSXMLNode namespaceWithName:@"soap-env" stringValue:@"http://schemas.xmlsoap.org/soap/envelope/"];
     NSXMLElement *envelope = [NSXMLElement elementWithName:@"soap-env:Envelope" URI:[nsSoap stringValue]];

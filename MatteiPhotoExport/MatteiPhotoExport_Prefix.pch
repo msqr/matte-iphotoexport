@@ -4,6 +4,7 @@
 
 #ifdef __OBJC__
     #import <Cocoa/Cocoa.h>
+	#import "NSFileManager+Utilities.h"
 	#import "NSString+Digest.h"
 #endif
 
