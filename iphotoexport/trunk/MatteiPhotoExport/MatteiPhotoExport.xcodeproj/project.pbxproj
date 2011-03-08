@@ -13,7 +13,6 @@
 		C9416D5C1324361100E0E8FF /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C9416D5B1324361100E0E8FF /* libcrypto.dylib */; };
 		C9416E25132462CD00E0E8FF /* PreformattedMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = C9416E24132462CD00E0E8FF /* PreformattedMessage.m */; };
 		C9416F0213247B6700E0E8FF /* NSFileManager+Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = C9416F0113247B6700E0E8FF /* NSFileManager+Utilities.m */; };
-		C941708C1324CE3B00E0E8FF /* ConcatenatingInputStream.m in Sources */ = {isa = PBXBuildFile; fileRef = C941708B1324CE3B00E0E8FF /* ConcatenatingInputStream.m */; };
 		C95263EC127BFB9A00391FA0 /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C95263EB127BFB9A00391FA0 /* QuickTime.framework */; };
 		C956149812878D450047F087 /* NSString+Digest.m in Sources */ = {isa = PBXBuildFile; fileRef = C956149712878D450047F087 /* NSString+Digest.m */; };
 		C972F4FA12874B6E00F15D7D /* KeychainUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = C972F4F912874B6E00F15D7D /* KeychainUtils.m */; };
@@ -23,7 +22,6 @@
 		C9A72B360CF8D86A0019950D /* MatteExportController.m in Sources */ = {isa = PBXBuildFile; fileRef = C9A72B350CF8D86A0019950D /* MatteExportController.m */; };
 		C9A72B5A0CF8DD060019950D /* Panel.nib in Resources */ = {isa = PBXBuildFile; fileRef = C9A72B580CF8DD060019950D /* Panel.nib */; };
 		C9B39AEB127E027C00044A13 /* MatteExportContext.m in Sources */ = {isa = PBXBuildFile; fileRef = C9B39AEA127E027C00044A13 /* MatteExportContext.m */; };
-		C9B39E6F127E620200044A13 /* README.pages in Resources */ = {isa = PBXBuildFile; fileRef = C9B39E6E127E620200044A13 /* README.pages */; };
 		C9E285DD127AAD230082FC48 /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9E285DC127AAD230082FC48 /* QTKit.framework */; };
 		C9F253E11283D8F40071BA83 /* SoapMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = C9F253E01283D8F40071BA83 /* SoapMessage.m */; };
 		C9F254341283E8750071BA83 /* AddMediaRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = C9F254331283E8750071BA83 /* AddMediaRequest.m */; };
@@ -35,7 +33,6 @@
 		C9F64C9F127B9AA100D8EE9D /* ZipArchive.mm in Sources */ = {isa = PBXBuildFile; fileRef = C9F64C9A127B9AA100D8EE9D /* ZipArchive.mm */; };
 		C9F64CAC127B9B1A00D8EE9D /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C9F64CAB127B9B1A00D8EE9D /* libz.dylib */; };
 		C9F64CEC127B9F2D00D8EE9D /* MatteExportSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = C9F64CEB127B9F2D00D8EE9D /* MatteExportSettings.m */; };
-		C9FD417E0D8CB785002CB43D /* MatteSoapBinding.nsmap in Resources */ = {isa = PBXBuildFile; fileRef = C99974D50D135D280086DF84 /* MatteSoapBinding.nsmap */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -58,8 +55,6 @@
 		C9416E24132462CD00E0E8FF /* PreformattedMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PreformattedMessage.m; sourceTree = "<group>"; };
 		C9416F0013247B6700E0E8FF /* NSFileManager+Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSFileManager+Utilities.h"; sourceTree = "<group>"; };
 		C9416F0113247B6700E0E8FF /* NSFileManager+Utilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSFileManager+Utilities.m"; sourceTree = "<group>"; };
-		C941708A1324CE3B00E0E8FF /* ConcatenatingInputStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConcatenatingInputStream.h; sourceTree = "<group>"; };
-		C941708B1324CE3B00E0E8FF /* ConcatenatingInputStream.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConcatenatingInputStream.m; sourceTree = "<group>"; };
 		C95263EB127BFB9A00391FA0 /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = System/Library/Frameworks/QuickTime.framework; sourceTree = SDKROOT; };
 		C956149612878D450047F087 /* NSString+Digest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Digest.h"; sourceTree = "<group>"; };
 		C956149712878D450047F087 /* NSString+Digest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Digest.m"; sourceTree = "<group>"; };
@@ -310,8 +305,6 @@
 		C939448513257E6400A40185 /* Support */ = {
 			isa = PBXGroup;
 			children = (
-				C941708A1324CE3B00E0E8FF /* ConcatenatingInputStream.h */,
-				C941708B1324CE3B00E0E8FF /* ConcatenatingInputStream.m */,
 				C972F4F812874B6E00F15D7D /* KeychainUtils.h */,
 				C972F4F912874B6E00F15D7D /* KeychainUtils.m */,
 				C9416F0013247B6700E0E8FF /* NSFileManager+Utilities.h */,
@@ -516,8 +509,6 @@
 			files = (
 				8D5B49B0048680CD000E48DA /* InfoPlist.strings in Resources */,
 				C9A72B5A0CF8DD060019950D /* Panel.nib in Resources */,
-				C9FD417E0D8CB785002CB43D /* MatteSoapBinding.nsmap in Resources */,
-				C9B39E6F127E620200044A13 /* README.pages in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -546,7 +537,6 @@
 				C956149812878D450047F087 /* NSString+Digest.m in Sources */,
 				C9416E25132462CD00E0E8FF /* PreformattedMessage.m in Sources */,
 				C9416F0213247B6700E0E8FF /* NSFileManager+Utilities.m in Sources */,
-				C941708C1324CE3B00E0E8FF /* ConcatenatingInputStream.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
