@@ -40,7 +40,7 @@
 	// execute ws call
 	NSMutableURLRequest *httpRequest = [[[NSMutableURLRequest alloc] initWithURL:url
 																	 cachePolicy:NSURLRequestReloadIgnoringCacheData 
-																 timeoutInterval:60.0] autorelease];
+																 timeoutInterval:600.0] autorelease];
     [httpRequest setHTTPMethod:@"POST"];
 	NSInputStream *inStream = [message asStream];
 	unsigned long long contentLength = 0;
