@@ -656,10 +656,13 @@ NSString * const MatteWebServiceUrlPath = @"/ws/Matte";
 
 static NSString * const kBase64FileExtension = @"b64";
 
-- (void) encodeBase64:(NSString *)filePath
+- (void) encodeBase64:(NSDictionary *)params
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 
+	NSString *inPath = [params objectForKey:@"src"];
+	NSString *b64FilePath = [params objectForKey:@"dest"];
+	
 	// remember previous progress so we can track encoding progress
 	[self lockProgress];
 	[progress.message autorelease];
@@ -670,11 +673,10 @@ static NSString * const kBase64FileExtension = @"b64";
 	progress.currentItem = 0;
 	[self unlockProgress];
 	
-	unsigned long long inputLength = [NSFileManager sizeOfFileAtPath:filePath];
+	unsigned long long inputLength = [NSFileManager sizeOfFileAtPath:inPath];
 	
-	NSString *b64FilePath = [filePath stringByAppendingPathExtension:kBase64FileExtension];
-	DLog(@"Base64 encoding %@ as %@", filePath, [b64FilePath lastPathComponent]);
-	BIO * output = BIO_new_file([b64FilePath cStringUsingEncoding:NSUTF8StringEncoding], "w");
+	DLog(@"Base64 encoding %@ to %@", inPath, [b64FilePath lastPathComponent]);
+	BIO * output = BIO_new_file([b64FilePath cStringUsingEncoding:NSUTF8StringEncoding], "a");
 	if ( !output ) {
 		// TODO handle error
 		DLog(@"Error creating Base64 output stream %@", b64FilePath);
@@ -686,7 +688,7 @@ static NSString * const kBase64FileExtension = @"b64";
 		
 		// Encode all the data
 		unsigned long long bytesEncoded = 0;
-		NSFileHandle *fh = [NSFileHandle fileHandleForReadingAtPath:filePath];
+		NSFileHandle *fh = [NSFileHandle fileHandleForReadingAtPath:inPath];
 		while ( YES ) {
 			NSAutoreleasePool *bufferPool = [[NSAutoreleasePool alloc] init];
 			NSData *memBuffer = [fh readDataOfLength:4096];
@@ -730,14 +732,9 @@ static NSString * const kBase64FileExtension = @"b64";
 	request.mediaFile = zipPath;
 	request.metadata = context.metadata;
 	
-	// encode zip archive manually as Base64 because NSXML will load entire file in memory
-	[taskCondition lock];
-	taskRunning = YES;
-	[NSThread detachNewThreadSelector:@selector(encodeBase64:) toTarget:self withObject:zipPath];
-	while ( taskRunning ) {
-		[taskCondition wait];
-	}
-	[taskCondition unlock];
+	NSString *mergedRequestFilePath = [[zipPath stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"add-media-request.xml"];
+	[@"" writeToFile:mergedRequestFilePath atomically:YES encoding:NSUTF8StringEncoding error:nil]; // create empty file for NSFileHandle
+	NSFileHandle *mergedOutput = [NSFileHandle fileHandleForWritingAtPath:mergedRequestFilePath];
 	
 	SoapMessage *message = request;
 	
@@ -746,30 +743,27 @@ static NSString * const kBase64FileExtension = @"b64";
 	NSData *placeholderData = [kFileDataPlaceholder dataUsingEncoding:NSUTF8StringEncoding];
 	NSRange placeholderRange = [xmlData rangeOfData:placeholderData options:0 range:NSMakeRange(0, [xmlData length])];
 	if ( placeholderRange.location != NSNotFound ) {
-		NSString *mergedPath = [[zipPath stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"add-media-request.xml"];
-		[@"" writeToFile:mergedPath atomically:YES encoding:NSUTF8StringEncoding error:nil]; // create empty file for NSFileHandle
-		NSFileHandle *mergedOutput = [NSFileHandle fileHandleForWritingAtPath:mergedPath];
 		[mergedOutput writeData:[xmlData subdataWithRange:NSMakeRange(0, placeholderRange.location)]];
+		[mergedOutput synchronizeFile];
 		
-		// copy b64Data without loading entire contents into RAM
-		NSFileHandle *fh = [NSFileHandle fileHandleForReadingAtPath:[zipPath stringByAppendingPathExtension:kBase64FileExtension]];
-		while ( YES ) {
-			NSAutoreleasePool *bufferPool = [[NSAutoreleasePool alloc] init];
-			NSData *memBuffer = [fh readDataOfLength:4096];
-			if ( [memBuffer length] < 1 ) {
-				break;
-			}
-			[mergedOutput writeData:memBuffer];
-			[bufferPool drain];
+		// encode zip archive manually as Base64 because NSXML will load entire file in memory
+		[taskCondition lock];
+		taskRunning = YES;
+		NSDictionary *encodeParams = [NSDictionary dictionaryWithObjectsAndKeys:zipPath, @"src", mergedRequestFilePath, @"dest", nil];
+		[NSThread detachNewThreadSelector:@selector(encodeBase64:) toTarget:self withObject:encodeParams];
+		while ( taskRunning ) {
+			[taskCondition wait];
 		}
+		[taskCondition unlock];
 		
 		NSRange tailRange = NSMakeRange(placeholderRange.location+placeholderRange.length, 
 										[xmlData length] - placeholderRange.location - placeholderRange.length);
+		[mergedOutput seekToEndOfFile];
 		[mergedOutput writeData:[xmlData subdataWithRange:tailRange]];
 		[mergedOutput synchronizeFile];
 		[mergedOutput closeFile];
 		
-		message = [[[PreformattedMessage alloc] initWithSoapMessage:request withContentsOfFile:mergedPath] autorelease];
+		message = [[[PreformattedMessage alloc] initWithSoapMessage:request withContentsOfFile:mergedRequestFilePath] autorelease];
 	}
 		
 	[self updateProgress:@"Posting data to Matte" currItem:0 totalItems:100 shouldStop:NO indeterminate:NO];
@@ -814,23 +808,20 @@ static NSString * const kBase64FileExtension = @"b64";
 
 #pragma mark NSURLConnectionDelegate
 
-- (void) connection:(SoapURLConnection *)urlconn didReceiveResponse:(NSURLResponse *)response {
-    urlconn.response = response;
+- (void)connection:(SoapURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
+    connection.response = response;
 }
 
-- (void) connection:(SoapURLConnection *)urlconn didReceiveData:(NSData *)data {
-    [urlconn appendData:data];
+- (void)connection:(SoapURLConnection *)connection didReceiveData:(NSData *)data {
+    [connection appendData:data];
 }
 
-- (void) connectionDidFinishLoading:(SoapURLConnection *)urlconn {
-    [urlconn setFinished:YES];
+- (void)connectionDidFinishLoading:(SoapURLConnection *)connection {
+    [connection setFinished:YES];
 }
 
-- (void)connection:(SoapURLConnection *)connection 
-   didSendBodyData:(NSInteger)bytesWritten 
- totalBytesWritten:(NSInteger)totalBytesWritten 
-totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite
-{
+- (void)connection:(SoapURLConnection *)connection didSendBodyData:(NSInteger)bytesWritten 
+ totalBytesWritten:(NSInteger)totalBytesWritten totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
 	if ( !connection.updateProgress ) {
 		return;
 	}
@@ -838,6 +829,12 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite
 	[self lockProgress];
 	progress.currentItem = percent;
 	[self unlockProgress];
+}
+
+- (void)connection:(SoapURLConnection *)connection didFailWithError:(NSError *)error {
+	DLog(@"Error with connection: %@", [error localizedDescription]);
+	// TODO handle error
+    [connection setFinished:YES];
 }
 
 #pragma mark Movie export support
