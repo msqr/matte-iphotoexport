@@ -13,10 +13,10 @@
 		C9416D5C1324361100E0E8FF /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C9416D5B1324361100E0E8FF /* libcrypto.dylib */; };
 		C9416E25132462CD00E0E8FF /* PreformattedMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = C9416E24132462CD00E0E8FF /* PreformattedMessage.m */; };
 		C9416F0213247B6700E0E8FF /* NSFileManager+Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = C9416F0113247B6700E0E8FF /* NSFileManager+Utilities.m */; };
-		C95263EC127BFB9A00391FA0 /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C95263EB127BFB9A00391FA0 /* QuickTime.framework */; };
 		C956149812878D450047F087 /* NSString+Digest.m in Sources */ = {isa = PBXBuildFile; fileRef = C956149712878D450047F087 /* NSString+Digest.m */; };
 		C972F4FA12874B6E00F15D7D /* KeychainUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = C972F4F912874B6E00F15D7D /* KeychainUtils.m */; };
 		C972F52012874FD800F15D7D /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C972F51F12874FD800F15D7D /* Security.framework */; };
+		C985F3C4181E512D007FBA6A /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C985F3C3181E512D007FBA6A /* AVFoundation.framework */; };
 		C9A624C40D8EF04500418EEB /* CollectionExport.m in Sources */ = {isa = PBXBuildFile; fileRef = C9A624C30D8EF04500418EEB /* CollectionExport.m */; };
 		C9A72B330CF8D8490019950D /* MatteExportPluginBox.m in Sources */ = {isa = PBXBuildFile; fileRef = C9A72B320CF8D8490019950D /* MatteExportPluginBox.m */; };
 		C9A72B360CF8D86A0019950D /* MatteExportController.m in Sources */ = {isa = PBXBuildFile; fileRef = C9A72B350CF8D86A0019950D /* MatteExportController.m */; };
@@ -55,12 +55,12 @@
 		C9416E24132462CD00E0E8FF /* PreformattedMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PreformattedMessage.m; sourceTree = "<group>"; };
 		C9416F0013247B6700E0E8FF /* NSFileManager+Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSFileManager+Utilities.h"; sourceTree = "<group>"; };
 		C9416F0113247B6700E0E8FF /* NSFileManager+Utilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSFileManager+Utilities.m"; sourceTree = "<group>"; };
-		C95263EB127BFB9A00391FA0 /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = System/Library/Frameworks/QuickTime.framework; sourceTree = SDKROOT; };
 		C956149612878D450047F087 /* NSString+Digest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Digest.h"; sourceTree = "<group>"; };
 		C956149712878D450047F087 /* NSString+Digest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Digest.m"; sourceTree = "<group>"; };
 		C972F4F812874B6E00F15D7D /* KeychainUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeychainUtils.h; sourceTree = "<group>"; };
 		C972F4F912874B6E00F15D7D /* KeychainUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeychainUtils.m; sourceTree = "<group>"; };
 		C972F51F12874FD800F15D7D /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		C985F3C3181E512D007FBA6A /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		C99974650D135A900086DF84 /* MatteService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MatteService.h; path = Source/gsoap/MatteService.h; sourceTree = "<group>"; };
 		C99974710D135CD30086DF84 /* dom.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = dom.c; sourceTree = "<group>"; };
 		C99974730D135CD30086DF84 /* c14n.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = c14n.h; sourceTree = "<group>"; };
@@ -172,10 +172,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C985F3C4181E512D007FBA6A /* AVFoundation.framework in Frameworks */,
 				8D5B49B4048680CD000E48DA /* Cocoa.framework in Frameworks */,
 				C9E285DD127AAD230082FC48 /* QTKit.framework in Frameworks */,
 				C9F64CAC127B9B1A00D8EE9D /* libz.dylib in Frameworks */,
-				C95263EC127BFB9A00391FA0 /* QuickTime.framework in Frameworks */,
 				C972F52012874FD800F15D7D /* Security.framework in Frameworks */,
 				C9416D5C1324361100E0E8FF /* libcrypto.dylib in Frameworks */,
 			);
@@ -243,9 +243,9 @@
 		1058C7ACFEA557BF11CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				C985F3C3181E512D007FBA6A /* AVFoundation.framework */,
 				1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */,
 				C9E285DC127AAD230082FC48 /* QTKit.framework */,
-				C95263EB127BFB9A00391FA0 /* QuickTime.framework */,
 				C972F51F12874FD800F15D7D /* Security.framework */,
 				C9416D5B1324361100E0E8FF /* libcrypto.dylib */,
 				C9F64CAB127B9B1A00D8EE9D /* libz.dylib */,
@@ -568,7 +568,6 @@
 		1DEB913B08733D840010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				COPY_PHASE_STRIP = NO;
 				DEPLOYMENT_LOCATION = YES;
 				DSTROOT = /;
@@ -581,7 +580,6 @@
 				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/gsoap/**";
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Library/Application Support/iPhoto/Plugins/";
-				MACOSX_DEPLOYMENT_TARGET = 10.6.8;
 				OTHER_CFLAGS = (
 					"-DWITH_DOM",
 					"-DWITH_OPENSSL",
@@ -601,7 +599,6 @@
 		1DEB913C08733D840010E9CD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEPLOYMENT_LOCATION = YES;
 				DSTROOT = "${PROJECT_DIR}";
@@ -611,7 +608,6 @@
 				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/gsoap/**";
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = /dist/;
-				MACOSX_DEPLOYMENT_TARGET = 10.6.8;
 				OTHER_CFLAGS = (
 					"-DWITH_DOM",
 					"-DWITH_OPENSSL",
@@ -633,7 +629,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = "DEBUG=1";
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				PREBINDING = NO;
 				RUN_CLANG_STATIC_ANALYZER = NO;
 				SDKROOT = macosx;
@@ -643,10 +639,10 @@
 		1DEB914008733D840010E9CD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				ARCHS = "$(ARCHS_STANDARD)";
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				PREBINDING = NO;
 				RUN_CLANG_STATIC_ANALYZER = NO;
 				SDKROOT = macosx;
