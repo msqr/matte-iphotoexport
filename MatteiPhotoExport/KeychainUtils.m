@@ -45,7 +45,7 @@ static int const kServiceNameLength = 17;
 		char pwd[passwordLength];
 		strncpy(pwd, passwordData, passwordLength);
 		pwd[passwordLength] = '\0';
-		result = [NSString stringWithCString:pwd encoding:NSUTF8StringEncoding];
+		result = @(pwd);
 	} else if ( status == errSecItemNotFound ) {
 		// not found, this is not an error
 	} else {

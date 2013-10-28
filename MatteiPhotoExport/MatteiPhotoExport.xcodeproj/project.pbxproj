@@ -568,6 +568,7 @@
 		1DEB913B08733D840010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				COPY_PHASE_STRIP = NO;
 				DEPLOYMENT_LOCATION = YES;
 				DSTROOT = /;
@@ -580,6 +581,7 @@
 				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/gsoap/**";
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Library/Application Support/iPhoto/Plugins/";
+				MACOSX_DEPLOYMENT_TARGET = 10.6.8;
 				OTHER_CFLAGS = (
 					"-DWITH_DOM",
 					"-DWITH_OPENSSL",
@@ -599,6 +601,7 @@
 		1DEB913C08733D840010E9CD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEPLOYMENT_LOCATION = YES;
 				DSTROOT = "${PROJECT_DIR}";
@@ -608,6 +611,7 @@
 				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/gsoap/**";
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = /dist/;
+				MACOSX_DEPLOYMENT_TARGET = 10.6.8;
 				OTHER_CFLAGS = (
 					"-DWITH_DOM",
 					"-DWITH_OPENSSL",

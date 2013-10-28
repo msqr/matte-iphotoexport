@@ -48,11 +48,11 @@
 
 // returns YES if the given path has been passed to recordExport:toPath:inArchive: already
 - (BOOL) isExported:(NSString *)srcPath {
-	return [inputPathMap objectForKey:srcPath] != nil;
+	return inputPathMap[srcPath] != nil;
 }
 
 - (void) export:(NSString *)srcPath atArchivePath:(NSString *)archivePath {
-	[inputPathMap setObject:srcPath forKey:archivePath];
+	inputPathMap[archivePath] = srcPath;
 	[zip addFileToZip:srcPath newname:archivePath];
 }
 
@@ -69,7 +69,7 @@
 }
 
 - (NSString *) archivePathForSourcePath:(NSString *)sourcePath {
-	return [inputPathMap objectForKey:sourcePath];
+	return inputPathMap[sourcePath];
 }
 
 #pragma mark Private
