@@ -56,10 +56,10 @@ NSString * const MatteWebServiceUrlPath = @"/ws/Matte";
 	[mQTComponentPopUp removeAllItems];
 	qtComponents = [[self availableComponents] retain];
 	for ( NSDictionary *component in qtComponents ) {
-		NSString *name = [component objectForKey:@"name"];
+		NSString *name = component[@"name"];
 		unsigned int i;
 		for ( i = 2; [mQTComponentPopUp itemWithTitle:name] != nil; ++i) {
-			name = [NSString stringWithFormat:@"%@-%u", [component objectForKey:@"name"], i];
+			name = [NSString stringWithFormat:@"%@-%u", component[@"name"], i];
 		}
 		[mQTComponentPopUp addItemWithTitle:name];
 	}
@@ -303,14 +303,12 @@ NSString * const MatteWebServiceUrlPath = @"/ws/Matte";
 		if ( settings.exportOriginalMovies ) {
 			destFileName = [srcFile lastPathComponent];
 		} else {
-			NSDictionary *qtAttr = [NSDictionary dictionaryWithObjectsAndKeys:
-									[exportMgr sourcePathAtIndex:i], QTMovieFileNameAttribute,
-									[NSNumber numberWithBool:NO], QTMovieOpenAsyncOKAttribute, 
-									nil];
+			NSDictionary *qtAttr = @{QTMovieFileNameAttribute: [exportMgr sourcePathAtIndex:i],
+									QTMovieOpenAsyncOKAttribute: @NO};
 			[self performSelectorOnMainThread:@selector(setupQTMovie:) withObject:qtAttr waitUntilDone:YES];
 			
 			if ( context.exportMovieExtension == nil ) {
-				NSNumber *subtype = [[qtComponents objectAtIndex:settings.selectedComponentIndex] objectForKey:@"subtypeLong"];
+				NSNumber *subtype = qtComponents[settings.selectedComponentIndex][@"subtypeLong"];
 				OSType exportMovieType = [subtype longValue];
 				context.exportMovieExtension = [[exportMgr getExtensionForImageFormat:exportMovieType] retain];
 				if ( context.exportMovieExtension == nil ) {
@@ -375,10 +373,8 @@ NSString * const MatteWebServiceUrlPath = @"/ws/Matte";
 		if ( movie != nil ) {
 			[taskCondition lock];
 			taskRunning = YES;
-			NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
-									outputPath, @"outputPath",
-									context, @"context", 
-									nil];
+			NSDictionary *params = @{@"outputPath": outputPath,
+									@"context": context};
 			[NSThread detachNewThreadSelector:@selector(exportMovie:) toTarget:self withObject:params];
 			while ( taskRunning ) {
 				[taskCondition wait];
@@ -581,7 +577,7 @@ NSString * const MatteWebServiceUrlPath = @"/ws/Matte";
 		if ( len > 0 ) {
 			NSXMLElement *collectionElement;
 			for ( ; i < len; i++ ) {
-				collectionElement = [nodes objectAtIndex:i];
+				collectionElement = nodes[i];
 				NSString *name = [[collectionElement attributeForName:@"name"] stringValue];
 				NSInteger collectionId = [[[collectionElement attributeForName:@"collection-id"] stringValue] integerValue];
 				NSMenuItem *item = [[mCollectionPopUp menu] 
@@ -656,8 +652,8 @@ static NSString * const kBase64FileExtension = @"b64";
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 
-	NSString *inPath = [params objectForKey:@"src"];
-	NSString *b64FilePath = [params objectForKey:@"dest"];
+	NSString *inPath = params[@"src"];
+	NSString *b64FilePath = params[@"dest"];
 	
 	// remember previous progress so we can track encoding progress
 	[self lockProgress];
@@ -745,7 +741,7 @@ static NSString * const kBase64FileExtension = @"b64";
 		// encode zip archive manually as Base64 because NSXML will load entire file in memory
 		[taskCondition lock];
 		taskRunning = YES;
-		NSDictionary *encodeParams = [NSDictionary dictionaryWithObjectsAndKeys:zipPath, @"src", mergedRequestFilePath, @"dest", nil];
+		NSDictionary *encodeParams = @{@"src": zipPath, @"dest": mergedRequestFilePath};
 		[NSThread detachNewThreadSelector:@selector(encodeBase64:) toTarget:self withObject:encodeParams];
 		while ( taskRunning ) {
 			[taskCondition wait];
@@ -789,9 +785,9 @@ static NSString * const kBase64FileExtension = @"b64";
 		NSArray *nodes = [response nodesForXPath:@"(//*[local-name() = 'AddMediaResponse'])[1]" error:&error];
 		BOOL success = YES;
 		if ( [nodes count] > 0 ) {
-			success = [[[[nodes objectAtIndex:0] attributeForName:@"success"] stringValue] isEqualToString:@"true"];
+			success = [[[nodes[0] attributeForName:@"success"] stringValue] isEqualToString:@"true"];
 			DLog(@"Import successful: %@ work ticket: %lld", (success ? @"YES" : @"NO"),
-				 [[[[nodes objectAtIndex:0] attributeForName:@"ticket"] stringValue] longLongValue]);
+				 [[[nodes[0] attributeForName:@"ticket"] stringValue] longLongValue]);
 		}
 		// wait for work ticket to complete? for now just finish up
 		[self updateProgress:(success ? nil : @"Import did not succeed on server, no message returned.") 
@@ -839,8 +835,8 @@ static NSString * const kBase64FileExtension = @"b64";
 
 - (BOOL)componentSupportsSettingsDialog:(NSUInteger)selectedComponentIndex
 {
-	NSDictionary *qtComponent = [qtComponents objectAtIndex:selectedComponentIndex];
-	NSString *subtype = [qtComponent objectForKey:@"subtype"];
+	NSDictionary *qtComponent = qtComponents[selectedComponentIndex];
+	NSString *subtype = qtComponent[@"subtype"];
 	if ( [subtype hasPrefix:@"M4V"] || [subtype hasPrefix:@"iph"] ) {
 		// these types do not support any settings
 		return NO;
@@ -888,12 +884,10 @@ static NSString * const kBase64FileExtension = @"b64";
 			NSString *subType = [[[NSString alloc] initWithBytes:&exportCD.componentSubType length:sizeof(OSType) encoding:NSMacOSRomanStringEncoding] autorelease];
 			NSString *manufacturer = [[[NSString alloc] initWithBytes:&exportCD.componentManufacturer length:sizeof(OSType) encoding:NSMacOSRomanStringEncoding] autorelease];
 			
-			NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:
-										nameStr, @"name", [NSData dataWithBytes:&c length:sizeof(c)], @"component",
-										type, @"type", subType, @"subtype", 
-										typeNum, @"typeLong", subTypeNum, @"subtypeLong",
-										manufacturer, @"manufacturer", manufacturerNum, @"manufacturerLong",
-										nil];
+			NSDictionary *dictionary = @{@"name": nameStr, @"component": [NSData dataWithBytes:&c length:sizeof(c)],
+										@"type": type, @"subtype": subType, 
+										@"typeLong": typeNum, @"subtypeLong": subTypeNum,
+										@"manufacturer": manufacturer, @"manufacturerLong": manufacturerNum};
 			
 			if ( results == nil ) {
 				results = [NSMutableArray array];
@@ -983,8 +977,8 @@ withAttributes:(NSDictionary *)attributes
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
-	NSString *dest = [params objectForKey:@"outputPath"];
-	MatteExportContext *context = [params objectForKey:@"context"];
+	NSString *dest = params[@"outputPath"];
+	MatteExportContext *context = params[@"context"];
 	
 	[self lockProgress];
 	unsigned long prevTotal = progress.totalItems;
@@ -994,20 +988,16 @@ withAttributes:(NSDictionary *)attributes
 	[self unlockProgress];
 	[QTMovie enterQTKitOnThread];
 	[movie attachToCurrentThread];
-	NSDictionary *component = [qtComponents objectAtIndex:settings.selectedComponentIndex];
+	NSDictionary *component = qtComponents[settings.selectedComponentIndex];
 	NSDictionary *exportAttrs;
 	if ( [self componentSupportsSettingsDialog:settings.selectedComponentIndex] ) {
-		exportAttrs = [NSDictionary dictionaryWithObjectsAndKeys:
-					   [NSNumber numberWithBool:YES], QTMovieExport,
-					   [component objectForKey:@"subtypeLong"], QTMovieExportType,
-					   [component objectForKey:@"manufacturerLong"], QTMovieExportManufacturer,
-					   settings.exportMovieSettings, QTMovieExportSettings,
-					   nil];
+		exportAttrs = @{QTMovieExport: @YES,
+					   QTMovieExportType: component[@"subtypeLong"],
+					   QTMovieExportManufacturer: component[@"manufacturerLong"],
+					   QTMovieExportSettings: settings.exportMovieSettings};
 	} else {
-		exportAttrs = [NSDictionary dictionaryWithObjectsAndKeys:
-					   [NSNumber numberWithBool:YES], QTMovieExport,
-					   [component objectForKey:@"subtypeLong"], QTMovieExportType,
-					   nil];
+		exportAttrs = @{QTMovieExport: @YES,
+					   QTMovieExportType: component[@"subtypeLong"]};
 	}
 	NSError *error = nil;
 	if ( ![movie writeToFile:dest withAttributes:exportAttrs error:&error] ) {

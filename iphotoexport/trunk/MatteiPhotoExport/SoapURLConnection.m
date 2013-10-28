@@ -81,7 +81,7 @@
 	}
 	if ( [nodes count] > 0 ) {
 		// oops, error on server
-		return [[nodes objectAtIndex:0] stringValue];
+		return [nodes[0] stringValue];
 	}
 	return nil;
 }
