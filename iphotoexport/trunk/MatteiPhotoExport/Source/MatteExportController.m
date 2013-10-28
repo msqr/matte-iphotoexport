@@ -8,8 +8,7 @@
 
 #import "MatteExportController.h"
 
-#include <openssl/bio.h>
-#include <openssl/evp.h>
+#import <Security/Security.h>
 
 #import "AddMediaRequest.h"
 #import "CollectionExport.h"
@@ -227,15 +226,12 @@ NSString * const MatteWebServiceUrlPath = @"/ws/Matte";
 	strcpy(tempDirectoryNameCString, tempDirectoryTemplateCString);
 	
 	char *result = mkdtemp(tempDirectoryNameCString);
-	if ( !result )
-	{
-		// handle directory creation failure
-		return nil;
+	NSString *tempDirectoryPath = nil;
+	if ( result ) {
+		tempDirectoryPath = [[NSFileManager defaultManager]
+									   stringWithFileSystemRepresentation:tempDirectoryNameCString
+									   length:strlen(result)];
 	}
-	
-	NSString *tempDirectoryPath = [[NSFileManager defaultManager]
-								   stringWithFileSystemRepresentation:tempDirectoryNameCString
-								   length:strlen(result)];
 	free(tempDirectoryNameCString);
 	return tempDirectoryPath;
 }
@@ -310,7 +306,7 @@ NSString * const MatteWebServiceUrlPath = @"/ws/Matte";
 			if ( context.exportMovieExtension == nil ) {
 				NSNumber *subtype = qtComponents[settings.selectedComponentIndex][@"subtypeLong"];
 				OSType exportMovieType = [subtype longValue];
-				context.exportMovieExtension = [[exportMgr getExtensionForImageFormat:exportMovieType] retain];
+				context.exportMovieExtension = [exportMgr getExtensionForImageFormat:exportMovieType];
 				if ( context.exportMovieExtension == nil ) {
 					context.exportMovieExtension = @"mov";
 				}
@@ -646,15 +642,7 @@ NSString * const MatteWebServiceUrlPath = @"/ws/Matte";
 }
 */
 
-static NSString * const kBase64FileExtension = @"b64";
-
-- (void) encodeBase64:(NSDictionary *)params
-{
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-
-	NSString *inPath = params[@"src"];
-	NSString *b64FilePath = params[@"dest"];
-	
+- (void)encodeBase64:(NSString *)inPath appendingToDestination:(NSString *)b64FilePath {
 	// remember previous progress so we can track encoding progress
 	[self lockProgress];
 	[progress.message autorelease];
@@ -665,38 +653,62 @@ static NSString * const kBase64FileExtension = @"b64";
 	progress.currentItem = 0;
 	[self unlockProgress];
 	
-	unsigned long long inputLength = [NSFileManager sizeOfFileAtPath:inPath];
-	
+	const unsigned long long inputLength = [NSFileManager sizeOfFileAtPath:inPath];
+	__block unsigned long long bytesEncoded = 0;
+
 	DLog(@"Base64 encoding %@ to %@", inPath, [b64FilePath lastPathComponent]);
-	BIO * output = BIO_new_file([b64FilePath cStringUsingEncoding:NSUTF8StringEncoding], "a");
-	if ( !output ) {
-		// TODO handle error
-		DLog(@"Error creating Base64 output stream %@", b64FilePath);
-	} else {
+	NSURL *inURL = [NSURL fileURLWithPath:inPath];
+	CFErrorRef error = NULL;
+	CFReadStreamRef readStream = CFReadStreamCreateWithFile(kCFAllocatorDefault, (CFURLRef)inURL);
+	SecTransformRef readTransform = SecTransformCreateReadTransformWithReadStream(readStream);
+	SecGroupTransformRef group = SecTransformCreateGroupTransform();
+	SecTransformRef encoder = SecEncodeTransformCreate(kSecBase64Encoding, &error);
+	SecTransformConnectTransforms(readTransform, kSecTransformOutputAttributeName, encoder, kSecTransformInputAttributeName, group, &error);
+	NSOutputStream *writeStream = [[NSOutputStream alloc] initToFileAtPath:b64FilePath append:YES];
 	
-		// Push on a Base64 filter so that writing to the buffer encodes the data
-		BIO * b64 = BIO_new(BIO_f_base64());
-		output = BIO_push(b64, output);
-		
-		// Encode all the data
-		unsigned long long bytesEncoded = 0;
-		NSFileHandle *fh = [NSFileHandle fileHandleForReadingAtPath:inPath];
-		while ( YES ) {
-			NSAutoreleasePool *bufferPool = [[NSAutoreleasePool alloc] init];
-			NSData *memBuffer = [fh readDataOfLength:4096];
-			if ( [memBuffer length] < 1 ) {
-				break;
-			}
-			BIO_write(output, [memBuffer bytes], [memBuffer length]);
-			bytesEncoded += [memBuffer length];
+	dispatch_queue_t serialQueue = dispatch_queue_create("magoffin.matte.b64encode", DISPATCH_QUEUE_SERIAL);
+	
+	__block BOOL finished = NO;
+	NSCondition *condition = [NSCondition new];
+	[condition lock];
+	[writeStream open];
+	SecTransformExecuteAsync(group, serialQueue, ^(CFTypeRef message, CFErrorRef error, Boolean isFinal) {
+		if ( message != NULL ) {
+			NSData *data = (NSData *)message;
+			[writeStream write:[data bytes] maxLength:[data length]];
+			bytesEncoded += [data length];
 			[self lockProgress];
 			progress.currentItem = (unsigned long)(((double)bytesEncoded / (double)inputLength) * 100);
 			[self unlockProgress];
-			[bufferPool drain];
 		}
-		
-		BIO_flush(output);
-		BIO_free_all(output);
+		if ( isFinal || error != NULL ) {
+			if ( error != NULL ) {
+				DLog(@"Error encoding Base64 data: %@", [(NSError *)error localizedDescription]);
+				CFRelease(error);
+			}
+			[condition lock];
+			finished = YES;
+			[condition signal];
+			[condition unlock];
+		}
+	});
+	[condition waitUntilDate:[NSDate dateWithTimeIntervalSinceNow:600]];
+	[condition unlock];
+
+	dispatch_release(serialQueue);
+	[writeStream close];
+	[writeStream release];
+	if ( encoder != NULL ) {
+		CFRelease(encoder);
+	}
+	if ( group != NULL ) {
+		CFRelease(group);
+	}
+	if ( readTransform != NULL ) {
+		CFRelease(readTransform);
+	}
+	if ( readStream != NULL ) {
+		CFRelease(readStream);
 	}
 	
 	// restore previous progress now
@@ -710,8 +722,6 @@ static NSString * const kBase64FileExtension = @"b64";
 	taskRunning = NO;
 	[taskCondition signal];
 	[taskCondition unlock];
-	
-	[pool drain];
 }
 
 - (void) postToServer:(MatteExportContext *)context zipFile:(NSString *)zipPath
@@ -741,8 +751,9 @@ static NSString * const kBase64FileExtension = @"b64";
 		// encode zip archive manually as Base64 because NSXML will load entire file in memory
 		[taskCondition lock];
 		taskRunning = YES;
-		NSDictionary *encodeParams = @{@"src": zipPath, @"dest": mergedRequestFilePath};
-		[NSThread detachNewThreadSelector:@selector(encodeBase64:) toTarget:self withObject:encodeParams];
+		dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+			[self encodeBase64:zipPath appendingToDestination:mergedRequestFilePath];
+		});
 		while ( taskRunning ) {
 			[taskCondition wait];
 		}
