@@ -10,7 +10,6 @@
 		8D5B49B0048680CD000E48DA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C167DFE841241C02AAC07 /* InfoPlist.strings */; };
 		8D5B49B4048680CD000E48DA /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */; };
 		C932409712867EDF008260D7 /* GetCollectionListRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = C932409612867EDF008260D7 /* GetCollectionListRequest.m */; };
-		C9416D5C1324361100E0E8FF /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C9416D5B1324361100E0E8FF /* libcrypto.dylib */; };
 		C9416E25132462CD00E0E8FF /* PreformattedMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = C9416E24132462CD00E0E8FF /* PreformattedMessage.m */; };
 		C9416F0213247B6700E0E8FF /* NSFileManager+Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = C9416F0113247B6700E0E8FF /* NSFileManager+Utilities.m */; };
 		C956149812878D450047F087 /* NSString+Digest.m in Sources */ = {isa = PBXBuildFile; fileRef = C956149712878D450047F087 /* NSString+Digest.m */; };
@@ -50,7 +49,6 @@
 		C90CA1B40D149DD100224FBC /* threads.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = threads.h; sourceTree = "<group>"; };
 		C932409512867EDF008260D7 /* GetCollectionListRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GetCollectionListRequest.h; sourceTree = "<group>"; };
 		C932409612867EDF008260D7 /* GetCollectionListRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GetCollectionListRequest.m; sourceTree = "<group>"; };
-		C9416D5B1324361100E0E8FF /* libcrypto.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcrypto.dylib; path = usr/lib/libcrypto.dylib; sourceTree = SDKROOT; };
 		C9416E23132462CD00E0E8FF /* PreformattedMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PreformattedMessage.h; sourceTree = "<group>"; };
 		C9416E24132462CD00E0E8FF /* PreformattedMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PreformattedMessage.m; sourceTree = "<group>"; };
 		C9416F0013247B6700E0E8FF /* NSFileManager+Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSFileManager+Utilities.h"; sourceTree = "<group>"; };
@@ -177,7 +175,6 @@
 				C9E285DD127AAD230082FC48 /* QTKit.framework in Frameworks */,
 				C9F64CAC127B9B1A00D8EE9D /* libz.dylib in Frameworks */,
 				C972F52012874FD800F15D7D /* Security.framework in Frameworks */,
-				C9416D5C1324361100E0E8FF /* libcrypto.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -247,7 +244,6 @@
 				1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */,
 				C9E285DC127AAD230082FC48 /* QTKit.framework */,
 				C972F51F12874FD800F15D7D /* Security.framework */,
-				C9416D5B1324361100E0E8FF /* libcrypto.dylib */,
 				C9F64CAB127B9B1A00D8EE9D /* libz.dylib */,
 			);
 			name = "Linked Frameworks";
