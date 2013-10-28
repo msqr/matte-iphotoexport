@@ -52,7 +52,9 @@ static int const kServiceNameLength = 17;
 		NSLog(@"Error looking up password in keychain: %d", status);
 	}
 	// free password memory allocated by SecKeychainFindGenericPassword
-	SecKeychainItemFreeContent(NULL, passwordData);
+	if ( passwordData != NULL ) {
+		SecKeychainItemFreeContent(NULL, passwordData);
+	}
 	return result;
 }
 
@@ -99,6 +101,9 @@ static int const kServiceNameLength = 17;
 														NULL,
 														strlen(pwd),
 														pwd);
+	}
+	if ( status ) {
+		DLog(@"Error saving password into keychain: %d", status);
 	}
 	if ( itemRef != nil ) {
 		CFRelease(itemRef);
