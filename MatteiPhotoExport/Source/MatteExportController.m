@@ -511,12 +511,8 @@ NSString * const MatteWebServiceUrlPath = @"/ws/Matte";
 	[self lockProgress];
 	[progress.message autorelease];
 	progress.message = [message retain];
-	if ( currItem >= 0 ) {
-		progress.currentItem = currItem;
-	}
-	if ( totalItems >= 0 ) {
-		progress.totalItems = totalItems;
-	}
+	progress.currentItem = currItem;
+	progress.totalItems = totalItems;
 	progress.shouldStop = stop;
 	progress.indeterminateProgress = indeterminate;
 	[self unlockProgress];
@@ -591,7 +587,7 @@ NSString * const MatteWebServiceUrlPath = @"/ws/Matte";
 				NSMenuItem *item = [[mCollectionPopUp menu] 
 									addItemWithTitle:name
 									action:nil
-									keyEquivalent:[NSString stringWithFormat:@"%d", i]];
+									keyEquivalent:[NSString stringWithFormat:@"%lu", (unsigned long)i]];
 				[item setTag:collectionId];
 			}
 		}
@@ -794,7 +790,7 @@ static NSString * const kBase64FileExtension = @"b64";
 		BOOL success = YES;
 		if ( [nodes count] > 0 ) {
 			success = [[[[nodes objectAtIndex:0] attributeForName:@"success"] stringValue] isEqualToString:@"true"];
-			DLog(@"Import successful: %@ work ticket: %ld", (success ? @"YES" : @"NO"), 
+			DLog(@"Import successful: %@ work ticket: %lld", (success ? @"YES" : @"NO"),
 				 [[[[nodes objectAtIndex:0] attributeForName:@"ticket"] stringValue] longLongValue]);
 		}
 		// wait for work ticket to complete? for now just finish up
@@ -862,11 +858,11 @@ static NSString * const kBase64FileExtension = @"b64";
 	if ( nameHandle == NULL )
 		return( nil );
 	
-	cd.componentType = MovieExportType;
+	cd.componentType = QTMovieExportType;
 	cd.componentSubType = 0;
 	cd.componentManufacturer = 0;
-	cd.componentFlags = canMovieExportFiles;
-	cd.componentFlagsMask = canMovieExportFiles;
+	//cd.componentFlags = canMovieExportFiles;
+	//cd.componentFlagsMask = canMovieExportFiles;
 	
 	while((c = FindNextComponent(c, &cd)))
 	{
@@ -914,6 +910,8 @@ static NSString * const kBase64FileExtension = @"b64";
 
 - (NSData *)getExportSettings:(NSUInteger)selectedComponentIndex
 {
+	return nil;
+	/* FIXME
 	Component c;
 	memcpy(&c, [[[qtComponents objectAtIndex:selectedComponentIndex] objectForKey:@"component"] bytes], sizeof(c));
 	
@@ -945,6 +943,7 @@ static NSString * const kBase64FileExtension = @"b64";
 	CloseComponent(exporter);
 	
 	return data;
+	*/
 }
 
 - (void)setupQTMovie:(NSDictionary *)attributes
