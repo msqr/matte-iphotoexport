@@ -10,11 +10,11 @@
                 <outlet property="mCollectionPopUp" destination="234" id="262"/>
                 <outlet property="mFirstView" destination="59" id="211"/>
                 <outlet property="mPasswordField" destination="233" id="266"/>
-                <outlet property="mQTComponentPopUp" destination="196" id="205"/>
                 <outlet property="mQualityPopUp" destination="32" id="52"/>
                 <outlet property="mSettingsBox" destination="3" id="57"/>
                 <outlet property="mSizePopUp" destination="18" id="51"/>
                 <outlet property="mVersionLabel" destination="225" id="227"/>
+                <outlet property="moviePresetPopUp" destination="196" id="ctI-Wq-QEF"/>
             </connections>
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
