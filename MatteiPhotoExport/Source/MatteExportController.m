@@ -798,24 +798,11 @@ NSString * const MatteWebServiceUrlPath = @"/ws/Matte";
 
 #pragma mark Movie export support
 
-// QT export code adapted from http://cocoadev.com/index.pl?QTMovieExportSettings
-
-- (BOOL)componentSupportsSettingsDialog:(NSUInteger)selectedComponentIndex
-{
-	NSDictionary *qtComponent = moviePresets[selectedComponentIndex];
-	NSString *subtype = qtComponent[@"subtype"];
-	if ( [subtype hasPrefix:@"M4V"] || [subtype hasPrefix:@"iph"] ) {
-		// these types do not support any settings
-		return NO;
-	}
-	return YES;
-}
-
 // return an array of suitable export preset names
 - (NSArray *)availablePresets {
 	// this is hard-coded for just movies
 	NSSet *availablePresets = [NSSet setWithArray:[AVAssetExportSession allExportPresets]];
-	DLog(@"All presets: %@", availablePresets);
+	DLog(@"Available movie presets: %@", availablePresets);
 	NSArray *allowedPresets = @[AVAssetExportPresetAppleM4VCellular,
 								AVAssetExportPresetAppleM4ViPod,
 								AVAssetExportPresetAppleM4V480pSD,
