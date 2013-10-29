@@ -24,27 +24,6 @@
 NSString * const MatteExportPluginVersion = @"1.2";
 NSString * const MatteWebServiceUrlPath = @"/ws/Matte";
 
-@interface MatteExportController (MovieSupport)
-- (NSArray *)availablePresets;
-- (NSData *)getExportSettings:(NSUInteger)selectedComponentIndex;
-- (BOOL)componentSupportsSettingsDialog:(NSUInteger)selectedComponentIndex;
-- (void)setupQTMovie:(NSDictionary *)attributes;
-- (void)exportMovie:(NSDictionary *)dest;
-@end
-
-@interface MatteExportController (Private)
-- (void) updateProgress:(NSString *)message 
-			   currItem:(unsigned long)currItem
-			 totalItems:(unsigned long)totalItems
-			 shouldStop:(BOOL)stop
-		  indeterminate:(BOOL)indeterminate;
-- (void) setupImageExportOptions:(ImageExportOptions *)imageOptions;
-- (void) populateCollectionPopUp;
-- (void) postToServer:(MatteExportContext *)context zipFile:(NSString *)zipPath;
-@end
-
-#pragma mark -
-
 @implementation MatteExportController
 
 @synthesize settings;
@@ -127,21 +106,14 @@ NSString * const MatteWebServiceUrlPath = @"/ws/Matte";
 	}
 }
 
-- (IBAction)changeExportOriginals:(id)sender 
-{
-	DLog(@"changeExportOriginals action called by %@, exportOriginals = %@", 
-		  sender, ([settings isExportOriginals] ? @"YES" : @"NO"));
-	
-	[mSizePopUp setEnabled:(![settings isExportOriginals])];
-	[mQualityPopUp setEnabled:(![settings isExportOriginals])];
+- (IBAction)changeExportOriginals:(id)sender {
+	const BOOL enabled = ![settings isExportOriginals];
+	[mSizePopUp setEnabled:enabled];
+	[mQualityPopUp setEnabled:enabled];
 }
 
-- (IBAction)changeExportOriginalMovies:(id)sender 
-{
-	BOOL enabled = ![settings isExportOriginalMovies];
-	DLog(@"changeExportOriginals action called by %@, exportOriginals = %@", 
-		 sender, (enabled ? @"YES" : @"NO"));
-	
+- (IBAction)changeExportOriginalMovies:(id)sender  {
+	const BOOL enabled = ![settings isExportOriginalMovies];
 	[moviePresetPopUp setEnabled:enabled];
 }
 
@@ -151,13 +123,11 @@ NSString * const MatteWebServiceUrlPath = @"/ws/Matte";
 
 #pragma mark NSFileManager delegate
 
-- (BOOL)fileManager:(NSFileManager *)fileManager shouldRemoveItemAtPath:(NSString *)path
-{
+- (BOOL)fileManager:(NSFileManager *)fileManager shouldRemoveItemAtPath:(NSString *)path {
 	return YES;
 }
 
-- (BOOL)fileManager:(NSFileManager *)fileManager shouldCopyItemAtPath:(NSString *)srcPath toPath:(NSString *)dstPath
-{
+- (BOOL)fileManager:(NSFileManager *)fileManager shouldCopyItemAtPath:(NSString *)srcPath toPath:(NSString *)dstPath {
 	if ( [fileManager fileExistsAtPath:dstPath] ) {
 		[fileManager removeItemAtPath:dstPath error:nil];
 	}
@@ -352,7 +322,7 @@ NSString * const MatteWebServiceUrlPath = @"/ws/Matte";
 	BOOL succeeded = YES;
 	if ( outputPath != nil ) {
 		if ( movie && !settings.exportOriginalMovies ) {
-			[self exportMovie:context toFile:outputPath];
+			[self exportMovie:[exportMgr sourcePathAtIndex:i] toFile:outputPath context:context];
 			[context export:outputPath atArchivePath:archivePath];
 			succeeded = context.succeeded;
 		} else if ( !movie && !settings.exportOriginals ) {
@@ -819,98 +789,64 @@ NSString * const MatteWebServiceUrlPath = @"/ws/Matte";
 	return filtered;
 }
 
-- (void)exportMovie:(MatteExportContext *)context toFile:(NSString *)destPath {
-	
+static dispatch_time_t getDispatchTimeFromSeconds(float seconds) {
+	long long milliseconds = seconds * 1000.0;
+	dispatch_time_t waitTime = dispatch_time( DISPATCH_TIME_NOW, 1000000LL * milliseconds );
+	return waitTime;
 }
 
-/*
-- (void)setupQTMovie:(NSDictionary *)attributes
-{
-	[QTMovie enterQTKitOnThread];
-	[movie release], movie = nil;
-	NSError *error = nil;
-	DLog(@"Setting up QTMovie %@", attributes);
-	movie = [[QTMovie movieWithAttributes:attributes error:&error] retain];
-	if ( error ) {
-		NSLog(@"Unable to open movie: %@", error);
-	} else {
-		[movie setDelegate:self];
-		[movie detachFromCurrentThread];
-	}
-	[QTMovie exitQTKitOnThread];
-}
-
-- (BOOL)movie:(QTMovie *)theMovie shouldContinueOperation:(NSString *)op 
-	withPhase:(QTMovieOperationPhase)phase 
-	atPercent:(NSNumber *)percent
-withAttributes:(NSDictionary *)attributes
-{
+- (void)exportMovie:(NSString *)srcPath toFile:(NSString *)destPath context:(MatteExportContext *)context {
 	[self lockProgress];
-	if ( phase == QTMovieOperationBeginPhase ) {
-		[progress.message autorelease];
-		progress.message = [op retain];
-	} else if ( phase == QTMovieOperationUpdatePercentPhase ) {
-		unsigned long val = (unsigned long)roundf([percent floatValue] * 100);
-		progress.currentItem = val;
-	}
-	[self unlockProgress];
-	return YES;
-}
-
-- (void)exportMovie:(NSDictionary *)params
-{
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	
-	NSString *dest = params[@"outputPath"];
-	MatteExportContext *context = params[@"context"];
-	
-	[self lockProgress];
+	[progress.message autorelease];
+	progress.message = [[NSString stringWithFormat:@"Exporting movie %@...", [srcPath lastPathComponent]] retain];
 	unsigned long prevTotal = progress.totalItems;
 	unsigned long prevCurr = progress.currentItem;
 	progress.totalItems = 100;
 	progress.currentItem = 0;
 	[self unlockProgress];
-	[QTMovie enterQTKitOnThread];
-	[movie attachToCurrentThread];
-	NSDictionary *component = qtComponents[settings.selectedComponentIndex];
-	NSDictionary *exportAttrs;
-	if ( [self componentSupportsSettingsDialog:settings.selectedComponentIndex] ) {
-		exportAttrs = @{QTMovieExport: @YES,
-					   QTMovieExportType: component[@"subtypeLong"],
-					   QTMovieExportManufacturer: component[@"manufacturerLong"],
-					   QTMovieExportSettings: settings.exportMovieSettings};
-	} else {
-		exportAttrs = @{QTMovieExport: @YES,
-					   QTMovieExportType: component[@"subtypeLong"]};
-	}
-	NSError *error = nil;
-	if ( ![movie writeToFile:dest withAttributes:exportAttrs error:&error] ) {
-		NSLog(@"Failed to export movie: %@", error);
+
+	AVURLAsset *movie = [AVURLAsset URLAssetWithURL:[NSURL fileURLWithPath:srcPath] options:nil];
+	NSString *presetName = moviePresets[settings.selectedPresetIndex];
+	AVAssetExportSession *session = [AVAssetExportSession exportSessionWithAsset:movie presetName:presetName];
+	session.outputURL = [NSURL fileURLWithPath:destPath];
+	session.outputFileType = [session supportedFileTypes][0];
+	session.shouldOptimizeForNetworkUse = YES;
+
+	dispatch_semaphore_t sessionWaitSemaphore = dispatch_semaphore_create(0);
+
+	[session exportAsynchronouslyWithCompletionHandler:^{
+		dispatch_semaphore_signal(sessionWaitSemaphore);
+	}];
+	
+	do {
+		if ( cancelExport ) {
+			[session cancelExport];
+		} else {
+			dispatch_time_t dispatchTime = DISPATCH_TIME_FOREVER;
+			dispatchTime = getDispatchTimeFromSeconds(1.0f);
+			[self lockProgress];
+			unsigned long val = (unsigned long)roundf([session progress] * 100);
+			progress.currentItem = val;
+			[self unlockProgress];
+			dispatch_semaphore_wait(sessionWaitSemaphore, dispatchTime);
+		}
+	} while ( [session status] < AVAssetExportSessionStatusCompleted );
+
+	if ( [session status] != AVAssetExportSessionStatusCompleted ) {
+		NSLog(@"Failed to export movie: %@", [session error]);
 		context.succeeded = NO;
 		[self lockProgress];
 		[progress.message autorelease];
-		progress.message = [[NSString stringWithFormat:@"Error exporting movie: %@", [error localizedDescription]] retain];
+		progress.message = [[NSString stringWithFormat:@"Error exporting movie: %@", [[session error] localizedDescription]] retain];
 		[self unlockProgress];
 	}
-	[movie detachFromCurrentThread];
-	[QTMovie exitQTKitOnThread];
-	[movie setDelegate:nil];
-	[movie release];
-	movie = nil;
 	
 	[self lockProgress];
+	[progress.message autorelease];
+	progress.message = nil;
 	progress.totalItems = prevTotal;
 	progress.currentItem = prevCurr;
 	[self unlockProgress];
-	
-	// unlock condition
-	[taskCondition lock];
-	taskRunning = NO;
-	[taskCondition signal];
-	[taskCondition unlock];
-	
-	[pool drain];
 }
-*/
 
 @end
