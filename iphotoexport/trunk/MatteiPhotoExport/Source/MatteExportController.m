@@ -53,7 +53,7 @@ NSString * const MatteWebServiceUrlPath = @"/ws/Matte";
 	if ( [exportMgr albumCount] > 0 ) {
 		DLog(@"Hello, album %d: %@", 0, [exportMgr albumNameAtIndex:0]);
 	}
-	[mQTComponentPopUp removeAllItems];
+	[moviePresetPopUp removeAllItems];
 	qtComponents = [[self availablePresets] retain];
 	for ( NSString *preset in qtComponents ) {
 		NSString *labelKey = [NSString stringWithFormat:@"preset.%@", preset];
@@ -62,9 +62,9 @@ NSString * const MatteWebServiceUrlPath = @"/ws/Matte";
 														  [NSBundle bundleForClass:[MatteExportController class]],
 														  preset,
 														  nil);
-		[mQTComponentPopUp addItemWithTitle:labelValue];
+		[moviePresetPopUp addItemWithTitle:labelValue];
 	}
-	[mQTComponentPopUp selectItemAtIndex:settings.selectedPresetIndex];
+	[moviePresetPopUp selectItemAtIndex:settings.selectedPresetIndex];
 	
 	[self changeExportOriginals:nil];
 	[self changeExportOriginalMovies:nil];
@@ -142,7 +142,7 @@ NSString * const MatteWebServiceUrlPath = @"/ws/Matte";
 	DLog(@"changeExportOriginals action called by %@, exportOriginals = %@", 
 		 sender, (enabled ? @"YES" : @"NO"));
 	
-	[mQTComponentPopUp setEnabled:enabled];
+	[moviePresetPopUp setEnabled:enabled];
 }
 
 - (IBAction)refreshCollections:(id)sender {

@@ -24,7 +24,7 @@
 	IBOutlet NSPopUpButton		*mSizePopUp;
 	IBOutlet NSPopUpButton		*mQualityPopUp;
 	
-	IBOutlet NSPopUpButton		*mQTComponentPopUp;
+	IBOutlet NSPopUpButton		*moviePresetPopUp;
 	
 	NSDateFormatter *xsdDateTimeFormat;
 	NSArray *qtComponents;
