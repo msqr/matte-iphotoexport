@@ -54,8 +54,8 @@ NSString * const MatteWebServiceUrlPath = @"/ws/Matte";
 		DLog(@"Hello, album %d: %@", 0, [exportMgr albumNameAtIndex:0]);
 	}
 	[moviePresetPopUp removeAllItems];
-	qtComponents = [[self availablePresets] retain];
-	for ( NSString *preset in qtComponents ) {
+	moviePresets = [[self availablePresets] retain];
+	for ( NSString *preset in moviePresets ) {
 		NSString *labelKey = [NSString stringWithFormat:@"preset.%@", preset];
 		NSString *labelValue = NSLocalizedStringWithDefaultValue(labelKey,
 														  @"Localizable",
@@ -104,7 +104,7 @@ NSString * const MatteWebServiceUrlPath = @"/ws/Matte";
 	[progressLock release];
 	[progress.message release];
 	[taskCondition release];
-	[qtComponents release];
+	[moviePresets release];
 	[xsdDateTimeFormat release];
 	[super dealloc];
 }
@@ -802,7 +802,7 @@ NSString * const MatteWebServiceUrlPath = @"/ws/Matte";
 
 - (BOOL)componentSupportsSettingsDialog:(NSUInteger)selectedComponentIndex
 {
-	NSDictionary *qtComponent = qtComponents[selectedComponentIndex];
+	NSDictionary *qtComponent = moviePresets[selectedComponentIndex];
 	NSString *subtype = qtComponent[@"subtype"];
 	if ( [subtype hasPrefix:@"M4V"] || [subtype hasPrefix:@"iph"] ) {
 		// these types do not support any settings
