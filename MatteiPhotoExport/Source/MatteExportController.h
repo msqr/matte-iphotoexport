@@ -6,7 +6,6 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import <QTKit/QTKit.h>
 #import "ExportPluginProtocol.h"
 #import "MatteExportSettings.h"
 
@@ -26,11 +25,9 @@
 	IBOutlet NSPopUpButton		*mQualityPopUp;
 	
 	IBOutlet NSPopUpButton		*mQTComponentPopUp;
-	IBOutlet NSButton			*mQTSettingButton;
 	
 	NSDateFormatter *xsdDateTimeFormat;
 	NSArray *qtComponents;
-	QTMovie *movie;
 	BOOL taskRunning;
 	NSCondition *taskCondition;
 	
@@ -48,9 +45,7 @@
 // internal
 - (IBAction)changeServerDetails:(id)sender;
 - (IBAction)changeExportOriginals:(id)sender;
-
 - (IBAction)changeExportOriginalMovies:(id)sender;
-- (IBAction)changeExportMovieType:(id)sender;
-- (IBAction)configureMovieExportSettings:(id)sender;
+- (IBAction)refreshCollections:(id)sender;
 
 @end
