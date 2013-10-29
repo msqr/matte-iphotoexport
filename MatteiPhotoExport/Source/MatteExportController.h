@@ -27,7 +27,7 @@
 	IBOutlet NSPopUpButton		*moviePresetPopUp;
 	
 	NSDateFormatter *xsdDateTimeFormat;
-	NSArray *qtComponents;
+	NSArray *moviePresets;
 	BOOL taskRunning;
 	NSCondition *taskCondition;
 	
