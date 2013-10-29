@@ -8,6 +8,7 @@
 
 #import "MatteExportController.h"
 
+#import <AVFoundation/AVFoundation.h>
 #import <Security/Security.h>
 
 #import "AddMediaRequest.h"
@@ -20,11 +21,11 @@
 #import "SoapURLConnection.h"
 #import "ZipArchive.h"
 
-NSString * const MatteExportPluginVersion = @"1.1";
+NSString * const MatteExportPluginVersion = @"1.2";
 NSString * const MatteWebServiceUrlPath = @"/ws/Matte";
 
 @interface MatteExportController (MovieSupport)
-- (NSArray *)availableComponents;
+- (NSArray *)availablePresets;
 - (NSData *)getExportSettings:(NSUInteger)selectedComponentIndex;
 - (BOOL)componentSupportsSettingsDialog:(NSUInteger)selectedComponentIndex;
 - (void)setupQTMovie:(NSDictionary *)attributes;
@@ -53,16 +54,17 @@ NSString * const MatteWebServiceUrlPath = @"/ws/Matte";
 		DLog(@"Hello, album %d: %@", 0, [exportMgr albumNameAtIndex:0]);
 	}
 	[mQTComponentPopUp removeAllItems];
-	qtComponents = [[self availableComponents] retain];
-	for ( NSDictionary *component in qtComponents ) {
-		NSString *name = component[@"name"];
-		unsigned int i;
-		for ( i = 2; [mQTComponentPopUp itemWithTitle:name] != nil; ++i) {
-			name = [NSString stringWithFormat:@"%@-%u", component[@"name"], i];
-		}
-		[mQTComponentPopUp addItemWithTitle:name];
+	qtComponents = [[self availablePresets] retain];
+	for ( NSString *preset in qtComponents ) {
+		NSString *labelKey = [NSString stringWithFormat:@"preset.%@", preset];
+		NSString *labelValue = NSLocalizedStringWithDefaultValue(labelKey,
+														  @"Localizable",
+														  [NSBundle bundleForClass:[MatteExportController class]],
+														  preset,
+														  nil);
+		[mQTComponentPopUp addItemWithTitle:labelValue];
 	}
-	[mQTComponentPopUp selectItemAtIndex:settings.selectedComponentIndex];
+	[mQTComponentPopUp selectItemAtIndex:settings.selectedPresetIndex];
 	
 	[self changeExportOriginals:nil];
 	[self changeExportOriginalMovies:nil];
@@ -141,18 +143,10 @@ NSString * const MatteWebServiceUrlPath = @"/ws/Matte";
 		 sender, (enabled ? @"YES" : @"NO"));
 	
 	[mQTComponentPopUp setEnabled:enabled];
-	[mQTSettingButton setEnabled:[self componentSupportsSettingsDialog:settings.selectedComponentIndex]];
 }
 
-- (IBAction)changeExportMovieType:(id)sender
-{
-	[mQTSettingButton setEnabled:[self componentSupportsSettingsDialog:settings.selectedComponentIndex]];
-}
-
-- (IBAction)configureMovieExportSettings:(id)sender
-{
-	NSData *qtSettings = [self getExportSettings:settings.selectedComponentIndex];
-	settings.exportMovieSettings = qtSettings;
+- (IBAction)refreshCollections:(id)sender {
+	[self populateCollectionPopUp];
 }
 
 #pragma mark NSFileManager delegate
@@ -293,23 +287,14 @@ NSString * const MatteWebServiceUrlPath = @"/ws/Matte";
 	
 	NSString *destFileName = nil;
 	NSString *srcFile = nil;
-	
-	if ( [exportMgr originalIsMovieAtIndex:i] ) {
+	const BOOL movie = [exportMgr originalIsMovieAtIndex:i];
+	if ( movie ) {
 		srcFile = [exportMgr sourcePathAtIndex:i];
 		if ( settings.exportOriginalMovies ) {
 			destFileName = [srcFile lastPathComponent];
 		} else {
-			NSDictionary *qtAttr = @{QTMovieFileNameAttribute: [exportMgr sourcePathAtIndex:i],
-									QTMovieOpenAsyncOKAttribute: @NO};
-			[self performSelectorOnMainThread:@selector(setupQTMovie:) withObject:qtAttr waitUntilDone:YES];
-			
 			if ( context.exportMovieExtension == nil ) {
-				NSNumber *subtype = qtComponents[settings.selectedComponentIndex][@"subtypeLong"];
-				OSType exportMovieType = [subtype longValue];
-				context.exportMovieExtension = [exportMgr getExtensionForImageFormat:exportMovieType];
-				if ( context.exportMovieExtension == nil ) {
-					context.exportMovieExtension = @"mov";
-				}
+				context.exportMovieExtension = @"m4v";
 			}
 			destFileName = [[[[exportMgr sourcePathAtIndex:i] lastPathComponent] stringByDeletingPathExtension]
 							stringByAppendingFormat:@".%@", context.exportMovieExtension];
@@ -366,26 +351,18 @@ NSString * const MatteWebServiceUrlPath = @"/ws/Matte";
 
 	BOOL succeeded = YES;
 	if ( outputPath != nil ) {
-		if ( movie != nil ) {
-			[taskCondition lock];
-			taskRunning = YES;
-			NSDictionary *params = @{@"outputPath": outputPath,
-									@"context": context};
-			[NSThread detachNewThreadSelector:@selector(exportMovie:) toTarget:self withObject:params];
-			while ( taskRunning ) {
-				[taskCondition wait];
-			}
-			[taskCondition unlock];
+		if ( movie && !settings.exportOriginalMovies ) {
+			[self exportMovie:context toFile:outputPath];
 			[context export:outputPath atArchivePath:archivePath];
 			succeeded = context.succeeded;
-		} else if ( movie == nil && !settings.exportOriginals ) {
+		} else if ( !movie && !settings.exportOriginals ) {
 			succeeded = [exportMgr exportImageAtIndex:i dest:outputPath options:context.imageOptions];
 			[context export:outputPath atArchivePath:archivePath];
 		} else {
 			// for movie files, we have to get the "sourcePath", because the "imagePath" points
 			// to a JPG image extracted from the movie
 			
-			NSString *src = ([exportMgr originalIsMovieAtIndex:i]
+			NSString *src = (movie
 							 ? [exportMgr sourcePathAtIndex:i]
 							 : [exportMgr imagePathAtIndex:i]);
 			DLog(@"Exporting original file %@", src);
@@ -404,27 +381,6 @@ NSString * const MatteWebServiceUrlPath = @"/ws/Matte";
 	//int albumCount =  (settings.autoAlbum ? [exportMgr albumCount] : 0);
 	cancelExport = NO;
 	int i;
-	
-	if ( settings.exportMovieSettings == nil && !settings.exportOriginalMovies ) {
-		// need to recompress movies, but we don't have settings selected for movies.
-		// look for a movie in our export, and if we have one, present the settings dialog
-		// to choose the movie export settings
-		for ( i = 0; i < count; i++ ) {
-			if ( [exportMgr originalIsMovieAtIndex:i] ) {
-				if ( [self componentSupportsSettingsDialog:settings.selectedComponentIndex] ) {
-					[self performSelectorOnMainThread:@selector(configureMovieExportSettings:) withObject:nil waitUntilDone:YES];
-					if ( settings.exportMovieSettings == nil ) {
-						cancelExport = YES;
-						[self lockProgress];
-						progress.shouldStop = YES;
-						[self unlockProgress];
-						return;
-					}
-				}
-				break;
-			}
-		}
-	}
 	
 	MatteExportContext *context = [[MatteExportContext alloc] initWithSettings:settings];
 	context.exportDir = path;
@@ -855,102 +811,32 @@ NSString * const MatteWebServiceUrlPath = @"/ws/Matte";
 	return YES;
 }
 
-- (NSArray *)availableComponents
-{
-	NSMutableArray		*results = nil;
-	ComponentDescription	cd = {};
-	Component		 c = NULL;
-	Handle			 nameHandle = NewHandle(0);
-	
-	if ( nameHandle == NULL )
-		return( nil );
-	
-	cd.componentType = QTMovieExportType;
-	cd.componentSubType = 0;
-	cd.componentManufacturer = 0;
-	//cd.componentFlags = canMovieExportFiles;
-	//cd.componentFlagsMask = canMovieExportFiles;
-	
-	while((c = FindNextComponent(c, &cd)))
-	{
-		ComponentDescription	exportCD = {};
-		
-		if ( GetComponentInfo( c, &exportCD, nameHandle, NULL, NULL ) == noErr )
-		{
-			HLock( nameHandle );
-			NSString	*nameStr = [[[NSString alloc] initWithBytes:(*nameHandle)+1 length:(int)**nameHandle encoding:NSMacOSRomanStringEncoding] autorelease];
-			HUnlock( nameHandle );
-			
-			// these numbers are required by QTKit
-			NSNumber *typeNum = [NSNumber numberWithLong:exportCD.componentSubType];
-			NSNumber *subTypeNum = [NSNumber numberWithLong:exportCD.componentSubType];
-			NSNumber *manufacturerNum = [NSNumber numberWithLong:exportCD.componentManufacturer];
-			
-			// the following string versions are to help with debugging
-			exportCD.componentType = CFSwapInt32HostToBig(exportCD.componentType);
-			exportCD.componentSubType = CFSwapInt32HostToBig(exportCD.componentSubType);
-			exportCD.componentManufacturer = CFSwapInt32HostToBig(exportCD.componentManufacturer);
-			
-			NSString *type = [[[NSString alloc] initWithBytes:&exportCD.componentType length:sizeof(OSType) encoding:NSMacOSRomanStringEncoding] autorelease];
-			NSString *subType = [[[NSString alloc] initWithBytes:&exportCD.componentSubType length:sizeof(OSType) encoding:NSMacOSRomanStringEncoding] autorelease];
-			NSString *manufacturer = [[[NSString alloc] initWithBytes:&exportCD.componentManufacturer length:sizeof(OSType) encoding:NSMacOSRomanStringEncoding] autorelease];
-			
-			NSDictionary *dictionary = @{@"name": nameStr, @"component": [NSData dataWithBytes:&c length:sizeof(c)],
-										@"type": type, @"subtype": subType, 
-										@"typeLong": typeNum, @"subtypeLong": subTypeNum,
-										@"manufacturer": manufacturer, @"manufacturerLong": manufacturerNum};
-			
-			if ( results == nil ) {
-				results = [NSMutableArray array];
-			}
-			DLog(@"Found component: %@", dictionary);
-			[results addObject:dictionary];
+// return an array of suitable export preset names
+- (NSArray *)availablePresets {
+	// this is hard-coded for just movies
+	NSSet *availablePresets = [NSSet setWithArray:[AVAssetExportSession allExportPresets]];
+	DLog(@"All presets: %@", availablePresets);
+	NSArray *allowedPresets = @[AVAssetExportPresetAppleM4VCellular,
+								AVAssetExportPresetAppleM4ViPod,
+								AVAssetExportPresetAppleM4V480pSD,
+								AVAssetExportPresetAppleM4VAppleTV,
+								AVAssetExportPresetAppleM4VWiFi,
+								AVAssetExportPresetAppleM4V720pHD,
+								AVAssetExportPresetAppleProRes422LPCM];
+	NSMutableArray *filtered = [NSMutableArray arrayWithCapacity:[allowedPresets count]];
+	for ( NSString *preset in allowedPresets ) {
+		if ( [availablePresets containsObject:preset] ) {
+			[filtered addObject:preset];
 		}
 	}
-	
-	DisposeHandle( nameHandle );
-	
-	return results;
+	return filtered;
 }
 
-- (NSData *)getExportSettings:(NSUInteger)selectedComponentIndex
-{
-	return nil;
-	/* FIXME
-	Component c;
-	memcpy(&c, [[[qtComponents objectAtIndex:selectedComponentIndex] objectForKey:@"component"] bytes], sizeof(c));
+- (void)exportMovie:(MatteExportContext *)context toFile:(NSString *)destPath {
 	
-	MovieExportComponent exporter = OpenComponent(c);
-	Boolean canceled;
-	ComponentResult err = MovieExportDoUserDialog(exporter, NULL, NULL, 0, 0, &canceled);
-	if(err)
-	{
-		NSLog(@"Got error %d when calling MovieExportDoUserDialog",err);
-		CloseComponent(exporter);
-		return nil;
-	}
-	if(canceled)
-	{
-		CloseComponent(exporter);
-		return nil;
-	}
-	QTAtomContainer qtSettings;
-	err = MovieExportGetSettingsAsAtomContainer(exporter, &qtSettings);
-	if(err)
-	{
-		NSLog(@"Got error %d when calling MovieExportGetSettingsAsAtomContainer",err);
-		CloseComponent(exporter);
-		return nil;
-	}
-	NSData *data = [NSData dataWithBytes:*qtSettings length:GetHandleSize(qtSettings)];
-	DisposeHandle(qtSettings);
-	
-	CloseComponent(exporter);
-	
-	return data;
-	*/
 }
 
+/*
 - (void)setupQTMovie:(NSDictionary *)attributes
 {
 	[QTMovie enterQTKitOnThread];
@@ -1038,6 +924,6 @@ withAttributes:(NSDictionary *)attributes
 	
 	[pool drain];
 }
-
+*/
 
 @end

@@ -1,0 +1,18 @@
+/* 
+  Localizable.strings
+  MatteiPhotoExport
+
+  Created by Matt on 10/29/13.
+
+*/
+
+"preset.foo" = "Bar";
+
+"preset.AVAssetExportPresetAppleM4VCellular" = "Cellular";
+"preset.AVAssetExportPresetAppleM4ViPod" = "iPod";
+"preset.AVAssetExportPresetAppleM4V480pSD" = "SD";
+"preset.AVAssetExportPresetAppleM4VAppleTV" = "Apple TV";
+"preset.AVAssetExportPresetAppleM4VWiFi" = "WiFi";
+"preset.AVAssetExportPresetAppleM4V720pHD" = "HD (720p)";
+"preset.AVAssetExportPresetAppleM4V1080pHD" = "HD (1080p)";
+"preset.AVAssetExportPresetAppleProRes422LPCM" = "ProRes 422 LPCM";

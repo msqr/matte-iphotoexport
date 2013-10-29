@@ -11,9 +11,9 @@
 @implementation MatteExportSettings
 
 @synthesize collectionId, size,quality,url,username,password,exportOriginals,autoAlbum;
-@synthesize exportOriginalMovies, selectedComponentIndex, exportMovieSettings;
+@synthesize exportOriginalMovies, selectedPresetIndex;
 
-- (id) init {
+- (id)init {
 	if ( (self = [super init]) ) {
 		collectionId = -1;
 		autoAlbum = YES;
@@ -23,15 +23,14 @@
 	return self;
 }
 
-- (void) dealloc {
+- (void)dealloc {
 	self.url = nil;
 	self.username = nil;
 	self.password = nil;
-	self.exportMovieSettings = nil;
 	[super dealloc];
 }
 
-- (void) restoreFromUserDefaults:(NSUserDefaults *)defaults {
+- (void)restoreFromUserDefaults:(NSUserDefaults *)defaults {
 	self.url = [defaults stringForKey:@"settings.url"];
 	self.username = [defaults stringForKey:@"settings.username"];
 	collectionId = [defaults integerForKey:@"settings.collectionId"];
@@ -44,11 +43,10 @@
 	quality = [defaults integerForKey:@"settings.quality"];
 	
 	exportOriginalMovies = [defaults boolForKey:@"settings.exportOriginalMovies"];
-	selectedComponentIndex = [defaults integerForKey:@"settings.selectedComponentIndex"];
-	self.exportMovieSettings = [defaults dataForKey:@"settings.exportMovieSettings"];
+	selectedPresetIndex = [defaults integerForKey:@"settings.selectedPresetIndex"];
 }
 
-- (void) saveToUserDefaults:(NSUserDefaults *)defaults {
+- (void)saveToUserDefaults:(NSUserDefaults *)defaults {
 	[defaults setObject:url forKey:@"settings.url"];
 	[defaults setObject:username forKey:@"settings.username"];
 	[defaults setInteger:collectionId forKey:@"settings.collectionId"];
@@ -60,8 +58,7 @@
 	[defaults setInteger:quality forKey:@"settings.quality"];
 	
 	[defaults setBool:exportOriginalMovies forKey:@"settings.exportOriginalMovies"];
-	[defaults setInteger:selectedComponentIndex forKey:@"settings.selectedComponentIndex"];
-	[defaults setObject:exportMovieSettings forKey:@"settings.exportMovieSettings"];
+	[defaults setInteger:selectedPresetIndex forKey:@"settings.selectedPresetIndex"];
 }
 
 @end

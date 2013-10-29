@@ -24,8 +24,7 @@
 
 	// movie options
 	BOOL exportOriginalMovies;
-	NSUInteger selectedComponentIndex;
-	NSData *exportMovieSettings;
+	NSUInteger selectedPresetIndex;
 }
 
 @property (assign) int collectionId;
@@ -38,10 +37,9 @@
 @property (assign,getter=isAutoAlbum) BOOL autoAlbum;
 
 @property (assign,getter=isExportOriginalMovies) BOOL exportOriginalMovies;
-@property (assign) NSUInteger selectedComponentIndex;
-@property (retain) NSData *exportMovieSettings;
+@property (assign) NSUInteger selectedPresetIndex;
 
-- (void) restoreFromUserDefaults:(NSUserDefaults *)defaults;
-- (void) saveToUserDefaults:(NSUserDefaults *)defaults;
+- (void)restoreFromUserDefaults:(NSUserDefaults *)defaults;
+- (void)saveToUserDefaults:(NSUserDefaults *)defaults;
 
 @end

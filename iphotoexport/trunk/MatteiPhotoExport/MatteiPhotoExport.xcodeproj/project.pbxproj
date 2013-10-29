@@ -16,6 +16,7 @@
 		C972F4FA12874B6E00F15D7D /* KeychainUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = C972F4F912874B6E00F15D7D /* KeychainUtils.m */; };
 		C972F52012874FD800F15D7D /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C972F51F12874FD800F15D7D /* Security.framework */; };
 		C985F3C4181E512D007FBA6A /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C985F3C3181E512D007FBA6A /* AVFoundation.framework */; };
+		C98EA028181FACBA00D144E2 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = C98EA026181FACBA00D144E2 /* Localizable.strings */; };
 		C9A624C40D8EF04500418EEB /* CollectionExport.m in Sources */ = {isa = PBXBuildFile; fileRef = C9A624C30D8EF04500418EEB /* CollectionExport.m */; };
 		C9A72B330CF8D8490019950D /* MatteExportPluginBox.m in Sources */ = {isa = PBXBuildFile; fileRef = C9A72B320CF8D8490019950D /* MatteExportPluginBox.m */; };
 		C9A72B360CF8D86A0019950D /* MatteExportController.m in Sources */ = {isa = PBXBuildFile; fileRef = C9A72B350CF8D86A0019950D /* MatteExportController.m */; };
@@ -59,6 +60,7 @@
 		C972F4F912874B6E00F15D7D /* KeychainUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeychainUtils.m; sourceTree = "<group>"; };
 		C972F51F12874FD800F15D7D /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		C985F3C3181E512D007FBA6A /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		C98EA027181FACBA00D144E2 /* English */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = English; path = Resources/English.lproj/Localizable.strings; sourceTree = "<group>"; };
 		C99974650D135A900086DF84 /* MatteService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MatteService.h; path = Source/gsoap/MatteService.h; sourceTree = "<group>"; };
 		C99974710D135CD30086DF84 /* dom.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = dom.c; sourceTree = "<group>"; };
 		C99974730D135CD30086DF84 /* c14n.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = c14n.h; sourceTree = "<group>"; };
@@ -212,6 +214,7 @@
 				C9A72B580CF8DD060019950D /* Panel.nib */,
 				8D5B49B7048680CD000E48DA /* Info.plist */,
 				089C167DFE841241C02AAC07 /* InfoPlist.strings */,
+				C98EA026181FACBA00D144E2 /* Localizable.strings */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -506,6 +509,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8D5B49B0048680CD000E48DA /* InfoPlist.strings in Resources */,
+				C98EA028181FACBA00D144E2 /* Localizable.strings in Resources */,
 				C9A72B5A0CF8DD060019950D /* Panel.nib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -548,6 +552,14 @@
 			);
 			name = InfoPlist.strings;
 			path = Resources/English.lproj;
+			sourceTree = "<group>";
+		};
+		C98EA026181FACBA00D144E2 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				C98EA027181FACBA00D144E2 /* English */,
+			);
+			name = Localizable.strings;
 			sourceTree = "<group>";
 		};
 		C9A72B580CF8DD060019950D /* Panel.nib */ = {
