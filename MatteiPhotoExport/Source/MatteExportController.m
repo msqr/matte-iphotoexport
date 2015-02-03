@@ -509,6 +509,12 @@ NSString * const MatteWebServiceUrlPath = @"/ws/Matte";
 				[item setTag:collectionId];
 			}
 		}
+		
+		// select our saved collection if possible, else default to first avaialble
+		if ( ![mCollectionPopUp selectItemWithTag:settings.collectionId] && len > 0 ) {
+			[mCollectionPopUp selectItemAtIndex:0];
+			settings.collectionId = [mCollectionPopUp itemAtIndex:0].tag;
+		}
 	}
 }
 
