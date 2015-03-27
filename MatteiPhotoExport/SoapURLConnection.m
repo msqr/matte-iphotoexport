@@ -66,10 +66,13 @@
 	}
 	DLog(@"%@ response: %@", message.action, [[[NSString alloc] initWithData:[conn data] encoding:NSUTF8StringEncoding] autorelease]);
 	NSError *error = nil;
-	response = [[[NSXMLDocument alloc] initWithData:[conn data] options:NSXMLNodeOptionsNone error:&error] autorelease];
-	if ( error ) {
-		NSLog(@"Could not complete SOAP AddMediaRequest: %@", error);
-		return nil;
+	NSData *data = [conn data];
+	if ( [data length] > 0 ) {
+		response = [[[NSXMLDocument alloc] initWithData:[conn data] options:NSXMLNodeOptionsNone error:&error] autorelease];
+		if ( error ) {
+			NSLog(@"Could not complete SOAP AddMediaRequest: %@", error);
+			response = nil;
+		}
 	}
 	return response;
 }
