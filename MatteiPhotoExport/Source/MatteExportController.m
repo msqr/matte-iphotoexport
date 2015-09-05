@@ -24,6 +24,10 @@
 NSString * const MatteExportPluginVersion = @"1.2";
 NSString * const MatteWebServiceUrlPath = @"/ws/Matte";
 
+@interface MatteExportController () <NSFileManagerDelegate>
+
+@end
+
 @implementation MatteExportController
 
 @synthesize settings;
