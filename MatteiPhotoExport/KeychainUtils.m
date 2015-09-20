@@ -34,7 +34,7 @@ static int const kServiceNameLength = 17;
 											 [[url path] UTF8String], 
 											 [[url port] unsignedIntValue], 
 											 ([[url scheme] caseInsensitiveCompare:@"https"] == NSOrderedSame ? kSecProtocolTypeHTTPS : kSecProtocolTypeHTTP),
-											 kSecAuthenticationTypeDefault,
+											 kSecAuthenticationTypeHTMLForm,
 											 &passwordLength,
 											 &passwordData,
 											 NULL);
@@ -75,7 +75,7 @@ static int const kServiceNameLength = 17;
 											 [[url path] UTF8String], 
 											 [[url port] unsignedIntValue], 
 											 ([[url scheme] caseInsensitiveCompare:@"https"] == NSOrderedSame ? kSecProtocolTypeHTTPS : kSecProtocolTypeHTTP),
-											 kSecAuthenticationTypeDefault,
+											 kSecAuthenticationTypeHTMLForm,
 											 NULL,
 											 NULL,
 											 &itemRef);
@@ -91,7 +91,7 @@ static int const kServiceNameLength = 17;
 												[[url path] UTF8String], 
 												[[url port] unsignedIntValue], 
 												([[url scheme] caseInsensitiveCompare:@"https"] == NSOrderedSame ? kSecProtocolTypeHTTPS : kSecProtocolTypeHTTP),
-												kSecAuthenticationTypeDefault,
+												kSecAuthenticationTypeHTMLForm,
 												strlen(pwd),
 												pwd,
 												NULL);
